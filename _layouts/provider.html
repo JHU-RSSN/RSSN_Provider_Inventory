@@ -1,0 +1,63 @@
+---
+layout: default
+---
+{%- assign school = site.data.taxonomy.schools | where: "name", page.school | first -%}
+<main class="profile-page">
+  <a class="back-link" href="{{ '/' | relative_url }}"><span aria-hidden="true">&larr;</span> All providers</a>
+
+  <article class="profile" style="--card-accent: {{ school.color | default: '#002D72' }}">
+    <header class="profile__header">
+      <p class="profile__eyebrow">{{ page.school }}{% if page.unit and page.unit != "" %} · {{ page.unit }}{% endif %}</p>
+      <h1 class="profile__title">{{ page.title }}</h1>
+      <p class="profile__facts">
+        <span>{{ page.institution }}</span>
+        <span>Available to: {{ page.availability }}</span>
+      </p>
+    </header>
+
+    <div class="profile__body">
+      <div class="profile__main">
+        <div class="profile__description">{{ content }}</div>
+
+        <section class="profile__section" aria-labelledby="services-heading">
+          <h2 id="services-heading">Services</h2>
+          <ul class="service-list">
+            {%- for s in page.services %}
+            {%- assign svc = site.data.taxonomy.services | where: "name", s | first %}
+            <li>
+              <span class="service-list__name">{{ s }}</span>
+              {%- if svc.detail and svc.detail != "" %}
+              <span class="service-list__detail">{{ svc.detail }}</span>
+              {%- endif %}
+            </li>
+            {%- endfor %}
+          </ul>
+        </section>
+
+        <section class="profile__section" aria-labelledby="eligible-heading">
+          <h2 id="eligible-heading">Who can engage this team</h2>
+          <ul class="plain-list">
+            {%- for e in page.eligible %}
+            <li>{{ e }}</li>
+            {%- endfor %}
+          </ul>
+        </section>
+      </div>
+
+      <aside class="profile__aside" aria-label="Contact">
+        <div class="contact-card">
+          <h2>Contact</h2>
+          <p class="contact-card__name">{{ page.contact.name }}</p>
+          <p><a href="mailto:{{ page.contact.email }}">{{ page.contact.email }}</a></p>
+          {%- if page.website and page.website != "" %}
+          <p><a href="{{ page.website }}" rel="noopener">{{ page.website | remove: "https://" | remove: "http://" | remove: "www." }}</a></p>
+          {%- endif %}
+        </div>
+        <p class="edit-note">
+          Is something out of date?
+          <a href="https://github.com/{{ site.repository }}/edit/{{ site.branch }}/{{ page.path }}">Suggest an edit on GitHub</a>
+        </p>
+      </aside>
+    </div>
+  </article>
+</main>

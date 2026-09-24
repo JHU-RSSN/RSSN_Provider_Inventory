@@ -1,0 +1,65 @@
+---
+layout: default
+title: Find support
+---
+{%- assign providers = site.providers | sort: "title" -%}
+<section class="search-band">
+  <div class="search-band__inner">
+    <h1 class="search-band__title">Find a Hopkins team for your research software, data, or computing project</h1>
+    <form class="search" role="search" action="{{ '/' | relative_url }}" method="get" id="search-form">
+      <label class="visually-hidden" for="q">Search providers</label>
+      <input type="search" id="q" name="q" placeholder="Search by service, technology, or team name" autocomplete="off">
+      <button type="submit">Search</button>
+    </form>
+    <p class="search-band__hint">Try “single-cell,” “HIPAA,” “Kubernetes,” or “REDCap.”</p>
+  </div>
+</section>
+
+<div class="directory">
+  <button type="button" class="filters-toggle" id="filters-toggle" aria-expanded="false" aria-controls="filters" hidden>Filters</button>
+
+  <aside class="filters" id="filters" aria-label="Filter providers" hidden>
+    <div class="filters__head">
+      <h2>Refine</h2>
+      <button type="button" class="text-button" id="clear-all">Clear all</button>
+    </div>
+    <div id="facets"></div>
+  </aside>
+
+  <main class="results">
+    <div class="results__head">
+      <p class="results__count" id="results-count" aria-live="polite"><strong>{{ providers.size }}</strong> providers</p>
+      <ul class="active-filters" id="active-filters" aria-label="Active filters"></ul>
+    </div>
+
+    <div class="card-grid" id="card-grid">
+      {%- for p in providers %}
+      {% include card.html provider=p %}
+      {%- endfor %}
+    </div>
+
+    <div class="empty-state" id="empty-state" hidden>
+      <p><strong>No providers match.</strong> Try removing a filter or searching for a broader term.</p>
+    </div>
+  </main>
+</div>
+
+<script type="application/json" id="provider-data">
+[
+{%- for p in providers %}
+  {
+    "id": {{ p.url | jsonify }},
+    "title": {{ p.title | jsonify }},
+    "institution": {{ p.institution | jsonify }},
+    "school": {{ p.school | jsonify }},
+    "unit": {{ p.unit | jsonify }},
+    "availability": {{ p.availability | jsonify }},
+    "eligible": {{ p.eligible | jsonify }},
+    "services": {{ p.services | jsonify }},
+    "description": {{ p.content | strip_html | normalize_whitespace | jsonify }}
+  }{% unless forloop.last %},{% endunless %}
+{%- endfor %}
+]
+</script>
+<script type="application/json" id="taxonomy-data">{{ site.data.taxonomy | jsonify }}</script>
+<script src="{{ '/assets/js/directory.js' | relative_url }}"></script>

@@ -1,0 +1,21 @@
+{%- assign p = include.provider -%}
+{%- assign school = site.data.taxonomy.schools | where: "name", p.school | first -%}
+{%- assign extra = p.services.size | minus: 3 -%}
+<article class="card" data-id="{{ p.url }}" style="--card-accent: {{ school.color | default: '#002D72' }}">
+  <p class="card__eyebrow">{{ school.short | default: p.school }}</p>
+  <h2 class="card__title"><a href="{{ p.url | relative_url }}">{{ p.title }}</a></h2>
+  <p class="card__summary">{{ p.content | strip_html | normalize_whitespace | truncatewords: 28 }}</p>
+  <ul class="chips" aria-label="Services">
+    {%- for s in p.services limit: 3 %}
+    <li class="chip">{{ s }}</li>
+    {%- endfor %}
+    {%- if extra > 0 %}
+    <li class="chip chip--more">+{{ extra }} more</li>
+    {%- endif %}
+  </ul>
+  <dl class="card__meta">
+    <div><dt>Institution</dt><dd>{{ p.institution }}</dd></div>
+    <div><dt>Available to</dt><dd>{{ p.availability }}</dd></div>
+  </dl>
+  <a class="card__link" href="{{ p.url | relative_url }}" aria-hidden="true" tabindex="-1">View profile <span aria-hidden="true">&rarr;</span></a>
+</article>

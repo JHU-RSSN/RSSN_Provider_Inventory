@@ -1,0 +1,36 @@
+title: RSSN Provider Inventory
+network_name: Research Software Support Network
+description: Find Johns Hopkins teams that help researchers with software, data, and computing.
+
+# The GitHub repository this site is built from. Used for "Suggest an edit" links.
+# Update this (and baseurl) if the repo is renamed or moved to another account/org.
+repository: meganforbes/RSSN_Provider_Inventory_Prototpye
+branch: main
+
+# Site address. For a project site, baseurl must match the repository name exactly.
+url: "https://meganforbes.github.io"
+baseurl: "/RSSN_Provider_Inventory_Prototpye"
+
+# Shows the "sample data" banner on every page. Set to false once real listings are in.
+prototype: true
+
+markdown: kramdown
+
+collections:
+  providers:
+    output: true
+    permalink: /providers/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: providers
+    values:
+      layout: provider
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - .github

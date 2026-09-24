@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.title and page.url != "/" %}{{ page.title }} · {% endif %}{{ site.title }}</title>
+  <meta name="description" content="{% if page.collection == 'providers' %}{{ page.content | strip_html | normalize_whitespace | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Work+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="{{ '/' | relative_url }}">
+        <span class="brand__title">{{ site.title }}</span>
+        <span class="brand__network">{{ site.network_name }}</span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="{{ '/' | relative_url }}"{% if page.url == "/" %} aria-current="page"{% endif %}>Find support</a>
+        <a href="{{ '/about/' | relative_url }}"{% if page.url == "/about/" %} aria-current="page"{% endif %}>About</a>
+        <a class="site-nav__cta" href="{{ '/add-your-service/' | relative_url }}"{% if page.url == "/add-your-service/" %} aria-current="page"{% endif %}>Add your service</a>
+      </nav>
+    </div>
+  </header>
+  {% if site.prototype %}
+  <div class="prototype-banner" role="note">
+    <strong>Prototype.</strong> Listings on this site are sample data for review, not real teams or contacts.
+  </div>
+  {% endif %}
+
+  <div id="main">
+    {{ content }}
+  </div>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <span>{{ site.network_name }} · Johns Hopkins University &amp; Johns Hopkins Health System</span>
+      <a href="https://github.com/{{ site.repository }}">View this site on GitHub</a>
+    </div>
+  </footer>
+</body>
+</html>

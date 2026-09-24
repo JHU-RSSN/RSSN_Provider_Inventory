@@ -1,0 +1,19 @@
+---
+layout: default
+title: About
+permalink: /about/
+---
+<main class="content-page">
+  <h1>About the RSSN Provider Inventory</h1>
+  <p>The Research Software Support Network (RSSN) connects Johns Hopkins researchers with the teams across the university and health system that build, run, and support research software, data systems, and computing.</p>
+  <p>Each listing comes from the RSSN Research IT Provider Questionnaire and is maintained by the team it describes. Use the search and filters on the <a href="{{ '/' | relative_url }}">Find support</a> page to narrow the list by service, institution, school, and who each team can work with.</p>
+
+  <h2>How listings stay current</h2>
+  <p>This site is built from files in a public GitHub repository, one file per team. Teams update their own listing by proposing a change on GitHub, and an RSSN reviewer approves it before it appears here. Every change is recorded, so it's always clear who changed what and when.</p>
+  <p>Want your team included? See <a href="{{ '/add-your-service/' | relative_url }}">Add your service</a>.</p>
+
+  {% if site.prototype %}
+  <h2>About this prototype</h2>
+  <p>This version is a working prototype for review. The teams, contacts, and descriptions are sample data written to show how the directory works, and they don't describe real services.</p>
+  {% endif %}
+</main>

@@ -1,0 +1,36 @@
+---
+layout: default
+title: Add your service
+permalink: /add-your-service/
+---
+{%- capture template %}{% include provider-template.md %}{% endcapture -%}
+<main class="content-page">
+  <h1>Add or update your team's listing</h1>
+  <p>Each team on this site is one file in our GitHub repository. You add or update a listing by proposing a change to that file. An RSSN reviewer checks it, and it goes live a minute or two after it's approved.</p>
+  <p>You'll need a free GitHub account. You don't need to install anything.</p>
+
+  <h2>Add a new listing</h2>
+  <ol>
+    <li>Click <strong>Start a new listing</strong> below. GitHub opens a new file that's already filled in with the listing template.</li>
+    <li>Change the file name at the top to your team's name in lowercase with hyphens, like <code>imaging-software-team.md</code>.</li>
+    <li>Fill in each field. For the lists (who can engage you, services), delete the lines that don't apply. Keep the spelling of the ones you keep exactly as written.</li>
+    <li>Replace the last paragraph with a 2–3 sentence description of your team.</li>
+    <li>Click <strong>Commit changes</strong>, then <strong>Propose changes</strong>, then <strong>Create pull request</strong>.</li>
+  </ol>
+  <p><a class="button" id="new-listing" href="https://github.com/{{ site.repository }}/new/{{ site.branch }}/_providers">Start a new listing on GitHub</a></p>
+
+  <h2>Update an existing listing</h2>
+  <p>Open your team's profile on this site and click <strong>Suggest an edit on GitHub</strong> at the bottom. Make your changes, then propose them the same way.</p>
+
+  <h2>The listing template</h2>
+  <p>If you'd rather copy it yourself, this is the full template:</p>
+  <pre class="template-block"><code id="template-text">{{ template | escape }}</code></pre>
+</main>
+<script>
+  // Prefill GitHub's new-file editor with the template and a starter filename.
+  (function () {
+    var link = document.getElementById("new-listing");
+    var text = document.getElementById("template-text").textContent;
+    link.href += "?filename=" + encodeURIComponent("your-team-name.md") + "&value=" + encodeURIComponent(text);
+  })();
+</script>

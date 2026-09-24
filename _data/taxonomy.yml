@@ -1,0 +1,92 @@
+# Controlled vocabularies for provider listings.
+# Values here mirror the RSSN Research IT Provider Questionnaire.
+# Provider files must use these values exactly (spelling and punctuation) so filters work.
+
+institutions:
+  - JHU
+  - JHHS
+  - Joint JHU/JHHS
+
+# Schools, divisions, and central units. "short" is the label shown on cards.
+# "color" is the card accent, chosen from the Hopkins secondary palette.
+# A provider whose school isn't listed here still works; its card uses Heritage Blue.
+schools:
+  - name: Whiting School of Engineering
+    short: Whiting School
+    color: "#0077D8"   # Medium Blue
+  - name: School of Medicine
+    short: School of Medicine
+    color: "#008767"   # Homewood Green
+  - name: Bloomberg School of Public Health
+    short: Bloomberg School
+    color: "#A45C98"   # Purple
+  - name: Sheridan Libraries
+    short: Sheridan Libraries
+    color: "#CBA052"   # Sand
+  - name: Office of Research
+    short: Office of Research
+    color: "#68ACE5"   # Spirit Blue
+
+# Questionnaire: "Is your team available to provide services to Johns Hopkins
+# researchers outside of your immediate department or organizational unit?"
+# "label" is what provider files use; "answer" is the questionnaire wording.
+availability:
+  - label: Hopkins-wide
+    answer: Yes - Hopkins-wide
+  - label: JHU only
+    answer: Yes - JHU only
+  - label: JHHS only
+    answer: Yes - JHHS only
+  - label: Certain schools/divisions
+    answer: Yes - but only within certain schools/divisions
+  - label: Other criteria
+    answer: Yes - other criteria
+  - label: Own department/unit only
+    answer: No - our services are limited to our own department/unit
+
+# Questionnaire: "Which researchers or organizations can engage your team?"
+eligible:
+  - JHU faculty
+  - JHU staff
+  - JHU students/trainees working on sponsored research
+  - JHHS faculty
+  - JHHS staff
+  - Cross-institution JHU/JHHS projects
+  - Johns Hopkins research centers/institutes
+  - Other Hopkins-affiliated groups
+  - Projects involving external research collaborators
+
+# Questionnaire: "What services does your team provide?"
+services:
+  - name: AI-Assisted Coding
+    detail: Using ChatGPT, Copilot, or other AI tools for code generation and debugging
+  - name: Containerization and Cloud Computing
+    detail: Amazon Web Services (AWS); cloud architecture; cloud infrastructure management; cloud migration; containerization; Infrastructure as Code; Kubernetes/container orchestration; Microsoft Azure
+  - name: Data Pipeline Automation
+    detail: Automation/scripting; data engineering; data integration; ETL/data pipelines
+  - name: Databases
+    detail: Data migration; data visualization/dashboards; data warehousing; database administration; database design and development
+  - name: DevOps & Infrastructure Operations
+    detail: Automated deployments; CI/CD pipeline development; DevOps engineering; environment management; hosting/infrastructure support; monitoring/logging/observability; production operations/support; server/system administration
+  - name: High-Performance/Parallel Computing
+    detail: Bioinformatics / computational biology; high-performance computing (HPC); scientific computing; statistical computing
+  - name: IT Security & Compliance
+    detail: Identity and access management; IT security/compliance assistance; security architecture
+  - name: Machine Learning Operations
+    detail: Model deployment; experiment tracking
+  - name: Machine Learning/AI Development
+    detail: Artificial intelligence / machine learning; data science; generative AI / large language models; image processing / computer vision; natural language processing; retrieval-augmented generation (RAG)
+  - name: Python or R Package Development
+    detail: ""
+  - name: Reproducible Research Workflows
+    detail: Data archival/preservation; research data management
+  - name: Technical Consulting & Solution Architecture
+    detail: Research software engineering; software architecture/design; solution architecture; technical consulting; technology evaluation / prototyping
+  - name: Technical Documentation & Training
+    detail: Technical documentation; user training
+  - name: UX, Accessibility & Software Quality
+    detail: Accessibility; performance testing; software testing / quality assurance; user experience (UX)/interface design
+  - name: Version Control and Collaboration
+    detail: Git/source-control management
+  - name: Web Development
+    detail: API development; application maintenance and enhancements; custom software/application development; legacy application modernization; low-code/no-code development; mobile application development; systems integration; web application development
