@@ -2,26 +2,44 @@
 layout: default
 title: Find support
 ---
-{%- assign providers = site.providers | sort: "title" -%}
+{%- comment %} Real listings first, then sample listings, each alphabetical. {% endcomment -%}
+{%- assign sorted = site.providers | sort: "title" -%}
+{%- assign real = sorted | where_exp: "p", "p.sample != true" -%}
+{%- assign samples = sorted | where_exp: "p", "p.sample == true" -%}
+{%- assign providers = real | concat: samples -%}
 <section class="search-band">
   <div class="search-band__inner">
     <h1 class="search-band__title">Find a Hopkins team for your research software, data, or computing project</h1>
     <form class="search" role="search" action="{{ '/' | relative_url }}" method="get" id="search-form">
       <label class="visually-hidden" for="q">Search providers</label>
-      <input type="search" id="q" name="q" placeholder="Search by service, technology, or team name" autocomplete="off">
+      <input type="search" id="q" name="q" placeholder="Search by service, technology, data type, or team name" autocomplete="off">
       <button type="submit">Search</button>
     </form>
-    <p class="search-band__hint">Try “single-cell,” “HIPAA,” “Kubernetes,” or “REDCap.”</p>
+    <p class="search-band__hint">Try “HIPAA,” “Azure,” “SAS,” “open source,” or “grant budgeting.”</p>
   </div>
 </section>
 
-<div class="directory">
+{%- if site.prototype %}
+<div class="compare-bar" id="compare-bar" role="note">
+  <span><strong>Prototype:</strong> compare two ways to handle teams that only serve their own unit.</span>
+  <a href="?layout=toggle" data-layout="toggle">Hide behind a filter</a>
+  <a href="?layout=divider" data-layout="divider">List below a divider</a>
+</div>
+{%- endif %}
+<div class="directory" data-internal-layout="{{ site.internal_teams | default: 'toggle' }}">
   <button type="button" class="filters-toggle" id="filters-toggle" aria-expanded="false" aria-controls="filters" hidden>Filters</button>
 
   <aside class="filters" id="filters" aria-label="Filter providers" hidden>
     <div class="filters__head">
       <h2>Refine</h2>
       <button type="button" class="text-button" id="clear-all">Clear all</button>
+    </div>
+    <div class="scope-toggle" id="scope-toggle" hidden>
+      <label class="scope-toggle__row" for="outside-only">
+        <input type="checkbox" id="outside-only" checked>
+        <span>Only show teams that take requests from outside their unit</span>
+      </label>
+      <p class="scope-toggle__note">Uncheck to include teams that only serve their own department. “Clear all” leaves this setting alone.</p>
     </div>
     <div id="facets"></div>
   </aside>
@@ -39,8 +57,16 @@ title: Find support
     </div>
 
     <div class="empty-state" id="empty-state" hidden>
-      <p><strong>No providers match.</strong> Try removing a filter or searching for a broader term.</p>
+      <p><strong>No providers match.</strong> <span id="empty-extra">Try removing a filter or searching for a broader term.</span></p>
     </div>
+
+    <section class="internal-section" id="internal-section" aria-labelledby="internal-heading" hidden>
+      <div class="internal-section__head">
+        <h2 id="internal-heading">Internal to their unit <span class="internal-section__count" id="internal-count"></span></h2>
+        <p>These teams don't take requests from outside their own department or unit. They're listed so you know the capability exists at Hopkins.</p>
+      </div>
+      <div class="card-grid card-grid--internal" id="card-grid-internal"></div>
+    </section>
   </main>
 </div>
 
@@ -50,16 +76,24 @@ title: Find support
   {
     "id": {{ p.url | jsonify }},
     "title": {{ p.title | jsonify }},
-    "institution": {{ p.institution | jsonify }},
-    "school": {{ p.school | jsonify }},
+    "sample": {{ p.sample | default: false | jsonify }},
+    {%- assign avail = site.data.taxonomy.availability | where: "label", p.availability | first %}
+    "internal": {% if avail.internal %}true{% else %}false{% endif %},
     "unit": {{ p.unit | jsonify }},
-    "availability": {{ p.availability | jsonify }},
-    "eligible": {{ p.eligible | jsonify }},
-    "services": {{ p.services | jsonify }},
-    "description": {{ p.content | strip_html | normalize_whitespace | jsonify }}
+    "contact": {{ p.contact.name | jsonify }},
+    "description": {{ p.content | strip_html | normalize_whitespace | jsonify }},
+    {%- for section in site.data.fields.sections %}{% for f in section.fields %}
+    {%- assign other_key = f.key | append: "_other" %}
+    {{ f.key | jsonify }}: {{ p[f.key] | jsonify }},
+    {%- if p[other_key] %}
+    {{ other_key | jsonify }}: {{ p[other_key] | jsonify }},
+    {%- endif %}
+    {%- endfor %}{% endfor %}
+    "_end": true
   }{% unless forloop.last %},{% endunless %}
 {%- endfor %}
 ]
 </script>
 <script type="application/json" id="taxonomy-data">{{ site.data.taxonomy | jsonify }}</script>
+<script type="application/json" id="fields-data">{{ site.data.fields | jsonify }}</script>
 <script src="{{ '/assets/js/directory.js' | relative_url }}"></script>

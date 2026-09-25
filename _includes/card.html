@@ -1,12 +1,16 @@
 {%- assign p = include.provider -%}
 {%- assign school = site.data.taxonomy.schools | where: "name", p.school | first -%}
-{%- assign extra = p.services.size | minus: 3 -%}
-<article class="card" data-id="{{ p.url }}" style="--card-accent: {{ school.color | default: '#002D72' }}">
-  <p class="card__eyebrow">{{ school.short | default: p.school }}</p>
+{%- comment %} Chips show the team's areas of strength, falling back to its services. {% endcomment -%}
+{%- assign n_strengths = p.strengths.size | plus: 0 -%}
+{%- if n_strengths > 0 %}{% assign chips = p.strengths %}{% assign chips_label = "Areas of strength" %}{% else %}{% assign chips = p.services %}{% assign chips_label = "Services" %}{% endif -%}
+{%- assign extra = chips.size | minus: 3 -%}
+{%- assign avail = site.data.taxonomy.availability | where: "label", p.availability | first -%}
+<article class="card{% if p.sample %} card--sample{% endif %}{% if avail.internal %} card--internal{% endif %}" data-id="{{ p.url }}" style="--card-accent: {{ school.color | default: '#002D72' }}">
+  <p class="card__eyebrow">{{ school.short | default: p.school }}{% if avail.internal %}<span class="unit-tag">Unit only</span>{% endif %}{% if p.sample %}<span class="sample-tag">Sample</span>{% endif %}</p>
   <h2 class="card__title"><a href="{{ p.url | relative_url }}">{{ p.title }}</a></h2>
   <p class="card__summary">{{ p.content | strip_html | normalize_whitespace | truncatewords: 28 }}</p>
-  <ul class="chips" aria-label="Services">
-    {%- for s in p.services limit: 3 %}
+  <ul class="chips" aria-label="{{ chips_label }}">
+    {%- for s in chips limit: 3 %}
     <li class="chip">{{ s }}</li>
     {%- endfor %}
     {%- if extra > 0 %}
@@ -16,6 +20,9 @@
   <dl class="card__meta">
     <div><dt>Institution</dt><dd>{{ p.institution }}</dd></div>
     <div><dt>Available to</dt><dd>{{ p.availability }}</dd></div>
+    {%- if p.lead_time and p.lead_time != "" %}
+    <div><dt>Lead time</dt><dd>{{ p.lead_time }}</dd></div>
+    {%- endif %}
   </dl>
   <a class="card__link" href="{{ p.url | relative_url }}" aria-hidden="true" tabindex="-1">View profile <span aria-hidden="true">&rarr;</span></a>
 </article>

@@ -6,37 +6,71 @@
 
   var dataEl = document.getElementById("provider-data");
   var taxEl = document.getElementById("taxonomy-data");
-  if (!dataEl || !taxEl) return;
+  var fieldsEl = document.getElementById("fields-data");
+  if (!dataEl || !taxEl || !fieldsEl) return;
 
   var providers = JSON.parse(dataEl.textContent);
   var taxonomy = JSON.parse(taxEl.textContent);
+  var fieldConfig = JSON.parse(fieldsEl.textContent);
+
+  function labelOf(o) { return (o && typeof o === "object") ? (o.label || o.name) : String(o); }
+  function asList(v) {
+    if (v === null || v === undefined || v === "") return [];
+    return Array.isArray(v) ? v.filter(function (x) { return x !== null && x !== ""; }) : [v];
+  }
 
   var serviceDetail = {};
   (taxonomy.services || []).forEach(function (s) { serviceDetail[s.name] = s.detail || ""; });
 
-  // Facet groups, in display order. "order" fixes option order; otherwise options sort by count.
-  var GROUPS = [
-    { key: "service", label: "Services", get: function (p) { return p.services; }, open: true, limit: 6 },
-    { key: "institution", label: "Institution", get: function (p) { return [p.institution]; }, open: true,
-      order: taxonomy.institutions },
-    { key: "school", label: "School / division", get: function (p) { return [p.school]; }, open: true },
-    { key: "availability", label: "Available to", get: function (p) { return [p.availability]; }, open: true,
-      order: (taxonomy.availability || []).map(function (a) { return a.label; }) },
-    { key: "eligible", label: "Open to", get: function (p) { return p.eligible; }, open: false,
-      order: taxonomy.eligible }
-  ];
-
-  // Precompute a lowercase search string per provider, including service details
-  // so that e.g. "kubernetes" finds teams offering Containerization and Cloud Computing.
-  providers.forEach(function (p) {
-    p._haystack = [
-      p.title, p.institution, p.school, p.unit, p.availability, p.description,
-      p.services.join(" "), p.services.map(function (s) { return serviceDetail[s] || ""; }).join(" "),
-      p.eligible.join(" ")
-    ].join(" ").toLowerCase();
+  // Every listing field, keyed for lookup (label, type, options list), from _data/fields.yml.
+  var FIELDS = {};
+  (fieldConfig.sections || []).forEach(function (sec) {
+    sec.fields.forEach(function (f) { FIELDS[f.key] = f; });
   });
 
-  var state = { q: "", sel: {}, expanded: {} };
+  // Facet groups, in display order, from the "filters" list in _data/fields.yml.
+  // Options follow the questionnaire order in _data/taxonomy.yml, except services, which sort by count.
+  var GROUPS = [];
+  (fieldConfig.filters || []).forEach(function (block) {
+    block.fields.forEach(function (cfg, i) {
+      var f = FIELDS[cfg.key];
+      if (!f) return;
+      GROUPS.push({
+        key: cfg.key,
+        label: f.label,
+        heading: i === 0 ? block.heading : null,
+        open: !!cfg.open,
+        limit: cfg.limit || 0,
+        byCount: cfg.key === "services" || cfg.key === "strengths",
+        single: f.type === "one" && ["institution", "school", "availability"].indexOf(cfg.key) === -1,
+        order: (taxonomy[f.options] || []).map(labelOf),
+        get: function (p) { return asList(p[cfg.key]); }
+      });
+    });
+  });
+
+  // Precompute a lowercase search string per provider: every field, write-in answers,
+  // and service details, so e.g. "kubernetes" finds teams offering Containerization and Cloud Computing.
+  providers.forEach(function (p) {
+    var parts = [p.title, p.unit, p.contact, p.description];
+    Object.keys(FIELDS).forEach(function (k) {
+      parts.push(asList(p[k]).join(" "));
+      if (p[k + "_other"]) parts.push(p[k + "_other"]);
+    });
+    asList(p.services).concat(asList(p.strengths)).forEach(function (s) { parts.push(serviceDetail[s] || ""); });
+    p._haystack = parts.join(" ").toLowerCase();
+  });
+
+  // Teams that only serve their own unit ("internal: true" availability answers).
+  // Two layouts, chosen by internal_teams in _config.yml or ?layout= in the URL:
+  //   toggle   hidden unless the pre-checked "outside requests only" box is unchecked
+  //   divider  always shown, but below the other results under their own heading
+  var dirEl = document.querySelector(".directory");
+  var urlLayout = new URLSearchParams(window.location.search).get("layout");
+  var LAYOUT = (urlLayout === "toggle" || urlLayout === "divider") ? urlLayout
+    : (dirEl && dirEl.getAttribute("data-internal-layout")) === "divider" ? "divider" : "toggle";
+
+  var state = { q: "", sel: {}, expanded: {}, showInternal: false };
   GROUPS.forEach(function (g) { state.sel[g.key] = new Set(); });
 
   var els = {
@@ -49,16 +83,34 @@
     count: document.getElementById("results-count"),
     active: document.getElementById("active-filters"),
     grid: document.getElementById("card-grid"),
-    empty: document.getElementById("empty-state")
+    empty: document.getElementById("empty-state"),
+    emptyExtra: document.getElementById("empty-extra"),
+    scope: document.getElementById("scope-toggle"),
+    outsideOnly: document.getElementById("outside-only"),
+    internalSection: document.getElementById("internal-section"),
+    internalGrid: document.getElementById("card-grid-internal"),
+    internalCount: document.getElementById("internal-count")
   };
+  var defaultEmptyText = els.emptyExtra.textContent;
 
   var cards = {};
   els.grid.querySelectorAll(".card").forEach(function (c) { cards[c.getAttribute("data-id")] = c; });
+
+  // Divider layout: move internal teams' cards into the section below the line.
+  if (LAYOUT === "divider") {
+    providers.forEach(function (p) { if (p.internal && cards[p.id]) els.internalGrid.appendChild(cards[p.id]); });
+  } else {
+    els.scope.hidden = false;
+  }
+  document.querySelectorAll("#compare-bar a").forEach(function (a) {
+    if (a.getAttribute("data-layout") === LAYOUT) a.setAttribute("aria-current", "true");
+  });
 
   /* ---------- state <-> URL ---------- */
   function readURL() {
     var params = new URLSearchParams(window.location.search);
     state.q = params.get("q") || "";
+    state.showInternal = params.get("internal") === "show";
     GROUPS.forEach(function (g) {
       state.sel[g.key] = new Set(params.getAll(g.key));
     });
@@ -66,7 +118,9 @@
 
   function writeURL() {
     var params = new URLSearchParams();
+    if (urlLayout) params.set("layout", LAYOUT);
     if (state.q) params.set("q", state.q);
+    if (LAYOUT === "toggle" && state.showInternal) params.set("internal", "show");
     GROUPS.forEach(function (g) {
       state.sel[g.key].forEach(function (v) { params.append(g.key, v); });
     });
@@ -87,10 +141,16 @@
     return g.get(p).some(function (v) { return sel.has(v); });
   }
 
+  // In the toggle layout, internal teams count only when the box is unchecked.
+  function inScope(p) {
+    return LAYOUT !== "toggle" || state.showInternal || !p.internal;
+  }
+
   // Providers matching the search and every group except `exceptKey`.
-  function filtered(exceptKey) {
+  // `ignoreScope` includes internal teams regardless of the toggle (to count what it hides).
+  function filtered(exceptKey, ignoreScope) {
     return providers.filter(function (p) {
-      return matchesText(p) && GROUPS.every(function (g) {
+      return (ignoreScope || inScope(p)) && matchesText(p) && GROUPS.every(function (g) {
         return g.key === exceptKey || matchesGroup(p, g);
       });
     });
@@ -115,13 +175,13 @@
     });
 
     var keys = Object.keys(all);
-    if (g.order) {
+    if (g.byCount) {
+      keys.sort(function (a, b) { return all[b] - all[a] || a.localeCompare(b); });
+    } else if (g.order && g.order.length) {
       keys.sort(function (a, b) {
         var ia = g.order.indexOf(a), ib = g.order.indexOf(b);
         return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib) || a.localeCompare(b);
       });
-    } else if (g.key === "service") {
-      keys.sort(function (a, b) { return all[b] - all[a] || a.localeCompare(b); });
     } else {
       keys.sort(function (a, b) { return a.localeCompare(b); });
     }
@@ -136,6 +196,7 @@
 
     var html = GROUPS.map(function (g) {
       var opts = optionsFor(g);
+      if (!opts.length) return g.heading ? '<h3 class="facets__heading">' + esc(g.heading) + '</h3>' : "";
       var isOpen = (g.key in openState) ? openState[g.key] : (g.open || state.sel[g.key].size > 0);
       var limit = g.limit && !state.expanded[g.key] ? g.limit : Infinity;
       // Keep selected options visible even when the list is collapsed.
@@ -146,7 +207,7 @@
         var id = "f-" + g.key + "-" + o.value.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
         var checked = state.sel[g.key].has(o.value);
         var dim = !checked && o.count === 0 ? " facet__row--empty" : "";
-        var title = g.key === "service" && serviceDetail[o.value] ? ' title="' + esc(serviceDetail[o.value]) + '"' : "";
+        var title = g.byCount && serviceDetail[o.value] ? ' title="' + esc(serviceDetail[o.value]) + '"' : "";
         return '<label class="facet__row' + dim + '" for="' + id + '"' + title + '>' +
           '<input type="checkbox" id="' + id + '" data-group="' + g.key + '" value="' + esc(o.value) + '"' + (checked ? " checked" : "") + '>' +
           '<span class="facet__label">' + esc(o.value) + '</span>' +
@@ -159,7 +220,8 @@
           (state.expanded[g.key] ? "Show fewer" : "Show " + hiddenCount + " more") + '</button>';
       }
 
-      return '<details class="facet" data-group="' + g.key + '"' + (isOpen ? " open" : "") + '>' +
+      var heading = g.heading ? '<h3 class="facets__heading">' + esc(g.heading) + '</h3>' : "";
+      return heading + '<details class="facet" data-group="' + g.key + '"' + (isOpen ? " open" : "") + '>' +
         '<summary>' + esc(g.label) + '</summary><div class="facet__options">' + rows + more + '</div></details>';
     }).join("");
 
@@ -170,25 +232,65 @@
     var pills = [];
     GROUPS.forEach(function (g) {
       state.sel[g.key].forEach(function (v) {
-        pills.push('<li><button type="button" class="pill" data-group="' + g.key + '" value="' + esc(v) + '">' +
-          esc(v) + '<span class="visually-hidden"> (remove filter)</span><span aria-hidden="true"> ×</span></button></li>');
+        pills.push('<li><button type="button" class="pill" data-group="' + g.key + '" value="' + esc(v) + '" title="' + esc(g.label) + '">' +
+          (g.single ? esc(g.label) + ": " : "") + esc(v) + '<span class="visually-hidden"> (remove filter)</span><span aria-hidden="true"> ×</span></button></li>');
       });
     });
     els.active.innerHTML = pills.join("");
     els.toggle.textContent = pills.length ? "Filters (" + pills.length + ")" : "Filters";
   }
 
+  function plural(n, word) { return n + " " + word + (n === 1 ? "" : "s"); }
+
   function renderResults() {
     var matches = filtered(null);
     var ids = new Set(matches.map(function (p) { return p.id; }));
     Object.keys(cards).forEach(function (id) { cards[id].hidden = !ids.has(id); });
 
+    var forQ = state.q ? " for “" + esc(state.q) + "”" : "";
+    els.emptyExtra.textContent = defaultEmptyText;
+
+    if (LAYOUT === "divider") {
+      var inside = matches.filter(function (p) { return p.internal; }).length;
+      var outside = matches.length - inside;
+      els.count.innerHTML = "<strong>" + outside + "</strong> " + (outside === 1 ? "provider" : "providers") + forQ +
+        (inside ? ' <span class="results__aside">· ' + plural(inside, "internal-only team") + " below</span>" : "");
+      els.internalSection.hidden = inside === 0;
+      els.internalCount.textContent = "(" + inside + ")";
+      els.empty.hidden = outside !== 0;
+      if (outside === 0 && inside > 0) {
+        els.emptyExtra.textContent = "No teams that take outside requests match, but " +
+          plural(inside, "internal-only team") + " below " + (inside === 1 ? "does" : "do") + ".";
+      }
+      return;
+    }
+
     var n = matches.length;
-    var label = "<strong>" + n + "</strong> provider" + (n === 1 ? "" : "s");
-    if (state.q) label += " for “" + esc(state.q) + "”";
+    var hidden = state.showInternal ? 0 : filtered(null, true).length - n;
+    var label = "<strong>" + n + "</strong> provider" + (n === 1 ? "" : "s") + forQ;
+    if (hidden > 0) {
+      label += ' <span class="results__aside">· ' + plural(hidden, "internal-only team") + ' hidden. ' +
+        '<button type="button" class="text-button" id="show-internal">Show</button></span>';
+    }
     els.count.innerHTML = label;
     els.empty.hidden = n !== 0;
+    if (n === 0 && hidden > 0) {
+      els.emptyExtra.textContent = plural(hidden, "team") + " that only " + (hidden === 1 ? "serves its" : "serve their") +
+        " own unit " + (hidden === 1 ? "matches" : "match") + ". Uncheck “Only show teams that take requests from outside their unit” to see " +
+        (hidden === 1 ? "it" : "them") + ".";
+    }
   }
+
+  function setShowInternal(show) {
+    state.showInternal = show;
+    els.outsideOnly.checked = !show;
+    render();
+  }
+
+  els.outsideOnly.addEventListener("change", function () { setShowInternal(!els.outsideOnly.checked); });
+  els.count.addEventListener("click", function (e) {
+    if (e.target.id === "show-internal") setShowInternal(true);
+  });
 
   function render() {
     renderFacets();
@@ -240,6 +342,7 @@
     render();
   });
 
+  // "Clear all" resets search and facets but leaves the outside-requests toggle as it is.
   els.clear.addEventListener("click", function () {
     state.q = "";
     els.q.value = "";
@@ -271,6 +374,7 @@
   /* ---------- start ---------- */
   readURL();
   els.q.value = state.q;
+  els.outsideOnly.checked = !state.showInternal;
   syncLayout();
   render();
 })();

@@ -1,17 +1,26 @@
 ---
 layout: default
 ---
-{%- assign school = site.data.taxonomy.schools | where: "name", page.school | first -%}
+{%- assign tax = site.data.taxonomy -%}
+{%- assign school = tax.schools | where: "name", page.school | first -%}
+{%- assign strengths = page.strengths -%}
+{%- assign services = page.services -%}
 <main class="profile-page">
   <a class="back-link" href="{{ '/' | relative_url }}"><span aria-hidden="true">&larr;</span> All providers</a>
 
   <article class="profile" style="--card-accent: {{ school.color | default: '#002D72' }}">
+    {%- assign avail = tax.availability | where: "label", page.availability | first %}
+    {%- if avail.internal %}
+    <p class="internal-banner" role="note"><strong>Not taking outside requests.</strong> This team works only within its own unit{% if page.unit and page.unit != "" %} ({{ page.unit }}){% endif %}. It's listed so researchers and RSSN know the capability exists at Hopkins.</p>
+    {%- endif %}
     <header class="profile__header">
       <p class="profile__eyebrow">{{ page.school }}{% if page.unit and page.unit != "" %} · {{ page.unit }}{% endif %}</p>
-      <h1 class="profile__title">{{ page.title }}</h1>
+      <h1 class="profile__title">{{ page.title }}{% if page.sample %} <span class="sample-tag">Sample</span>{% endif %}</h1>
       <p class="profile__facts">
         <span>{{ page.institution }}</span>
-        <span>Available to: {{ page.availability }}</span>
+        {%- if page.availability and page.availability != "" %}<span>Available to: {{ page.availability }}</span>{% endif %}
+        {%- if page.lead_time and page.lead_time != "" %}<span>Lead time: {{ page.lead_time }}</span>{% endif %}
+        {%- if page.research_frequency and page.research_frequency != "" %}<span>{{ page.research_frequency }}</span>{% endif %}
       </p>
     </header>
 
@@ -21,30 +30,80 @@ layout: default
 
         <section class="profile__section" aria-labelledby="services-heading">
           <h2 id="services-heading">Services</h2>
+          {%- assign n_strengths = strengths.size | plus: 0 %}
+          {%- if n_strengths > 0 %}
+          <p class="section-note"><span class="strength-tag">Core strength</span> marks the team's strongest areas.</p>
+          {%- endif %}
           <ul class="service-list">
-            {%- for s in page.services %}
-            {%- assign svc = site.data.taxonomy.services | where: "name", s | first %}
+            {%- comment %} Strengths first, then the other services. A strength the team didn't also list as a service still shows. {% endcomment %}
+            {%- for s in strengths %}
+            {%- assign svc = tax.services | where: "name", s | first %}
             <li>
-              <span class="service-list__name">{{ s }}</span>
-              {%- if svc.detail and svc.detail != "" %}
-              <span class="service-list__detail">{{ svc.detail }}</span>
-              {%- endif %}
+              <span class="service-list__name">{{ s }} <span class="strength-tag">Core strength</span></span>
+              {%- if svc.detail and svc.detail != "" %}<span class="service-list__detail">{{ svc.detail }}</span>{% endif %}
             </li>
             {%- endfor %}
+            {%- if page.strengths_other and page.strengths_other != "" %}
+            <li><span class="service-list__name">{{ page.strengths_other }} <span class="strength-tag">Core strength</span></span></li>
+            {%- endif %}
+            {%- for s in services %}
+            {%- unless strengths contains s %}
+            {%- assign svc = tax.services | where: "name", s | first %}
+            <li>
+              <span class="service-list__name">{{ s }}</span>
+              {%- if svc.detail and svc.detail != "" %}<span class="service-list__detail">{{ svc.detail }}</span>{% endif %}
+            </li>
+            {%- endunless %}
+            {%- endfor %}
+            {%- if page.services_other and page.services_other != "" and page.services_other != page.strengths_other %}
+            <li><span class="service-list__name">{{ page.services_other }}</span><span class="service-list__detail">Other service, in the team's words</span></li>
+            {%- endif %}
           </ul>
         </section>
 
-        <section class="profile__section" aria-labelledby="eligible-heading">
-          <h2 id="eligible-heading">Who can engage this team</h2>
-          <ul class="plain-list">
-            {%- for e in page.eligible %}
-            <li>{{ e }}</li>
-            {%- endfor %}
-          </ul>
+        {%- for section in site.data.fields.sections %}
+        {%- capture rows %}
+          {%- for f in section.fields %}
+          {%- if f.show != "facts" %}{% continue %}{% endif %}
+          {%- assign v = page[f.key] %}
+          {%- assign other_key = f.key | append: "_other" %}
+          {%- assign other = page[other_key] %}
+          {%- if f.type == "many" %}{% assign has = v.size | plus: 0 %}{% else %}{% if v and v != "" %}{% assign has = 1 %}{% else %}{% assign has = 0 %}{% endif %}{% endif %}
+          {%- assign has_other = false %}{% if other and other != "" %}{% assign has_other = true %}{% endif %}
+          {%- if has == 0 and has_other == false %}{% continue %}{% endif %}
+          <div class="facts__row">
+            <dt>{{ f.label }}</dt>
+            <dd>
+              {%- if f.type == "many" %}
+              <ul class="chips chips--wrap">
+                {%- for x in v %}<li class="chip">{{ x }}</li>{% endfor %}
+              </ul>
+              {%- else %}{{ v }}{% endif %}
+              {%- if other and other != "" %}<p class="facts__other"><span>Other:</span> {{ other }}</p>{% endif %}
+            </dd>
+          </div>
+          {%- endfor %}
+        {%- endcapture %}
+        {%- assign trimmed = rows | strip %}
+        {%- if trimmed != "" %}
+        <section class="profile__section" aria-labelledby="{{ section.id }}-heading">
+          <h2 id="{{ section.id }}-heading">{{ section.title }}</h2>
+          <dl class="facts">{{ rows }}</dl>
         </section>
+        {%- endif %}
+
+        {%- for f in section.fields %}
+        {%- if f.show == "text" and page[f.key] and page[f.key] != "" %}
+        <section class="profile__section" aria-labelledby="{{ f.key }}-heading">
+          <h2 id="{{ f.key }}-heading">{{ f.label }}</h2>
+          <div class="prose">{{ page[f.key] | markdownify }}</div>
+        </section>
+        {%- endif %}
+        {%- endfor %}
+        {%- endfor %}
       </div>
 
-      <aside class="profile__aside" aria-label="Contact">
+      <aside class="profile__aside" aria-label="Contact and eligibility">
         <div class="contact-card">
           <h2>Contact</h2>
           <p class="contact-card__name">{{ page.contact.name }}</p>
@@ -53,7 +112,36 @@ layout: default
           <p><a href="{{ page.website }}" rel="noopener">{{ page.website | remove: "https://" | remove: "http://" | remove: "www." }}</a></p>
           {%- endif %}
         </div>
+
+        {%- assign n_eligible = page.eligible.size | plus: 0 %}
+        {%- if n_eligible > 0 or page.eligible_other %}
+        <div class="aside-block">
+          <h2>Who can engage this team</h2>
+          <ul class="plain-list">
+            {%- for e in page.eligible %}
+            <li>{{ e }}</li>
+            {%- endfor %}
+            {%- if page.eligible_other and page.eligible_other != "" %}<li>{{ page.eligible_other }}</li>{% endif %}
+          </ul>
+          {%- if page.availability_other and page.availability_other != "" %}
+          <p class="facts__other"><span>Availability:</span> {{ page.availability_other }}</p>
+          {%- endif %}
+        </div>
+        {%- endif %}
+
+        <div class="aside-block aside-block--quiet">
+          <h2>At a glance</h2>
+          <dl class="glance">
+            {%- if page.minimum and page.minimum != "" %}<div><dt>Minimum</dt><dd>{{ page.minimum }}</dd></div>{% endif %}
+            {%- assign n_funding = page.funding.size | plus: 0 %}{% if n_funding > 0 %}<div><dt>Funding</dt><dd>{{ page.funding | join: ", " }}</dd></div>{% endif %}
+            {%- if page.pre_award and page.pre_award != "" %}<div><dt>Pre-award help</dt><dd>{{ page.pre_award }}</dd></div>{% endif %}
+            {%- if page.production_support and page.production_support != "" %}<div><dt>Production support</dt><dd>{{ page.production_support }}</dd></div>{% endif %}
+          </dl>
+        </div>
+
         <p class="edit-note">
+          {%- if page.updated %}Last updated {{ page.updated | date: "%B %-d, %Y" }}{% if page.submitted_by.name and page.submitted_by.name != "" %} by {{ page.submitted_by.name }}{% endif %}.<br>{% endif %}
+          {%- if page.sample %}This is a sample listing, not a real team.<br>{% endif %}
           Is something out of date?
           <a href="https://github.com/{{ site.repository }}/edit/{{ site.branch }}/{{ page.path }}">Suggest an edit on GitHub</a>
         </p>

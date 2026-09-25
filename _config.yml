@@ -11,6 +11,13 @@ branch: main
 url: "https://meganforbes.github.io"
 baseurl: "/RSSN_Provider_Inventory_Prototpye"
 
+# How the home page handles teams that don't take requests from outside their own unit
+# (availability answers marked "internal: true" in _data/taxonomy.yml):
+#   toggle   hidden by default, behind a pre-checked "Only show teams that take outside requests" box
+#   divider  listed below the other results, under an "Internal to their unit" heading
+# While prototype is true, links on the home page let reviewers switch between the two.
+internal_teams: toggle
+
 # Shows the "sample data" banner on every page. Set to false once real listings are in.
 prototype: true
 

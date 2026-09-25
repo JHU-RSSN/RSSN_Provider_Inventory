@@ -11,13 +11,20 @@ permalink: /add-your-service/
 
   <h2>Add a new listing</h2>
   <ol>
-    <li>Click <strong>Start a new listing</strong> below. GitHub opens a new file that's already filled in with the listing template.</li>
-    <li>Change the file name at the top to your team's name in lowercase with hyphens, like <code>imaging-software-team.md</code>.</li>
-    <li>Fill in each field. For the lists (who can engage you, services), delete the lines that don't apply. Keep the spelling of the ones you keep exactly as written.</li>
+    <li>Click <strong>Copy the template</strong>, then <strong>Start a new listing on GitHub</strong>. GitHub opens a new, empty file.</li>
+    <li>Paste the template into the file, and change the file name at the top to your team's name in lowercase with hyphens, like <code>imaging-software-team.md</code>.</li>
+    <li>Fill in each field. The fields follow the RSSN Research IT Provider Questionnaire. For lists, delete the lines that don't apply and keep the spelling of the rest exactly as written. For single answers, pick one of the values in the comment above the field. Anything that doesn't fit goes in the matching <code>_other</code> field.</li>
     <li>Replace the last paragraph with a 2–3 sentence description of your team.</li>
     <li>Click <strong>Commit changes</strong>, then <strong>Propose changes</strong>, then <strong>Create pull request</strong>.</li>
   </ol>
-  <p><a class="button" id="new-listing" href="https://github.com/{{ site.repository }}/new/{{ site.branch }}/_providers">Start a new listing on GitHub</a></p>
+  <p class="button-row">
+    <button type="button" class="button button--secondary" id="copy-template">Copy the template</button>
+    <a class="button" id="new-listing" href="https://github.com/{{ site.repository }}/new/{{ site.branch }}/_providers?filename=your-team-name.md">Start a new listing on GitHub</a>
+    <span class="copy-status" id="copy-status" aria-live="polite"></span>
+  </p>
+
+  <h2>Already filled out the questionnaire?</h2>
+  <p>You don't need to do anything else. RSSN imports questionnaire responses into listings and will ask you to review yours before it goes live.</p>
 
   <h2>Update an existing listing</h2>
   <p>Open your team's profile on this site and click <strong>Suggest an edit on GitHub</strong> at the bottom. Make your changes, then propose them the same way.</p>
@@ -27,10 +34,18 @@ permalink: /add-your-service/
   <pre class="template-block"><code id="template-text">{{ template | escape }}</code></pre>
 </main>
 <script>
-  // Prefill GitHub's new-file editor with the template and a starter filename.
+  // Copy the listing template to the clipboard. (The template is too long to prefill through a GitHub link.)
   (function () {
-    var link = document.getElementById("new-listing");
+    var btn = document.getElementById("copy-template");
+    var status = document.getElementById("copy-status");
     var text = document.getElementById("template-text").textContent;
-    link.href += "?filename=" + encodeURIComponent("your-team-name.md") + "&value=" + encodeURIComponent(text);
+    btn.addEventListener("click", function () {
+      if (!navigator.clipboard) { status.textContent = "Select the template below and copy it."; return; }
+      navigator.clipboard.writeText(text).then(function () {
+        status.textContent = "Template copied.";
+      }, function () {
+        status.textContent = "Couldn't copy. Select the template below and copy it.";
+      });
+    });
   })();
 </script>

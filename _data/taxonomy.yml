@@ -1,35 +1,55 @@
 # Controlled vocabularies for provider listings.
-# Values here mirror the RSSN Research IT Provider Questionnaire.
+# Values mirror the RSSN Research IT Provider Questionnaire (draft 2 and the live form).
 # Provider files must use these values exactly (spelling and punctuation) so filters work.
+# Anything a team wrote in under "Other" goes in that field's "_other" text instead
+# (for example `languages_other`). See _data/fields.yml for which list each field uses.
+#
+# List entries are either plain strings, or objects with:
+#   label   what provider files use and the site shows
+#   answer  the questionnaire wording, when it differs (used by scripts/import_responses.py)
 
+# Q5. Institution
 institutions:
-  - JHU
-  - JHHS
-  - Joint JHU/JHHS
+  - label: JHU
+    answer: Johns Hopkins University (JHU)
+  - label: JHHS
+    answer: Johns Hopkins Health System (JHHS)
+  - label: Joint JHU/JHHS
+    answer: Joint JHU/JHHS organization
 
-# Schools, divisions, and central units. "short" is the label shown on cards.
+# Q6. Schools, divisions, and central units. "short" is the label shown on cards.
 # "color" is the card accent, chosen from the Hopkins secondary palette.
+# "aliases" help the import script recognize the school inside free-text answers.
 # A provider whose school isn't listed here still works; its card uses Heritage Blue.
 schools:
   - name: Whiting School of Engineering
     short: Whiting School
     color: "#0077D8"   # Medium Blue
+    aliases: [Whiting School, WSE]
   - name: School of Medicine
     short: School of Medicine
     color: "#008767"   # Homewood Green
+    aliases: [SOM, JHU SOM]
   - name: Bloomberg School of Public Health
     short: Bloomberg School
     color: "#A45C98"   # Purple
+    aliases: [Bloomberg School, School of Public Health, BSPH, JHSPH]
   - name: Sheridan Libraries
     short: Sheridan Libraries
     color: "#CBA052"   # Sand
+    aliases: [Sheridan, JHU Libraries]
   - name: Office of Research
     short: Office of Research
     color: "#68ACE5"   # Spirit Blue
+    aliases: []
+  - name: Johns Hopkins IT
+    short: JH IT
+    color: "#FF9E1B"   # Orange
+    aliases: [JH IT, JHIT, IT@JH, Johns Hopkins Information Technology]
 
-# Questionnaire: "Is your team available to provide services to Johns Hopkins
-# researchers outside of your immediate department or organizational unit?"
-# "label" is what provider files use; "answer" is the questionnaire wording.
+# Q10. Available to researchers outside your own unit?
+# "internal: true" marks answers meaning the team doesn't take requests from outside
+# its own unit. The directory hides or separates those teams (see internal_teams in _config.yml).
 availability:
   - label: Hopkins-wide
     answer: Yes - Hopkins-wide
@@ -43,20 +63,24 @@ availability:
     answer: Yes - other criteria
   - label: Own department/unit only
     answer: No - our services are limited to our own department/unit
+    internal: true
+  - label: Not outside own unit (other)
+    answer: No - other
+    internal: true
 
-# Questionnaire: "Which researchers or organizations can engage your team?"
+# Q11. Which researchers or organizations can engage your team?
 eligible:
   - JHU faculty
   - JHU staff
   - JHU students/trainees working on sponsored research
   - JHHS faculty
   - JHHS staff
-  - Cross-institution JHU/JHHS projects
   - Johns Hopkins research centers/institutes
-  - Other Hopkins-affiliated groups
+  - Cross-institution JHU/JHHS projects
   - Projects involving external research collaborators
+  - Other Hopkins-affiliated groups
 
-# Questionnaire: "What services does your team provide?"
+# Q13 (services) and Q42 (areas of strength) share this list.
 services:
   - name: AI-Assisted Coding
     detail: Using ChatGPT, Copilot, or other AI tools for code generation and debugging
@@ -77,7 +101,7 @@ services:
   - name: Machine Learning/AI Development
     detail: Artificial intelligence / machine learning; data science; generative AI / large language models; image processing / computer vision; natural language processing; retrieval-augmented generation (RAG)
   - name: Python or R Package Development
-    detail: ""
+    detail: Research software engineering
   - name: Reproducible Research Workflows
     detail: Data archival/preservation; research data management
   - name: Technical Consulting & Solution Architecture
@@ -90,3 +114,290 @@ services:
     detail: Git/source-control management
   - name: Web Development
     detail: API development; application maintenance and enhancements; custom software/application development; legacy application modernization; low-code/no-code development; mobile application development; systems integration; web application development
+
+# Q14. Programming languages or development technologies
+languages:
+  - Python
+  - R
+  - SQL
+  - SAS
+  - Stata
+  - MATLAB
+  - Java
+  - C# / .NET
+  - C / C++
+  - JavaScript / TypeScript
+  - Node.js
+  - Angular
+  - React
+  - Vue
+  - Swift / iOS
+  - Kotlin / Android
+  - PHP
+  - Ruby
+  - PowerShell
+  - Not applicable
+
+# Q15. Database technologies
+databases:
+  - Microsoft SQL Server
+  - PostgreSQL
+  - MySQL/MariaDB
+  - Oracle
+  - Azure SQL
+  - NoSQL databases
+  - MongoDB
+  - Cloud-native databases
+  - Not applicable
+
+# Q16. Infrastructure/DevOps technologies
+devops:
+  - GitHub
+  - GitHub Actions
+  - Azure DevOps
+  - Jenkins
+  - Docker
+  - Kubernetes
+  - Azure Kubernetes Service (AKS)
+  - Amazon EKS
+  - Terraform
+  - Other Infrastructure as Code
+  - Monitoring/logging platforms
+  - Not applicable
+
+# Q17. Computing/hosting environments
+hosting:
+  - Microsoft Azure
+  - Amazon Web Services (AWS)
+  - Johns Hopkins-managed infrastructure
+  - On-premises servers
+  - High-performance computing (HPC)
+  - Containerized environments
+  - Vendor/SaaS platforms
+  - Hybrid cloud/on-premises environments
+  - Not applicable
+
+# Q18. How frequently does your team work on research-related projects?
+research_frequency:
+  - Research is our primary focus
+  - Frequently
+  - Occasionally
+  - Rarely
+  - We do not currently support research projects
+
+# Q19. Research areas
+research_areas:
+  - Clinical research
+  - Biomedical research
+  - Basic science
+  - Public health
+  - Population health
+  - Engineering
+  - Data science
+  - Computational science
+  - Social sciences
+  - Education research
+  - Humanities
+  - Imaging
+  - Genomics/bioinformatics
+  - Multidisciplinary research
+  - General/research area independent
+
+# Q20. Research project stages
+stages:
+  - Early consultation / feasibility
+  - Grant proposal development
+  - Technical architecture/design
+  - Grant budgeting / cost estimates
+  - Prototype/proof of concept
+  - Software development
+  - Research data collection
+  - Research data processing/analysis
+  - Production deployment
+  - Ongoing maintenance/support
+  - Project closeout
+  - Data/software archiving
+  - Transition from grant-funding to long-term sustainability
+
+# Q21. Technical estimates for grant proposals
+grant_estimates:
+  - "Yes"
+  - Yes, on a case-by-case basis
+  - "No"
+
+# Q22. Consulting before funding is awarded
+pre_award:
+  - "Yes"
+  - Yes, on a limited basis
+  - Depends on the project
+  - "No"
+
+# Q23. Types of data
+data_types:
+  - Public data
+  - Non-sensitive research data
+  - Personally identifiable information (PII)
+  - Protected health information (PHI)
+  - De-identified health information
+  - Human-subject research data
+  - Genomic data
+  - Proprietary/confidential research data
+  - Restricted data
+  - Data under NIST 800-171 controls
+  - Depends on the hosting/environment
+  - Unsure / requires review
+
+# Q24. Requirements or review processes
+compliance:
+  - HIPAA
+  - IRB / human-subject research
+  - Johns Hopkins IT Risk/Security review
+  - Data Use Agreements (DUAs)
+  - Business Associate Agreements (BAAs)
+  - Research involving external collaborators
+  - Restricted-access research data
+  - Accessibility requirements
+  - None of the above
+
+# Q25. How does your team typically handle security/compliance requirements?
+security_approach:
+  - Our team can lead the technical security/compliance process
+  - Our team can assist the researcher with the process
+  - The researcher/project team is primarily responsible
+  - Another Hopkins group handles this for us
+  - Varies by project
+  - Not applicable
+
+# Q26. Engagement types
+engagement_types:
+  - Technical consultation/advisory services
+  - Full project delivery
+  - Staff augmentation
+  - Embedded technical staff
+  - Joint/co-development with a research team
+  - Prototype/proof-of-concept development
+  - Ongoing maintenance/support
+  - Production operations
+  - Short-term troubleshooting
+
+# Q27. Project sizes
+project_sizes:
+  - Less than 40 hours
+  - 40-200 hours
+  - 201-500 hours
+  - 501-1,000 hours
+  - More than 1,000 hours
+  - Ongoing/long-term engagements
+  - No typical project size
+
+# Q28. Engagement duration
+durations:
+  - One-time consultation
+  - Less than 1 month
+  - 1-3 months
+  - 3-6 months
+  - 6-12 months
+  - More than 1 year
+  - Ongoing support
+  - Funding dependent
+  - Varies significantly
+
+# Q29. Take over software developed by another team?
+takeover:
+  - "Yes"
+  - Yes, following a technical assessment
+  - Case-by-case
+  - "No"
+
+# Q30. Collaborate with technical staff already on the project?
+collaborate:
+  - "Yes"
+  - Yes, on a case-by-case basis
+  - "No"
+
+# Q31. How are services funded?
+funding:
+  - No direct charge to researchers
+  - Centrally funded
+  - Fee-for-service
+  - Internal cost recovery
+  - Grant-funded
+  - Department-funded
+  - Combination of funding models
+
+# Q32. How are charges calculated?
+charges:
+  - Hourly
+  - Fixed project price
+  - Monthly fee
+  - Annual fee
+  - Generally based on FTE
+  - Hosting/infrastructure usage
+  - Software/license costs
+  - Cloud consumption
+  - Not applicable
+
+# Q33. Minimum project size or financial commitment
+minimum:
+  - No minimum
+  - Less than $5,000
+  - $5,000-$10,000
+  - $10,001-$25,000
+  - More than $25,000
+  - Varies by project
+  - Not applicable
+
+# Q34. Lead time for a new engagement
+lead_time:
+  - Less than 1 week
+  - 1-2 weeks
+  - 3-4 weeks
+  - 1-2 months
+  - More than 2 months
+  - Varies based on project
+  - Currently not accepting new work
+
+# Q35. Ongoing production support after launch
+production_support:
+  - "Yes"
+  - Yes, for applications developed by our team
+  - Yes, on a separate support agreement
+  - Case-by-case
+  - "No"
+
+# Q36. Support coverage
+support_coverage:
+  - Standard Hopkins business hours
+  - Extended-hours support
+  - After-hours/on-call support
+  - 24x7 production support
+  - Best-effort support
+  - Project-specific support arrangements
+  - Not applicable
+
+# Q37. Support software researchers intend to make public / open source
+open_source:
+  - "Yes"
+  - Yes, on a case-by-case basis
+  - "No"
+  - Unsure
+
+# Q38. Hand off source code and documentation at the end of an engagement
+handoff_docs:
+  - "Yes"
+  - Yes, depending on the engagement
+  - "No"
+  - Not applicable
+
+# Q39. Long-term maintenance or sustainability services
+maintenance:
+  - "Yes"
+  - Yes, for systems developed by our team
+  - Case-by-case
+  - "No"
+
+# Answers the import script should read as one or more listed values.
+# Keys are the answer as written on the form; values are what to store instead.
+aliases:
+  "SAS, Stata": [SAS, Stata]
+  "Yes - other criteria (please specify)": [Other criteria]

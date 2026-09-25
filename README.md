@@ -4,7 +4,7 @@ A prototype GitHub Pages site for the Research Software Support Network (RSSN) s
 
 **Live site:** https://meganforbes.github.io/RSSN_Provider_Inventory_Prototpye/
 
-> The listings in `_providers/` are sample data for review. They don't describe real teams or contacts.
+> Listings imported from the first questionnaire responses (September 2026) describe real teams and haven't been reviewed by those teams yet. Listings with `sample: true` are fictional examples kept to show how the directory works; delete them once real listings cover the same ground.
 
 ## How it works
 
@@ -12,13 +12,25 @@ The site is built with [Jekyll](https://jekyllrb.com/), which GitHub Pages runs 
 
 - Each team is one Markdown file in `_providers/`. Jekyll turns each file into a profile page at `/providers/<file-name>/` and a card on the home page.
 - The home page's search and filters run in the browser (`assets/js/directory.js`) using data Jekyll writes into the page at build time.
-- Allowed values for institutions, schools, services, and eligibility live in `_data/taxonomy.yml`. They mirror the RSSN Research IT Provider Questionnaire.
+- `_data/fields.yml` lists every listing field, grouped the way the questionnaire groups them. It drives the profile page, the search data, the filter panel, and the import script.
+- Allowed values for every list field live in `_data/taxonomy.yml`. They mirror the RSSN Research IT Provider Questionnaire.
 
-## Adding or updating a listing
+## Importing questionnaire responses
+
+`scripts/import_responses.py` turns the Microsoft Forms Excel export into listings, one file per response:
+
+```sh
+pip install openpyxl pyyaml
+python scripts/import_responses.py "Research Software Support Network ... .xlsx"
+```
+
+It skips listings that already exist (add `--overwrite` to replace them). Answers are matched to the values in `_data/taxonomy.yml`. Anything that doesn't match, like a write-in "Other" answer, is kept as text in that field's `_other` key, and the script lists which files have them. Review each new file before committing, especially `school` and `unit`, since the form collects those as one free-text answer.
+
+If the questionnaire adds or renames an answer choice, add it to `_data/taxonomy.yml` first so it imports as a filterable value instead of a write-in.
+
+## Adding or updating a listing by hand
 
 Contributors don't need to clone anything. The site's [Add your service](https://meganforbes.github.io/RSSN_Provider_Inventory_Prototpye/add-your-service/) page walks them through proposing a change on github.com. Every provider profile also has a "Suggest an edit on GitHub" link.
-
-To add a listing by hand:
 
 1. Copy `_includes/provider-template.md` into `_providers/` and give it a lowercase, hyphenated name, like `imaging-software-team.md`. The file name becomes the page's URL.
 2. Fill in the fields. List values must match `_data/taxonomy.yml` exactly, or the listing won't show up under that filter.
@@ -27,27 +39,42 @@ To add a listing by hand:
 
 ### Listing fields
 
-| Field | Questionnaire question | Notes |
-| --- | --- | --- |
-| `title` | Team or service name | |
-| `institution` | Institution | `JHU`, `JHHS`, or `Joint JHU/JHHS` |
-| `school` | School, division, department, or organizational unit | Schools in `taxonomy.yml` get a colored card accent |
-| `unit` | (same question) | Department or unit within the school |
-| `website` | Website or service information URL | Optional. Use `""` for none |
-| `contact.name`, `contact.email` | Primary contact name and email | |
-| `availability` | Available to researchers outside your unit? | Short labels listed in `taxonomy.yml` |
-| `eligible` | Which researchers or organizations can engage your team? | List |
-| `services` | What services does your team provide? | List |
-| (body text) | Briefly describe your team | 300–500 characters |
+Every field maps to a questionnaire question. The full list, with labels and question numbers, is in `_data/fields.yml`.
+
+| Questionnaire section | Fields |
+| --- | --- |
+| Provider information (Q3–9) | `title`, `institution`, `school`, `unit`, `website`, `contact.name`, `contact.email`, and the description as the body text |
+| Who you support (Q10–11) | `availability`, `eligible` |
+| Services (Q13, Q42) | `services`, `strengths` (up to five, marked "Core strength" on the profile) |
+| Technical capabilities (Q14–17) | `languages`, `databases`, `devops`, `hosting` |
+| Research experience (Q18–22) | `research_frequency`, `research_areas`, `stages`, `grant_estimates`, `pre_award` |
+| Data, security & compliance (Q23–25) | `data_types`, `compliance`, `security_approach` |
+| Engagement model (Q26–30) | `engagement_types`, `project_sizes`, `durations`, `takeover`, `collaborate` |
+| Cost & funding (Q31–33) | `funding`, `charges`, `minimum` |
+| Availability & support (Q34–36) | `lead_time`, `production_support`, `support_coverage` |
+| Sustainability (Q37–39) | `open_source`, `handoff_docs`, `maintenance` |
+| Additional information (Q40–41) | `examples`, `notes` (Markdown allowed) |
+
+Any list or single-answer field can also have a `<field>_other` text value for write-in answers. Listings also carry `updated` (date of the response or last review), `submitted_by` (who filled out the questionnaire, if different from the contact), and `sample: true` for fictional listings.
 
 JHED IDs from the questionnaire are intentionally left out, since this repository and site are public.
 
 ## Adding a filter or field
 
-1. Add the field to each provider file (and to `_includes/provider-template.md`).
-2. If it has a fixed set of values, add them to `_data/taxonomy.yml`.
-3. Show it on the profile in `_layouts/provider.html`, and on cards in `_includes/card.html` if needed.
-4. To filter on it, add it to the provider data in `index.html` and to the `GROUPS` list at the top of `assets/js/directory.js`.
+1. Add the field to `_data/fields.yml` in the right section, and its allowed values to `_data/taxonomy.yml`. The profile page picks it up automatically.
+2. Add it to each provider file and to `_includes/provider-template.md`.
+3. To filter on it, add it to the `filters` list at the bottom of `_data/fields.yml`.
+
+## Teams that only serve their own unit
+
+Some teams are listed so RSSN knows the capability exists, even though they don't take outside requests. Availability answers marked `internal: true` in `_data/taxonomy.yml` ("No - our services are limited to our own department/unit" and "No - other") flag these teams. Their cards get a "Unit only" tag, and their profiles open with a "Not taking outside requests" banner.
+
+`internal_teams` in `_config.yml` picks how the home page handles them:
+
+- `toggle`: hidden by default behind a pre-checked "Only show teams that take requests from outside their unit" box at the top of the filters. The result count says how many are hidden, with a link to show them. "Clear all" doesn't change this box.
+- `divider`: always shown, but in their own "Internal to their unit" section below the other results.
+
+While `prototype: true`, the home page has buttons to switch between the two, and `?layout=toggle` or `?layout=divider` in the URL does the same.
 
 ## Design
 
