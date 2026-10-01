@@ -69,12 +69,7 @@ JHED IDs from the questionnaire are intentionally left out, since this repositor
 
 Some teams are listed so RSSN knows the capability exists, even though they don't take outside requests. Availability answers marked `internal: true` in `_data/taxonomy.yml` ("No - our services are limited to our own department/unit" and "No - other") flag these teams. Their cards get a "Unit only" tag, and their profiles open with a "Not taking outside requests" banner.
 
-`internal_teams` in `_config.yml` picks how the home page handles them:
-
-- `toggle`: hidden by default behind a pre-checked "Only show teams that take requests from outside their unit" box at the top of the filters. The result count says how many are hidden, with a link to show them. "Clear all" doesn't change this box.
-- `divider`: always shown, but in their own "Internal to their unit" section below the other results.
-
-While `prototype: true`, the home page has buttons to switch between the two, and `?layout=toggle` or `?layout=divider` in the URL does the same.
+On the home page they're hidden by default behind a pre-checked "Only show teams that take requests from outside their unit" box at the top of the filters. The result count says how many are hidden, with a link to show them. "Clear all" doesn't change this box.
 
 ## Design
 

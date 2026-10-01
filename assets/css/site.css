@@ -686,26 +686,6 @@ code { font-size: 0.9em; }
 .prototype-banner .sample-tag { margin: 0 2px; background: #fff; }
 
 /* ---------- Teams that only serve their own unit ---------- */
-.compare-bar {
-  max-width: var(--max);
-  margin: 16px auto 0;
-  padding: 0 var(--gutter);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 12px;
-  font-size: 0.875rem;
-  color: var(--muted);
-}
-.compare-bar a {
-  padding: 3px 10px;
-  border: 1px solid var(--heritage-blue);
-  border-radius: 3px;
-  text-decoration: none;
-  font-weight: 500;
-}
-.compare-bar a[aria-current] { background: var(--heritage-blue); color: #fff; }
-
 .scope-toggle {
   margin: 10px 0 6px;
   padding: 12px;
@@ -728,36 +708,21 @@ code { font-size: 0.9em; }
 .results__aside { color: var(--muted); font-size: 0.9rem; }
 .results__aside .text-button { font-size: 0.9rem; }
 
+/* Plum, from the Hopkins secondary palette: distinct from the yellow Sample tag
+   and the Heritage Blue strength tags. White on Plum is about 12:1. */
 .unit-tag {
   display: inline-block;
   margin-left: 8px;
   padding: 1px 6px;
-  border: 1px solid #9AA8BF;
+  border: 1px solid #51284F;
   border-radius: 3px;
-  background: var(--surface);
-  color: var(--muted);
+  background: #51284F;
+  color: #fff;
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
-
-.internal-section { margin-top: 36px; }
-.internal-section__head {
-  border-top: 2px solid var(--line);
-  padding-top: 16px;
-  margin-bottom: 16px;
-}
-.internal-section__head h2 {
-  margin: 0 0 4px;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.25rem;
-  color: var(--heritage-blue);
-}
-.internal-section__count { font-family: var(--font-body); font-size: 0.95rem; font-weight: 500; color: var(--muted); }
-.internal-section__head p { margin: 0; max-width: 70ch; font-size: 0.9rem; color: var(--muted); }
-.card-grid--internal .card { background: #FAFBFD; border-style: dashed; border-top-style: solid; }
 
 .internal-banner {
   margin: 0;

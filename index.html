@@ -19,14 +19,7 @@ title: Find support
   </div>
 </section>
 
-{%- if site.prototype %}
-<div class="compare-bar" id="compare-bar" role="note">
-  <span><strong>Prototype:</strong> compare two ways to handle teams that only serve their own unit.</span>
-  <a href="?layout=toggle" data-layout="toggle">Hide behind a filter</a>
-  <a href="?layout=divider" data-layout="divider">List below a divider</a>
-</div>
-{%- endif %}
-<div class="directory" data-internal-layout="{{ site.internal_teams | default: 'toggle' }}">
+<div class="directory">
   <button type="button" class="filters-toggle" id="filters-toggle" aria-expanded="false" aria-controls="filters" hidden>Filters</button>
 
   <aside class="filters" id="filters" aria-label="Filter providers" hidden>
@@ -59,14 +52,6 @@ title: Find support
     <div class="empty-state" id="empty-state" hidden>
       <p><strong>No providers match.</strong> <span id="empty-extra">Try removing a filter or searching for a broader term.</span></p>
     </div>
-
-    <section class="internal-section" id="internal-section" aria-labelledby="internal-heading" hidden>
-      <div class="internal-section__head">
-        <h2 id="internal-heading">Internal to their unit <span class="internal-section__count" id="internal-count"></span></h2>
-        <p>These teams don't take requests from outside their own department or unit. They're listed so you know the capability exists at Hopkins.</p>
-      </div>
-      <div class="card-grid card-grid--internal" id="card-grid-internal"></div>
-    </section>
   </main>
 </div>
 

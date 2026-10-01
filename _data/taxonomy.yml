@@ -49,7 +49,7 @@ schools:
 
 # Q10. Available to researchers outside your own unit?
 # "internal: true" marks answers meaning the team doesn't take requests from outside
-# its own unit. The directory hides or separates those teams (see internal_teams in _config.yml).
+# its own unit. The directory hides those teams until the "outside requests only" box is unchecked.
 availability:
   - label: Hopkins-wide
     answer: Yes - Hopkins-wide

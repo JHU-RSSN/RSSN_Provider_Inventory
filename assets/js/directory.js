@@ -61,14 +61,8 @@
     p._haystack = parts.join(" ").toLowerCase();
   });
 
-  // Teams that only serve their own unit ("internal: true" availability answers).
-  // Two layouts, chosen by internal_teams in _config.yml or ?layout= in the URL:
-  //   toggle   hidden unless the pre-checked "outside requests only" box is unchecked
-  //   divider  always shown, but below the other results under their own heading
-  var dirEl = document.querySelector(".directory");
-  var urlLayout = new URLSearchParams(window.location.search).get("layout");
-  var LAYOUT = (urlLayout === "toggle" || urlLayout === "divider") ? urlLayout
-    : (dirEl && dirEl.getAttribute("data-internal-layout")) === "divider" ? "divider" : "toggle";
+  // Teams that only serve their own unit ("internal: true" availability answers) are
+  // hidden unless the pre-checked "outside requests only" box is unchecked.
 
   var state = { q: "", sel: {}, expanded: {}, showInternal: false };
   GROUPS.forEach(function (g) { state.sel[g.key] = new Set(); });
@@ -86,25 +80,14 @@
     empty: document.getElementById("empty-state"),
     emptyExtra: document.getElementById("empty-extra"),
     scope: document.getElementById("scope-toggle"),
-    outsideOnly: document.getElementById("outside-only"),
-    internalSection: document.getElementById("internal-section"),
-    internalGrid: document.getElementById("card-grid-internal"),
-    internalCount: document.getElementById("internal-count")
+    outsideOnly: document.getElementById("outside-only")
   };
   var defaultEmptyText = els.emptyExtra.textContent;
 
   var cards = {};
   els.grid.querySelectorAll(".card").forEach(function (c) { cards[c.getAttribute("data-id")] = c; });
 
-  // Divider layout: move internal teams' cards into the section below the line.
-  if (LAYOUT === "divider") {
-    providers.forEach(function (p) { if (p.internal && cards[p.id]) els.internalGrid.appendChild(cards[p.id]); });
-  } else {
-    els.scope.hidden = false;
-  }
-  document.querySelectorAll("#compare-bar a").forEach(function (a) {
-    if (a.getAttribute("data-layout") === LAYOUT) a.setAttribute("aria-current", "true");
-  });
+  els.scope.hidden = false;
 
   /* ---------- state <-> URL ---------- */
   function readURL() {
@@ -118,9 +101,8 @@
 
   function writeURL() {
     var params = new URLSearchParams();
-    if (urlLayout) params.set("layout", LAYOUT);
     if (state.q) params.set("q", state.q);
-    if (LAYOUT === "toggle" && state.showInternal) params.set("internal", "show");
+    if (state.showInternal) params.set("internal", "show");
     GROUPS.forEach(function (g) {
       state.sel[g.key].forEach(function (v) { params.append(g.key, v); });
     });
@@ -141,9 +123,9 @@
     return g.get(p).some(function (v) { return sel.has(v); });
   }
 
-  // In the toggle layout, internal teams count only when the box is unchecked.
+  // Internal teams count only when the box is unchecked.
   function inScope(p) {
-    return LAYOUT !== "toggle" || state.showInternal || !p.internal;
+    return state.showInternal || !p.internal;
   }
 
   // Providers matching the search and every group except `exceptKey`.
@@ -249,21 +231,6 @@
 
     var forQ = state.q ? " for “" + esc(state.q) + "”" : "";
     els.emptyExtra.textContent = defaultEmptyText;
-
-    if (LAYOUT === "divider") {
-      var inside = matches.filter(function (p) { return p.internal; }).length;
-      var outside = matches.length - inside;
-      els.count.innerHTML = "<strong>" + outside + "</strong> " + (outside === 1 ? "provider" : "providers") + forQ +
-        (inside ? ' <span class="results__aside">· ' + plural(inside, "internal-only team") + " below</span>" : "");
-      els.internalSection.hidden = inside === 0;
-      els.internalCount.textContent = "(" + inside + ")";
-      els.empty.hidden = outside !== 0;
-      if (outside === 0 && inside > 0) {
-        els.emptyExtra.textContent = "No teams that take outside requests match, but " +
-          plural(inside, "internal-only team") + " below " + (inside === 1 ? "does" : "do") + ".";
-      }
-      return;
-    }
 
     var n = matches.length;
     var hidden = state.showInternal ? 0 : filtered(null, true).length - n;
