@@ -42,7 +42,7 @@
         open: !!cfg.open,
         limit: cfg.limit || 0,
         byCount: cfg.key === "services" || cfg.key === "strengths",
-        single: f.type === "one" && ["institution", "school", "availability"].indexOf(cfg.key) === -1,
+        single: f.type === "one" && ["institution", "school", "availability", "team_type"].indexOf(cfg.key) === -1,
         order: (taxonomy[f.options] || []).map(labelOf),
         get: function (p) { return asList(p[cfg.key]); }
       });

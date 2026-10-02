@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Turn questionnaire responses (the Microsoft Forms Excel export) into provider listings.
 
+Written for Draft 3 of the RSSN Research IT Provider Questionnaire.
+
     pip install openpyxl pyyaml
     python scripts/import_responses.py responses.xlsx            # writes new listings only
     python scripts/import_responses.py responses.xlsx --overwrite
@@ -8,6 +10,10 @@
 Each response row becomes _providers/<team-name>.md. Answers are matched against the
 allowed values in _data/taxonomy.yml; anything that doesn't match (a write-in "Other"
 answer, say) is kept in that field's "<key>_other" text so nothing is lost.
+
+The four service grids (Q12-15) are found by their answers: any column whose answers are
+all "Not offered", "Offered", or "Area of strength" is a grid row, and the service it
+belongs to is the one whose name appears in the column heading.
 
 Always review the generated files before committing. Check the school and unit
 especially, since the form collects those as one free-text answer.
@@ -34,7 +40,7 @@ INFO_COLUMNS = {
     "contact_name": "Primary contact name",
     "contact_email": "Primary contact email",
     "title": "Team or service name",
-    "description": "Briefly describe your team",
+    "paragraph": "Is there anything else you would like to highlight",
     "website": "Website or service information URL",
     "completed": "Completion time",
 }
@@ -108,7 +114,8 @@ def find_columns(headers, fields):
     heads = [norm(h or "") for h in headers]
     wanted = dict(INFO_COLUMNS)
     for f in fields:
-        wanted[f["key"]] = f["question"]
+        if f.get("question"):
+            wanted[f["key"]] = f["question"]
     for key, q in wanted.items():
         qn = norm(q)
         hits = [i for i, h in enumerate(heads) if h.startswith(qn)]
@@ -117,6 +124,25 @@ def find_columns(headers, fields):
         if hits:
             cols[key] = hits[0]
     return cols
+
+
+def find_grid_columns(headers, rows, services, levels, taken):
+    """Map each service name to its grid column (see the module docstring).
+    `taken` holds columns already matched to other questions."""
+    level_set = {norm(l) for l in levels}
+    out = {}
+    for i, h in enumerate(headers):
+        if i in taken:
+            continue
+        vals = {norm(r[i]) for r in rows if i < len(r) and r[i] not in (None, "")}
+        if not vals <= level_set:  # an empty column (nobody answered) still counts
+            continue
+        hn = norm(h or "")
+        for s in services:
+            if norm(s["name"]) in hn and s["name"] not in out:
+                out[s["name"]] = i
+                break
+    return out
 
 
 def find_school(text, schools):
@@ -154,10 +180,28 @@ def q(s):
     return json.dumps(str(s), ensure_ascii=False)
 
 
-def to_markdown(rec, fields, body):
+def yaml_value(k, v, ftype):
+    """Front-matter lines for one field."""
+    if ftype in ("many", "grid"):
+        if not v:
+            return [f"{k}: []"]
+        return [f"{k}:"] + [f"  - {q(x)}" for x in v]
+    if ftype == "text":
+        v = (v or "").strip()
+        if not v:
+            return [f'{k}: ""']
+        return [f"{k}: |"] + [("  " + l) if l else "" for l in v.split("\n")]
+    return [f"{k}: {q(v or '')}"]
+
+
+def to_markdown(rec, fields, body, header=None):
     out = ["---"]
-    out.append("# Imported from the RSSN Research IT Provider Questionnaire.")
-    out.append("# Allowed values for each list are in _data/taxonomy.yml.")
+    out.extend(header or [
+        "# Imported from the RSSN Research IT Provider Questionnaire (Draft 3).",
+        "# Allowed values for each list are in _data/taxonomy.yml.",
+    ])
+    if rec.get("sample"):
+        out.append("sample: true")
     for key in ["title", "institution", "school", "unit", "website"]:
         out.append(f"{key}: {q(rec.get(key, ''))}")
     out.append("contact:")
@@ -169,26 +213,13 @@ def to_markdown(rec, fields, body):
         out.append(f"  email: {q(rec['submitted_by']['email'])}")
     if rec.get("updated"):
         out.append(f"updated: {rec['updated']}")
+    own_keys = {f["key"] for f in fields}
     for f in fields:
         k = f["key"]
         if k in ("institution", "school"):
             continue
-        v = rec.get(k)
-        if f["type"] == "many":
-            if v:
-                out.append(f"{k}:")
-                out.extend(f"  - {q(x)}" for x in v)
-            else:
-                out.append(f"{k}: []")
-        elif f["type"] == "text":
-            if v:
-                out.append(f"{k}: |")
-                out.extend(("  " + l) if l else "" for l in v.split("\n"))
-            else:
-                out.append(f'{k}: ""')
-        else:
-            out.append(f"{k}: {q(v or '')}")
-        if rec.get(k + "_other"):
+        out.extend(yaml_value(k, rec.get(k), f["type"]))
+        if rec.get(k + "_other") and f["type"] != "text" and k + "_other" not in own_keys:
             out.append(f"{k}_other: {q(rec[k + '_other'])}")
     out.append("---")
     out.append(body)
@@ -211,9 +242,13 @@ def main():
     ws = openpyxl.load_workbook(args.xlsx).active
     rows = list(ws.iter_rows(values_only=True))
     cols = find_columns(rows[0], fields)
-    missing = [f["key"] for f in fields if f["key"] not in cols]
+    missing = [f["key"] for f in fields if f.get("question") and f["key"] not in cols]
     if missing:
         print("Note: no column found for:", ", ".join(missing))
+    grid = find_grid_columns(rows[0], rows[1:], taxonomy["services"], taxonomy["service_levels"], set(cols.values()))
+    if len(grid) < len(taxonomy["services"]):
+        absent = [s["name"] for s in taxonomy["services"] if s["name"] not in grid]
+        print("Note: no service-grid column found for:", ", ".join(absent))
 
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -251,13 +286,26 @@ def main():
             rec["school"] = school_raw
             rec["unit"] = ""
 
+        # Service grids (Q12-15): Offered or Area of strength -> services; Area of strength -> strengths.
+        rec["services"], rec["strengths"] = [], []
+        for s in taxonomy["services"]:
+            i = grid.get(s["name"])
+            level = norm(row[i]) if i is not None and i < len(row) and row[i] else ""
+            if level in ("offered", "area of strength"):
+                rec["services"].append(s["name"])
+            if level == "area of strength":
+                rec["strengths"].append(s["name"])
+
         for f in fields:
             k = f["key"]
-            if k in ("institution", "school"):
+            if k in ("institution", "school") or f["type"] == "grid":
                 continue
             raw = cell(k)
             if f["type"] == "text":
                 rec[k] = paragraphs(raw) if raw else ""
+                continue
+            if f["type"] == "short":
+                rec[k] = re.sub(r"\s+", " ", str(raw)).strip() if raw else ""
                 continue
             m = Matcher(taxonomy.get(f.get("options")), aliases)
             answers = split_answers(raw) if f["type"] == "many" else ([str(raw).strip()] if raw not in (None, "") else [])
@@ -273,14 +321,22 @@ def main():
             rec[k] = vals if f["type"] == "many" else (vals[0] if vals else "")
             if other:
                 rec[k + "_other"] = "; ".join(other)
+                # Q10's "It's complicated (please explain)" arrives as the explanation itself.
+                if k == "availability" and not vals:
+                    rec[k] = "It's complicated"
 
         path = out_dir / (slugify(title) + ".md")
         if path.exists() and not args.overwrite:
             print(f"skip   {path.name} (exists; use --overwrite to replace)")
             continue
-        path.write_text(to_markdown(rec, fields, paragraphs(cell("description") or "")), encoding="utf-8")
-        others = [k for k in rec if k.endswith("_other")]
-        print(f"wrote  {path.name}" + (f"  (write-in answers: {', '.join(others)})" if others else ""))
+        path.write_text(to_markdown(rec, fields, paragraphs(cell("paragraph") or "")), encoding="utf-8")
+        own = {f["key"] for f in fields}
+        notes = [k for k in rec if k.endswith("_other") and k not in own and rec[k]]
+        if len(rec["strengths"]) > 5:
+            notes.append(f"{len(rec['strengths'])} areas of strength (limit is 5)")
+        if "None of the above" in (rec.get("compliance") or []) and len(rec["compliance"]) > 1:
+            notes.append("compliance has 'None of the above' with other choices")
+        print(f"wrote  {path.name}" + (f"  (check: {', '.join(notes)})" if notes else ""))
 
 
 if __name__ == "__main__":

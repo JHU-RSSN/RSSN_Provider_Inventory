@@ -732,3 +732,34 @@ code { font-size: 0.9em; }
   font-size: 0.92rem;
 }
 @media (max-width: 520px) { .internal-banner { padding: 12px 20px; } }
+
+/* ---------- Draft 3: summary, service groups, capacity tags ---------- */
+.profile__summary {
+  margin: 0 0 16px;
+  font-size: 1.08rem;
+  line-height: 1.6;
+  max-width: 66ch;
+}
+.profile__description p { font-size: 1rem; color: var(--muted); }
+.service-group {
+  margin: 18px 0 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--heritage-blue);
+}
+.service-group:first-of-type { margin-top: 8px; }
+.paused-tag,
+.limited-tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* Red from the Hopkins secondary palette; white on #CF4520 is about 4.6:1. */
+.paused-tag { background: #CF4520; border: 1px solid #CF4520; color: #fff; }
+.limited-tag { background: var(--surface); border: 1px solid #9AA8BF; color: var(--muted); }
+.internal-banner--paused { background: #FBEAE5; border-bottom-color: #F0C4B6; }

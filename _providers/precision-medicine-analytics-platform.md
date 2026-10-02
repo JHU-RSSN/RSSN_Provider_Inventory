@@ -10,39 +10,42 @@ website: "https://ictr.johnshopkins.edu"
 contact:
   name: "Priya Anand"
   email: "priya.anand@example.edu"
+team_type: "IT service with research support"
 availability: "Hopkins-wide"
 eligible:
-  - "JHU faculty"
-  - "JHHS faculty"
   - "Cross-institution JHU/JHHS projects"
+  - "JHHS faculty"
+  - "JHU faculty"
   - "Projects involving external research collaborators"
 services:
-  - "Containerization and Cloud Computing"
   - "Data Pipeline Automation"
   - "Databases"
+  - "Containerization & Cloud Computing"
   - "IT Security & Compliance"
 strengths:
-  - "Containerization and Cloud Computing"
   - "Data Pipeline Automation"
+  - "Containerization & Cloud Computing"
   - "IT Security & Compliance"
+services_other: ""
+examples: ""
+hands_on: "Yes"
 languages:
   - "Python"
   - "R"
   - "SQL"
 databases:
-  - "Microsoft SQL Server"
   - "Azure SQL"
   - "Cloud-native databases"
+  - "Microsoft SQL Server"
 devops:
   - "Azure DevOps"
   - "Azure Kubernetes Service (AKS)"
   - "Terraform"
 hosting:
   - "Microsoft Azure"
-research_frequency: "Research is our primary focus"
 research_areas:
-  - "Clinical research"
   - "Biomedical research"
+  - "Clinical research"
   - "Data science"
 stages:
   - "Early consultation / feasibility"
@@ -52,21 +55,22 @@ stages:
   - "Ongoing maintenance/support"
 grant_estimates: "Yes"
 pre_award: "Yes, on a limited basis"
+consult_scope: "A few meetings or a short written assessment (up to about 10 hours)"
 data_types:
   - "Personally identifiable information (PII)"
   - "Protected health information (PHI)"
   - "Restricted data"
 compliance:
+  - "Business Associate Agreements (BAAs)"
+  - "Data Use Agreements (DUAs)"
   - "HIPAA"
   - "IRB / human-subject research"
   - "Johns Hopkins IT Risk/Security review"
-  - "Data Use Agreements (DUAs)"
-  - "Business Associate Agreements (BAAs)"
 security_approach: "Our team can lead the technical security/compliance process"
 engagement_types:
-  - "Technical consultation/advisory services"
   - "Ongoing maintenance/support"
   - "Production operations"
+  - "Technical consultation/advisory services"
 project_sizes:
   - "Ongoing/long-term engagements"
 durations:
@@ -74,22 +78,25 @@ durations:
   - "Ongoing support"
 takeover: "No"
 collaborate: "Yes"
+cost: "Free initial help, then charged"
+free_limit: "An initial environment review is free. Hosting and engineering time are charged monthly."
+charges:
+  - "Cloud consumption"
+  - "Monthly fee"
+minimum: "No minimum"
 funding:
   - "Centrally funded"
   - "Internal cost recovery"
-charges:
-  - "Monthly fee"
-  - "Cloud consumption"
-minimum: "No minimum"
+accepting: "Yes, with limited capacity"
 lead_time: "1-2 months"
 production_support: "Yes"
 support_coverage:
   - "Standard Hopkins business hours"
   - "Extended-hours support"
-open_source: "Unsure"
+open_source:
+  - "Unsure"
 handoff_docs: "Not applicable"
 maintenance: "Yes"
-examples: ""
 notes: ""
 ---
 We run secure, HIPAA-aligned analytics environments on Azure for clinical and translational research that uses identifiable patient data. Our engineers build data pipelines from the electronic health record, manage access, and support IRB and data use agreement requirements. Best for studies working with PHI at scale.

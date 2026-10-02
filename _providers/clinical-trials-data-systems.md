@@ -10,6 +10,7 @@ website: ""
 contact:
   name: "Grace Feldman"
   email: "grace.feldman@example.edu"
+team_type: "IT service with research support"
 availability: "JHHS only"
 eligible:
   - "JHHS faculty"
@@ -21,9 +22,12 @@ services:
 strengths:
   - "Databases"
   - "IT Security & Compliance"
+services_other: ""
+examples: ""
+hands_on: "Yes"
 languages:
-  - "SQL"
   - "Java"
+  - "SQL"
 databases:
   - "Microsoft SQL Server"
   - "Oracle"
@@ -32,10 +36,9 @@ devops:
 hosting:
   - "Johns Hopkins-managed infrastructure"
   - "Vendor/SaaS platforms"
-research_frequency: "Research is our primary focus"
 research_areas:
-  - "Clinical research"
   - "Biomedical research"
+  - "Clinical research"
 stages:
   - "Technical architecture/design"
   - "Research data collection"
@@ -44,15 +47,16 @@ stages:
   - "Project closeout"
 grant_estimates: "Yes, on a case-by-case basis"
 pre_award: "Yes, on a limited basis"
+consult_scope: "Scoped case by case"
 data_types:
+  - "Human-subject research data"
   - "Personally identifiable information (PII)"
   - "Protected health information (PHI)"
-  - "Human-subject research data"
 compliance:
+  - "Business Associate Agreements (BAAs)"
   - "HIPAA"
   - "IRB / human-subject research"
   - "Johns Hopkins IT Risk/Security review"
-  - "Business Associate Agreements (BAAs)"
 security_approach: "Our team can lead the technical security/compliance process"
 engagement_types:
   - "Full project delivery"
@@ -65,21 +69,24 @@ durations:
   - "More than 1 year"
 takeover: "Case-by-case"
 collaborate: "Yes, on a case-by-case basis"
+cost: "Charged"
+free_limit: ""
+charges:
+  - "Annual fee"
+  - "Fixed project price"
+minimum: "$5,000-$10,000"
 funding:
   - "Internal cost recovery"
-charges:
-  - "Fixed project price"
-  - "Annual fee"
-minimum: "$5,000-$10,000"
+accepting: "Yes"
 lead_time: "1-2 months"
 production_support: "Yes, for applications developed by our team"
 support_coverage:
   - "Standard Hopkins business hours"
   - "After-hours/on-call support"
-open_source: "No"
+open_source:
+  - "Cannot currently support open source work"
 handoff_docs: "Yes, depending on the engagement"
 maintenance: "Yes, for systems developed by our team"
-examples: ""
 notes: ""
 ---
 We design and validate trial databases for investigator-initiated clinical trials, with HIPAA-compliant hosting and audit trails that meet FDA 21 CFR Part 11 expectations. We also train study coordinators on data entry and monitoring. Available to Johns Hopkins Health System investigators.

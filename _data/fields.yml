@@ -1,17 +1,21 @@
-# Every listing field, grouped the way the RSSN Research IT Provider Questionnaire groups them.
+# Every listing field, grouped the way the RSSN Research IT Provider Questionnaire (Draft 3) groups them.
 # Drives the profile page (_layouts/provider.html), the search data on the home page,
-# the filter panel (assets/js/directory.js), and the import script (scripts/import_responses.py).
+# the filter panel (assets/js/directory.js), the listing template (scripts/make_template.py),
+# and the import script (scripts/import_responses.py).
 #
 #   key       front-matter key in each _providers/*.md file
 #   label     heading shown on the profile page and in filters
 #   q         questionnaire question number
 #   question  start of the question text, used to find the spreadsheet column when importing
-#   type      one (single value), many (list), or text (free text, Markdown allowed)
+#   type      one (single choice), many (list), short (one line of free text),
+#             text (free text, Markdown allowed), or grid (the Q12-15 service grids)
 #   options   list in _data/taxonomy.yml holding the allowed values
 #   show      where the profile shows it: facts (the section's list), or a named spot
-#             in the layout (header, services, aside, text)
+#             in the layout (header, services, aside, text, summary, none)
 #
-# Any "many" or "one" field can also have a "<key>_other" text value for write-in "Other" answers.
+# Any "many" or "one" field can also have a "<key>_other" text value for "Other (please specify)" answers.
+# Q1-4 (respondent and contact), Q7 (team name), and Q18 (the optional paragraph, which is
+# the body text below the front matter) are handled directly by the layout and import script.
 
 sections:
   - id: organization
@@ -23,74 +27,80 @@ sections:
   - id: who
     title: Who you support
     fields:
+      - { key: team_type, label: Team type, q: 9, question: "Which best describes your team", type: one, options: team_type, show: header }
       - { key: availability, label: Available to, q: 10, question: "Is your team available to provide services", type: one, options: availability, show: header }
       - { key: eligible, label: Who can engage this team, q: 11, question: "Which researchers or organizations can engage", type: many, options: eligible, show: aside }
 
   - id: services
-    title: Services
+    title: Services & expertise
     fields:
-      - { key: services, label: Services, q: 13, question: "What services does your team provide", type: many, options: services, show: services }
-      - { key: strengths, label: Areas of strength, q: 42, question: "What are your team's strongest areas", type: many, options: services, show: services }
+      - { key: services, label: Services, q: 12-15, type: grid, options: services, show: services }
+      - { key: strengths, label: Areas of strength, q: 12-15, type: grid, options: services, show: services }
+      - { key: services_other, label: Other services or expertise, q: 16, question: "Other services or areas of expertise", type: text, show: services }
+      - { key: examples, label: Example projects, q: 17, question: "Please provide up to three examples", type: text, show: text }
 
   - id: technical
     title: Technical capabilities
     fields:
-      - { key: languages, label: Languages and development technologies, q: 14, question: "Which programming languages", type: many, options: languages, show: facts }
-      - { key: databases, label: Databases, q: 15, question: "Which database technologies", type: many, options: databases, show: facts }
-      - { key: devops, label: Infrastructure and DevOps, q: 16, question: "Which infrastructure/DevOps technologies", type: many, options: devops, show: facts }
-      - { key: hosting, label: Computing and hosting environments, q: 17, question: "Which computing/hosting environments", type: many, options: hosting, show: facts }
+      - { key: hands_on, label: Does hands-on technical work, q: 19, question: "Does your team do hands-on technical work", type: one, options: hands_on, show: none }
+      - { key: languages, label: Languages and development technologies, q: 20, question: "Which programming languages", type: many, options: languages, show: facts }
+      - { key: databases, label: Databases, q: 21, question: "Which database technologies", type: many, options: databases, show: facts }
+      - { key: devops, label: Infrastructure and DevOps, q: 22, question: "Which infrastructure/DevOps technologies", type: many, options: devops, show: facts }
+      - { key: hosting, label: Computing and hosting environments, q: 23, question: "Which computing/hosting environments", type: many, options: hosting, show: facts }
 
   - id: research
     title: Research experience
     fields:
-      - { key: research_frequency, label: Research focus, q: 18, question: "How frequently does your team work on research", type: one, options: research_frequency, show: facts }
-      - { key: research_areas, label: Research areas, q: 19, question: "Which research areas", type: many, options: research_areas, show: facts }
-      - { key: stages, label: Project stages, q: 20, question: "At which stages of a research project", type: many, options: stages, show: facts }
-      - { key: grant_estimates, label: Technical estimates for grant proposals, q: 21, question: "Can your team provide technical estimates", type: one, options: grant_estimates, show: facts }
-      - { key: pre_award, label: Consults before funding is awarded, q: 22, question: "Can your team begin consulting", type: one, options: pre_award, show: facts }
+      - { key: research_areas, label: Research areas, q: 24, question: "Which research areas", type: many, options: research_areas, show: facts }
+      - { key: stages, label: Project stages, q: 25, question: "At which stages of a research project", type: many, options: stages, show: facts }
+      - { key: grant_estimates, label: Technical estimates for grant proposals, q: 26, question: "Can your team provide technical estimates", type: one, options: grant_estimates, show: facts }
+      - { key: pre_award, label: Consults before funding is awarded, q: 27, question: "Can your team begin consulting", type: one, options: pre_award, show: facts }
+      - { key: consult_scope, label: Initial or pre-award consultation, q: 28, question: "What can a researcher typically expect", type: one, options: consult_scope, show: facts }
 
   - id: data
     title: Research data, security & compliance
     fields:
-      - { key: data_types, label: Data types supported, q: 23, question: "What types of data can your team support", type: many, options: data_types, show: facts }
-      - { key: compliance, label: Requirements and reviews supported, q: 24, question: "Does your team have experience supporting projects involving", type: many, options: compliance, show: facts }
-      - { key: security_approach, label: Security and compliance approach, q: 25, question: "How does your team typically handle security", type: one, options: security_approach, show: facts }
+      - { key: data_types, label: Data types supported, q: 29, question: "What types of data can your team support", type: many, options: data_types, show: facts }
+      - { key: compliance, label: Requirements and reviews supported, q: 30, question: "Does your team have experience supporting projects involving", type: many, options: compliance, show: facts }
+      - { key: security_approach, label: Security and compliance approach, q: 31, question: "How does your team typically handle security", type: one, options: security_approach, show: facts }
 
   - id: engagement
     title: Engagement model
     fields:
-      - { key: engagement_types, label: Engagement types, q: 26, question: "What types of engagements", type: many, options: engagement_types, show: facts }
-      - { key: project_sizes, label: Project sizes, q: 27, question: "What project sizes", type: many, options: project_sizes, show: facts }
-      - { key: durations, label: Engagement duration, q: 28, question: "What is your typical engagement duration", type: many, options: durations, show: facts }
-      - { key: takeover, label: Takes over software from other teams, q: 29, question: "Can your team take over or enhance software", type: one, options: takeover, show: facts }
-      - { key: collaborate, label: Works with the project's technical staff, q: 30, question: "Can your team collaborate with technical staff", type: one, options: collaborate, show: facts }
+      - { key: engagement_types, label: Engagement types, q: 32, question: "What types of engagements", type: many, options: engagement_types, show: facts }
+      - { key: project_sizes, label: Project sizes, q: 33, question: "What project sizes", type: many, options: project_sizes, show: facts }
+      - { key: durations, label: Engagement duration, q: 34, question: "What is your typical engagement duration", type: many, options: durations, show: facts }
+      - { key: takeover, label: Takes over software from other teams, q: 35, question: "Can your team take over or enhance software", type: one, options: takeover, show: facts }
+      - { key: collaborate, label: Works with the project's technical staff, q: 36, question: "Can your team collaborate with technical staff", type: one, options: collaborate, show: facts }
 
   - id: cost
     title: Cost & funding
     fields:
-      - { key: funding, label: How services are funded, q: 31, question: "How are your services funded", type: many, options: funding, show: facts }
-      - { key: charges, label: How charges are calculated, q: 32, question: "If services are charged", type: many, options: charges, show: facts }
-      - { key: minimum, label: Minimum commitment, q: 33, question: "Is there a minimum project size", type: one, options: minimum, show: facts }
+      - { key: cost, label: Cost to researchers, q: 37, question: "Is there a cost to researchers", type: one, options: cost, show: facts }
+      - { key: free_limit, label: Where no-cost help ends, q: 38, question: "Briefly describe where no-cost help ends", type: short, show: facts }
+      - { key: charges, label: How charges are calculated, q: 39, question: "How are charges typically calculated", type: many, options: charges, show: facts }
+      - { key: minimum, label: Minimum commitment, q: 40, question: "Is there a minimum project size", type: one, options: minimum, show: facts }
+      - { key: funding, label: How the team is funded, q: 41, question: "How is your team funded", type: many, options: funding, show: facts }
 
   - id: support
     title: Availability & support
     fields:
-      - { key: lead_time, label: Lead time to start, q: 34, question: "What is your team's typical lead time", type: one, options: lead_time, show: facts }
-      - { key: production_support, label: Production support after launch, q: 35, question: "Does your team provide ongoing production support", type: one, options: production_support, show: facts }
-      - { key: support_coverage, label: Support coverage, q: 36, question: "What support coverage", type: many, options: support_coverage, show: facts }
+      - { key: accepting, label: Accepting new work, q: 42, question: "Is your team currently accepting new work", type: one, options: accepting, show: facts }
+      - { key: lead_time, label: Lead time to start, q: 43, question: "What is your team's typical lead time", type: one, options: lead_time, show: facts }
+      - { key: production_support, label: Production support after launch, q: 44, question: "Does your team provide ongoing production support", type: one, options: production_support, show: facts }
+      - { key: support_coverage, label: Support coverage, q: 45, question: "What support coverage", type: many, options: support_coverage, show: facts }
 
   - id: sustainability
-    title: Software ownership, publication & sustainability
+    title: Open source, software ownership & sustainability
     fields:
-      - { key: open_source, label: Supports public or open source release, q: 37, question: "Can your team support software that researchers intend", type: one, options: open_source, show: facts }
-      - { key: handoff_docs, label: Hands off code and documentation, q: 38, question: "Can your team provide source code", type: one, options: handoff_docs, show: facts }
-      - { key: maintenance, label: Long-term maintenance, q: 39, question: "Does your team provide long-term application maintenance", type: one, options: maintenance, show: facts }
+      - { key: open_source, label: Open source support, q: 46, question: "How can your team support research software that is or will be open source", type: many, options: open_source, show: facts }
+      - { key: handoff_docs, label: Hands off code and documentation, q: 47, question: "Can your team provide source code", type: one, options: handoff_docs, show: facts }
+      - { key: maintenance, label: Long-term maintenance, q: 48, question: "Does your team provide long-term application maintenance", type: one, options: maintenance, show: facts }
 
   - id: additional
     title: Additional information
     fields:
-      - { key: examples, label: Example projects, q: 40, question: "Please provide up to three examples", type: text, show: text }
-      - { key: notes, label: Good to know, q: 41, question: "Is there anything else RSSN should know", type: text, show: text }
+      - { key: notes, label: Good to know, q: 49, question: "Is there anything else RSSN should know", type: text, show: text }
 
 # Filter panel on the home page, in display order. "open" starts the group expanded;
 # "limit" shows that many options before a "Show more" link.
@@ -102,9 +112,17 @@ filters:
   - heading: Organization
     fields:
       - { key: institution, open: true }
+      - { key: team_type }
       - { key: school }
       - { key: availability }
       - { key: eligible }
+  - heading: Cost & timing
+    fields:
+      - { key: cost }
+      - { key: accepting }
+      - { key: lead_time }
+      - { key: minimum }
+      - { key: support_coverage }
   - heading: Technology
     fields:
       - { key: languages, limit: 6 }
@@ -115,7 +133,6 @@ filters:
     fields:
       - { key: research_areas, limit: 6 }
       - { key: stages, limit: 6 }
-      - { key: research_frequency }
       - { key: pre_award }
   - heading: Data & compliance
     fields:
@@ -126,9 +143,4 @@ filters:
       - { key: engagement_types, limit: 6 }
       - { key: project_sizes }
       - { key: durations }
-  - heading: Cost & timing
-    fields:
-      - { key: funding }
-      - { key: minimum }
-      - { key: lead_time }
-      - { key: support_coverage }
+      - { key: open_source }

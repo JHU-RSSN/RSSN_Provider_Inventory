@@ -10,6 +10,7 @@ website: ""
 contact:
   name: "Marcus Ige"
   email: "marcus.ige@example.edu"
+team_type: "Research support service"
 availability: "Own department/unit only"
 eligible:
   - "JHU faculty"
@@ -22,10 +23,13 @@ strengths:
   - "Data Pipeline Automation"
   - "Databases"
   - "Reproducible Research Workflows"
+services_other: ""
+examples: ""
+hands_on: "Yes"
 languages:
   - "R"
-  - "SQL"
   - "SAS"
+  - "SQL"
   - "Stata"
 databases:
   - "Microsoft SQL Server"
@@ -35,11 +39,10 @@ devops:
 hosting:
   - "Johns Hopkins-managed infrastructure"
   - "Vendor/SaaS platforms"
-research_frequency: "Research is our primary focus"
 research_areas:
   - "Clinical research"
-  - "Public health"
   - "Population health"
+  - "Public health"
 stages:
   - "Grant proposal development"
   - "Grant budgeting / cost estimates"
@@ -48,20 +51,21 @@ stages:
   - "Project closeout"
 grant_estimates: "Yes"
 pre_award: "Yes"
+consult_scope: "A few meetings or a short written assessment (up to about 10 hours)"
 data_types:
-  - "Personally identifiable information (PII)"
-  - "Protected health information (PHI)"
   - "De-identified health information"
   - "Human-subject research data"
+  - "Personally identifiable information (PII)"
+  - "Protected health information (PHI)"
 compliance:
+  - "Data Use Agreements (DUAs)"
   - "HIPAA"
   - "IRB / human-subject research"
-  - "Data Use Agreements (DUAs)"
 security_approach: "Our team can assist the researcher with the process"
 engagement_types:
-  - "Technical consultation/advisory services"
-  - "Full project delivery"
   - "Embedded technical staff"
+  - "Full project delivery"
+  - "Technical consultation/advisory services"
 project_sizes:
   - "40-200 hours"
   - "201-500 hours"
@@ -72,20 +76,23 @@ durations:
   - "Funding dependent"
 takeover: "Yes, following a technical assessment"
 collaborate: "Yes"
-funding:
-  - "Fee-for-service"
-  - "Grant-funded"
+cost: "Charged"
+free_limit: ""
 charges:
   - "Hourly"
 minimum: "Less than $5,000"
+funding:
+  - "Fee-for-service"
+  - "Grant-funded"
+accepting: "Yes, with limited capacity"
 lead_time: "1-2 months"
 production_support: "Case-by-case"
 support_coverage:
   - "Standard Hopkins business hours"
-open_source: "Yes, on a case-by-case basis"
+open_source:
+  - "Prepare software for public release"
 handoff_docs: "Yes"
 maintenance: "Case-by-case"
-examples: ""
 notes: ""
 ---
 Statistical programmers and data managers supporting population health and clinical studies from protocol to publication. We build REDCap projects, clean and link study data, and deliver reproducible analysis pipelines in R and Stata. We currently work only with Department of Biostatistics faculty and staff.

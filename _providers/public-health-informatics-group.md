@@ -10,35 +10,38 @@ website: ""
 contact:
   name: "Amara Nwosu"
   email: "amara.nwosu@example.edu"
+team_type: "Research group sharing expertise"
 availability: "Certain schools/divisions"
 eligible:
   - "JHU faculty"
   - "Projects involving external research collaborators"
 services:
+  - "UX, Accessibility & Software Quality"
+  - "Web & Application Development"
   - "Data Pipeline Automation"
   - "Machine Learning/AI Development"
-  - "UX, Accessibility & Software Quality"
-  - "Web Development"
 strengths:
+  - "Web & Application Development"
   - "Machine Learning/AI Development"
-  - "Web Development"
+services_other: ""
+examples: ""
+hands_on: "Yes"
 languages:
-  - "Python"
-  - "R"
   - "JavaScript / TypeScript"
   - "Kotlin / Android"
+  - "Python"
+  - "R"
 databases:
-  - "PostgreSQL"
   - "MySQL/MariaDB"
+  - "PostgreSQL"
 devops:
   - "GitHub"
 hosting:
   - "Amazon Web Services (AWS)"
   - "Vendor/SaaS platforms"
-research_frequency: "Research is our primary focus"
 research_areas:
-  - "Public health"
   - "Population health"
+  - "Public health"
   - "Social sciences"
 stages:
   - "Grant proposal development"
@@ -47,14 +50,15 @@ stages:
   - "Research data processing/analysis"
 grant_estimates: "Yes"
 pre_award: "Depends on the project"
+consult_scope: "Scoped case by case"
 data_types:
-  - "Personally identifiable information (PII)"
   - "De-identified health information"
   - "Human-subject research data"
+  - "Personally identifiable information (PII)"
 compliance:
+  - "Accessibility requirements"
   - "IRB / human-subject research"
   - "Research involving external collaborators"
-  - "Accessibility requirements"
 security_approach: "Varies by project"
 engagement_types:
   - "Full project delivery"
@@ -67,19 +71,23 @@ durations:
   - "Funding dependent"
 takeover: "Case-by-case"
 collaborate: "Yes"
-funding:
-  - "Grant-funded"
+cost: "Charged"
+free_limit: ""
 charges:
   - "Fixed project price"
 minimum: "Varies by project"
+funding:
+  - "Grant-funded"
+accepting: "Yes"
 lead_time: "Varies based on project"
 production_support: "Yes, for applications developed by our team"
 support_coverage:
   - "Project-specific support arrangements"
-open_source: "Yes, on a case-by-case basis"
+open_source:
+  - "Develop new open source software"
+  - "Maintain software after public release"
 handoff_docs: "Yes"
 maintenance: "Case-by-case"
-examples: ""
 notes: ""
 ---
 We build mobile survey tools, monitoring dashboards, and applied machine learning models for global health programs, often working alongside partners in low-bandwidth settings. We focus on Bloomberg School projects and their external collaborators.

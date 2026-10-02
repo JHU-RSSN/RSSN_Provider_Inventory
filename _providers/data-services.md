@@ -10,32 +10,30 @@ website: "https://www.library.jhu.edu"
 contact:
   name: "Ruth Okafor"
   email: "ruth.okafor@example.edu"
+team_type: "Research support service"
 availability: "Hopkins-wide"
 eligible:
+  - "Cross-institution JHU/JHHS projects"
   - "JHU faculty"
   - "JHU staff"
   - "JHU students/trainees working on sponsored research"
-  - "Cross-institution JHU/JHHS projects"
 services:
+  - "Version Control & Collaboration"
   - "Reproducible Research Workflows"
   - "Technical Documentation & Training"
-  - "Version Control and Collaboration"
 strengths:
   - "Reproducible Research Workflows"
   - "Technical Documentation & Training"
-languages:
-  - "Python"
-  - "R"
-databases:
-  - "Not applicable"
-devops:
-  - "GitHub"
-hosting:
-  - "Not applicable"
-research_frequency: "Research is our primary focus"
+services_other: ""
+examples: ""
+hands_on: "No"
+languages: []
+databases: []
+devops: []
+hosting: []
 research_areas:
-  - "Social sciences"
   - "Humanities"
+  - "Social sciences"
   - "General/research area independent"
 stages:
   - "Grant proposal development"
@@ -44,10 +42,11 @@ stages:
   - "Data/software archiving"
 grant_estimates: "Yes"
 pre_award: "Yes"
+consult_scope: "A brief conversation (about an hour or less)"
 data_types:
-  - "Public data"
-  - "Non-sensitive research data"
   - "De-identified health information"
+  - "Non-sensitive research data"
+  - "Public data"
 compliance:
   - "Data Use Agreements (DUAs)"
 security_approach: "The researcher/project team is primarily responsible"
@@ -60,20 +59,22 @@ durations:
   - "Less than 1 month"
 takeover: "No"
 collaborate: "Yes"
-funding:
-  - "No direct charge to researchers"
-  - "Centrally funded"
-charges:
-  - "Not applicable"
+cost: "No cost"
+free_limit: ""
+charges: []
 minimum: "No minimum"
+funding:
+  - "Centrally funded"
+accepting: "Yes"
 lead_time: "Less than 1 week"
 production_support: "No"
 support_coverage:
   - "Standard Hopkins business hours"
-open_source: "Yes"
+open_source:
+  - "Prepare software for public release"
+  - "Advise on licensing, governance, or community"
 handoff_docs: "Not applicable"
 maintenance: "No"
-examples: ""
 notes: ""
 ---
 We help researchers plan, document, and share their data and code. Services include data management plans for grant proposals, data cleaning with OpenRefine, Git and GitHub training, and archiving datasets and software in the Johns Hopkins Research Data Repository. No cost to Hopkins researchers.

@@ -1,6 +1,6 @@
 ---
-# Imported from the RSSN Research IT Provider Questionnaire.
-# Allowed values for each list are in _data/taxonomy.yml.
+# Pilot response to the Draft 2 questionnaire, carried over to Draft 3 fields.
+# Blank fields are Draft 3 questions the pilot didn't ask. Allowed values are in _data/taxonomy.yml.
 title: "Institute for Data Intensive Engineering and Science (IDIES)"
 institution: "JHU"
 school: "Whiting School of Engineering"
@@ -13,71 +13,79 @@ submitted_by:
   name: "Gerard Lemson"
   email: "glemson1@jhu.edu"
 updated: 2026-10-02
+team_type: ""
 availability: "Hopkins-wide"
 eligible:
+  - "Cross-institution JHU/JHHS projects"
+  - "JHHS faculty"
+  - "JHHS staff"
   - "JHU faculty"
   - "JHU staff"
   - "JHU students/trainees working on sponsored research"
-  - "JHHS faculty"
-  - "JHHS staff"
   - "Johns Hopkins research centers/institutes"
-  - "Cross-institution JHU/JHHS projects"
-  - "Projects involving external research collaborators"
   - "Other Hopkins-affiliated groups"
+  - "Projects involving external research collaborators"
 services:
-  - "Containerization and Cloud Computing"
+  - "Web & Application Development"
   - "Data Pipeline Automation"
   - "Databases"
-  - "DevOps & Infrastructure Operations"
   - "Machine Learning Operations"
   - "Reproducible Research Workflows"
+  - "Containerization & Cloud Computing"
+  - "DevOps & Infrastructure Operations"
   - "Technical Consulting & Solution Architecture"
-  - "Web Development"
 strengths:
   - "Data Pipeline Automation"
   - "Databases"
   - "DevOps & Infrastructure Operations"
   - "Technical Consulting & Solution Architecture"
+services_other: ""
+examples: |
+  Sloan Digital Sky Survey / Astronomy / Data(base) hosting with web applications
+
+  Johns Hopkins Turbulence Database / Hydrodynamics / Data(base) hosting with web applications
+
+  Mapping the Modern Agora / Agora / creation database + loading pipeline for IRS filings non-profit organizations
+hands_on: ""
 languages:
+  - "C# / .NET"
+  - "Java"
+  - "JavaScript / TypeScript"
   - "Python"
   - "SQL"
-  - "Java"
-  - "C# / .NET"
-  - "JavaScript / TypeScript"
 databases:
   - "Microsoft SQL Server"
-  - "PostgreSQL"
   - "MySQL/MariaDB"
+  - "PostgreSQL"
 devops:
+  - "Docker"
   - "GitHub"
   - "GitHub Actions"
   - "Jenkins"
-  - "Docker"
   - "Kubernetes"
 hosting:
+  - "Containerized environments"
   - "Johns Hopkins-managed infrastructure"
   - "On-premises servers"
-  - "Containerized environments"
-research_frequency: "Frequently"
 research_areas:
-  - "Biomedical research"
   - "Basic science"
-  - "Public health"
-  - "Engineering"
-  - "Data science"
+  - "Biomedical research"
   - "Computational science"
-  - "Social sciences"
+  - "Data science"
   - "Education research"
+  - "Engineering"
+  - "Genomics/bioinformatics"
   - "Humanities"
   - "Imaging"
-  - "Genomics/bioinformatics"
   - "Multidisciplinary research"
+  - "Public health"
+  - "Social sciences"
   - "General/research area independent"
 stages:
   - "Early consultation / feasibility"
   - "Grant proposal development"
-  - "Technical architecture/design"
   - "Grant budgeting / cost estimates"
+  - "Technical architecture/design"
   - "Prototype/proof of concept"
   - "Software development"
   - "Research data collection"
@@ -88,23 +96,24 @@ stages:
   - "Data/software archiving"
 grant_estimates: "Yes, on a case-by-case basis"
 pre_award: "Yes"
+consult_scope: ""
 data_types:
-  - "Public data"
-  - "Non-sensitive research data"
   - "De-identified health information"
   - "Genomic data"
+  - "Non-sensitive research data"
+  - "Public data"
   - "Unsure / requires review"
 compliance:
   - "Research involving external collaborators"
   - "Restricted-access research data"
 security_approach: "The researcher/project team is primarily responsible"
 engagement_types:
-  - "Technical consultation/advisory services"
   - "Joint/co-development with a research team"
-  - "Prototype/proof-of-concept development"
   - "Ongoing maintenance/support"
   - "Production operations"
+  - "Prototype/proof-of-concept development"
   - "Short-term troubleshooting"
+  - "Technical consultation/advisory services"
 project_sizes:
   - "No typical project size"
 durations:
@@ -118,29 +127,24 @@ durations:
   - "Varies significantly"
 takeover: "Case-by-case"
 collaborate: "Yes, on a case-by-case basis"
-funding:
-  - "No direct charge to researchers"
-  - "Grant-funded"
-  - "Department-funded"
-  - "Combination of funding models"
+cost: ""
+free_limit: ""
 charges:
   - "Hosting/infrastructure usage"
-charges_other: "salary"
+  - "Percent effort / FTE on the project budget"
 minimum: "Varies by project"
+funding:
+  - "Department-funded"
+  - "Grant-funded"
+accepting: ""
 lead_time: "1-2 weeks"
 production_support: "Yes, on a separate support agreement"
 support_coverage:
   - "Best-effort support"
   - "Project-specific support arrangements"
-open_source: "Yes, on a case-by-case basis"
+open_source: []
 handoff_docs: "Yes, depending on the engagement"
 maintenance: "Case-by-case"
-examples: |
-  Sloan Digital Sky Survey / Astronomy / Data(base) hosting with web applications
-
-  Johns Hopkins Turbulence Database / Hydrodynamics / Data(base) hosting with web applications
-
-  Mapping the Modern Agora / Agora / creation database + loading pipeline for IRS filings non-profit organizations
 notes: |
   SciServer collaborative science platform attached to petabytes of storage. >10000 compute cores and relational database servers allows very fast start-up engagement for many projects.
 ---

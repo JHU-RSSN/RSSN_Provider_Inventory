@@ -3,6 +3,7 @@
 # For lists, delete the lines that don't apply and keep the spelling of the rest exactly as written.
 # For single answers, pick one of the values listed in the comment above the field.
 # Anything that doesn't fit a listed value goes in the matching "_other" field as plain text.
+# Leave a field empty ("" or []) if the questionnaire skipped it for your team.
 
 # Q7. Team or service name, as researchers should see it
 title: "Your Team or Service Name"
@@ -17,10 +18,10 @@ school: "Whiting School of Engineering"
 # Q6. Department or organizational unit within that school
 unit: "Department of Example Studies"
 
-# Q9. Website or service information URL (optional; leave "" if none)
+# Q8. Website or service information URL (optional; leave "" if none)
 website: ""
 
-# Q3-4. Primary point of contact
+# Q1-4. Primary point of contact
 contact:
   name: "First Last"
   email: "name@jhu.edu"
@@ -28,158 +29,168 @@ contact:
 # Date this listing was last reviewed (YYYY-MM-DD)
 updated: 2026-01-01
 
+# ===== Who you support =====
+
+# Q9. Team type. One of:
+#   Research support service | Research group sharing expertise | IT service with research support
+team_type: "Research support service"
+
 # Q10. Available to. One of:
-#   Hopkins-wide | JHU only | JHHS only | Certain schools/divisions | Other criteria | Own department/unit only | Not outside own unit (other)
+#   Hopkins-wide | JHU only | JHHS only | Certain schools/divisions | Own department/unit only | It's complicated
 availability: "Hopkins-wide"
 
 # Q11. Who can engage this team
 eligible:
+  - "Cross-institution JHU/JHHS projects"
+  - "JHHS faculty"
+  - "JHHS staff"
   - "JHU faculty"
   - "JHU staff"
   - "JHU students/trainees working on sponsored research"
-  - "JHHS faculty"
-  - "JHHS staff"
   - "Johns Hopkins research centers/institutes"
-  - "Cross-institution JHU/JHHS projects"
-  - "Projects involving external research collaborators"
   - "Other Hopkins-affiliated groups"
+  - "Projects involving external research collaborators"
 eligible_other: ""
 
-# Q13. Services
+# ===== Services & expertise =====
+
+# Q12-15. Services you offer (Offered or Area of strength in the grids), by group
 services:
+  # Software Development & Engineering
   - "AI-Assisted Coding"
-  - "Containerization and Cloud Computing"
+  - "Python or R Package Development"
+  - "UX, Accessibility & Software Quality"
+  - "Version Control & Collaboration"
+  - "Web & Application Development"
+  # Data, AI & Analytics
   - "Data Pipeline Automation"
   - "Databases"
+  - "Machine Learning Operations"
+  - "Machine Learning/AI Development"
+  - "Reproducible Research Workflows"
+  # Computing & Infrastructure
+  - "Containerization & Cloud Computing"
   - "DevOps & Infrastructure Operations"
   - "High-Performance/Parallel Computing"
   - "IT Security & Compliance"
-  - "Machine Learning Operations"
-  - "Machine Learning/AI Development"
-  - "Python or R Package Development"
-  - "Reproducible Research Workflows"
+  # Consulting, Training & Sustainability
+  - "Domain/Subject-Matter Expertise"
+  - "Open Source Licensing & Sustainability"
   - "Technical Consulting & Solution Architecture"
   - "Technical Documentation & Training"
-  - "UX, Accessibility & Software Quality"
-  - "Version Control and Collaboration"
-  - "Web Development"
-services_other: ""
 
-# Q42. Areas of strength (choose up to 5)
+# Q12-15. Areas of strength: up to five of the services above
 strengths:
   - "AI-Assisted Coding"
-  - "Containerization and Cloud Computing"
-  - "Data Pipeline Automation"
-  - "Databases"
-  - "DevOps & Infrastructure Operations"
-  - "High-Performance/Parallel Computing"
-  - "IT Security & Compliance"
-  - "Machine Learning Operations"
-  - "Machine Learning/AI Development"
   - "Python or R Package Development"
-  - "Reproducible Research Workflows"
-  - "Technical Consulting & Solution Architecture"
-  - "Technical Documentation & Training"
-  - "UX, Accessibility & Software Quality"
-  - "Version Control and Collaboration"
-  - "Web Development"
-strengths_other: ""
+  # ...add up to three more
 
-# Q14. Languages and development technologies
+# Q16. Other services or expertise (optional; Markdown is fine)
+services_other: ""
+
+# Q17. Example projects (optional; Markdown is fine)
+examples: ""
+
+# ===== Technical capabilities =====
+
+# Q19. Does hands-on technical work. One of:
+#   Yes | No
+hands_on: "Yes"
+
+# Q20. Languages and development technologies
 languages:
+  - "Angular"
+  - "C / C++"
+  - "C# / .NET"
+  - "Java"
+  - "JavaScript / TypeScript"
+  - "Kotlin / Android"
+  - "MATLAB"
+  - "Node.js"
+  - "PHP"
+  - "PowerShell"
   - "Python"
   - "R"
-  - "SQL"
-  - "SAS"
-  - "Stata"
-  - "MATLAB"
-  - "Java"
-  - "C# / .NET"
-  - "C / C++"
-  - "JavaScript / TypeScript"
-  - "Node.js"
-  - "Angular"
   - "React"
-  - "Vue"
-  - "Swift / iOS"
-  - "Kotlin / Android"
-  - "PHP"
   - "Ruby"
-  - "PowerShell"
+  - "SAS"
+  - "SQL"
+  - "Stata"
+  - "Swift / iOS"
+  - "Vue"
   - "Not applicable"
 languages_other: ""
 
-# Q15. Databases
+# Q21. Databases
 databases:
-  - "Microsoft SQL Server"
-  - "PostgreSQL"
-  - "MySQL/MariaDB"
-  - "Oracle"
   - "Azure SQL"
-  - "NoSQL databases"
-  - "MongoDB"
   - "Cloud-native databases"
+  - "Microsoft SQL Server"
+  - "MongoDB"
+  - "MySQL/MariaDB"
+  - "NoSQL databases (other)"
+  - "Oracle"
+  - "PostgreSQL"
   - "Not applicable"
 databases_other: ""
 
-# Q16. Infrastructure and DevOps
+# Q22. Infrastructure and DevOps
 devops:
+  - "Amazon EKS"
+  - "Azure DevOps"
+  - "Azure Kubernetes Service (AKS)"
+  - "Docker"
   - "GitHub"
   - "GitHub Actions"
-  - "Azure DevOps"
   - "Jenkins"
-  - "Docker"
   - "Kubernetes"
-  - "Azure Kubernetes Service (AKS)"
-  - "Amazon EKS"
+  - "Monitoring/logging platforms"
+  - "Singularity/Apptainer"
   - "Terraform"
   - "Other Infrastructure as Code"
-  - "Monitoring/logging platforms"
   - "Not applicable"
 devops_other: ""
 
-# Q17. Computing and hosting environments
+# Q23. Computing and hosting environments
 hosting:
-  - "Microsoft Azure"
   - "Amazon Web Services (AWS)"
-  - "Johns Hopkins-managed infrastructure"
-  - "On-premises servers"
-  - "High-performance computing (HPC)"
   - "Containerized environments"
-  - "Vendor/SaaS platforms"
+  - "High-performance computing (HPC)"
   - "Hybrid cloud/on-premises environments"
+  - "Johns Hopkins-managed infrastructure"
+  - "Microsoft Azure"
+  - "On-premises servers"
+  - "Vendor/SaaS platforms"
   - "Not applicable"
 hosting_other: ""
 
-# Q18. Research focus. One of:
-#   Research is our primary focus | Frequently | Occasionally | Rarely | We do not currently support research projects
-research_frequency: "Research is our primary focus"
+# ===== Research experience =====
 
-# Q19. Research areas
+# Q24. Research areas
 research_areas:
-  - "Clinical research"
-  - "Biomedical research"
   - "Basic science"
-  - "Public health"
-  - "Population health"
-  - "Engineering"
-  - "Data science"
+  - "Biomedical research"
+  - "Clinical research"
   - "Computational science"
-  - "Social sciences"
+  - "Data science"
   - "Education research"
+  - "Engineering"
+  - "Genomics/bioinformatics"
   - "Humanities"
   - "Imaging"
-  - "Genomics/bioinformatics"
   - "Multidisciplinary research"
+  - "Population health"
+  - "Public health"
+  - "Social sciences"
   - "General/research area independent"
 research_areas_other: ""
 
-# Q20. Project stages
+# Q25. Project stages
 stages:
   - "Early consultation / feasibility"
   - "Grant proposal development"
-  - "Technical architecture/design"
   - "Grant budgeting / cost estimates"
+  - "Technical architecture/design"
   - "Prototype/proof of concept"
   - "Software development"
   - "Research data collection"
@@ -188,64 +199,71 @@ stages:
   - "Ongoing maintenance/support"
   - "Project closeout"
   - "Data/software archiving"
-  - "Transition from grant-funding to long-term sustainability"
 stages_other: ""
 
-# Q21. Technical estimates for grant proposals. One of:
+# Q26. Technical estimates for grant proposals. One of:
 #   Yes | Yes, on a case-by-case basis | No
 grant_estimates: "Yes"
 
-# Q22. Consults before funding is awarded. One of:
+# Q27. Consults before funding is awarded. One of:
 #   Yes | Yes, on a limited basis | Depends on the project | No
 pre_award: "Yes"
 
-# Q23. Data types supported
+# Q28. Initial or pre-award consultation. One of:
+#   A brief conversation (about an hour or less) | A few meetings or a short written assessment (up to about 10 hours) | Scoped case by case
+consult_scope: "A brief conversation (about an hour or less)"
+
+# ===== Research data, security & compliance =====
+
+# Q29. Data types supported
 data_types:
-  - "Public data"
+  - "Data under NIST 800-171 controls"
+  - "De-identified health information"
+  - "Genomic data"
+  - "Human-subject research data"
   - "Non-sensitive research data"
   - "Personally identifiable information (PII)"
-  - "Protected health information (PHI)"
-  - "De-identified health information"
-  - "Human-subject research data"
-  - "Genomic data"
   - "Proprietary/confidential research data"
+  - "Protected health information (PHI)"
+  - "Public data"
   - "Restricted data"
-  - "Data under NIST 800-171 controls"
   - "Depends on the hosting/environment"
   - "Unsure / requires review"
 data_types_other: ""
 
-# Q24. Requirements and reviews supported
+# Q30. Requirements and reviews supported
 compliance:
+  - "Accessibility requirements"
+  - "Business Associate Agreements (BAAs)"
+  - "Data Use Agreements (DUAs)"
   - "HIPAA"
   - "IRB / human-subject research"
   - "Johns Hopkins IT Risk/Security review"
-  - "Data Use Agreements (DUAs)"
-  - "Business Associate Agreements (BAAs)"
   - "Research involving external collaborators"
   - "Restricted-access research data"
-  - "Accessibility requirements"
   - "None of the above"
 compliance_other: ""
 
-# Q25. Security and compliance approach. One of:
+# Q31. Security and compliance approach. One of:
 #   Our team can lead the technical security/compliance process | Our team can assist the researcher with the process | The researcher/project team is primarily responsible | Another Hopkins group handles this for us | Varies by project | Not applicable
 security_approach: "Our team can lead the technical security/compliance process"
 
-# Q26. Engagement types
+# ===== Engagement model =====
+
+# Q32. Engagement types
 engagement_types:
-  - "Technical consultation/advisory services"
-  - "Full project delivery"
-  - "Staff augmentation"
   - "Embedded technical staff"
+  - "Full project delivery"
   - "Joint/co-development with a research team"
-  - "Prototype/proof-of-concept development"
   - "Ongoing maintenance/support"
   - "Production operations"
+  - "Prototype/proof-of-concept development"
   - "Short-term troubleshooting"
+  - "Staff augmentation"
+  - "Technical consultation/advisory services"
 engagement_types_other: ""
 
-# Q27. Project sizes
+# Q33. Project sizes
 project_sizes:
   - "Less than 40 hours"
   - "40-200 hours"
@@ -256,7 +274,7 @@ project_sizes:
   - "No typical project size"
 project_sizes_other: ""
 
-# Q28. Engagement duration
+# Q34. Engagement duration
 durations:
   - "One-time consultation"
   - "Less than 1 month"
@@ -269,51 +287,63 @@ durations:
   - "Varies significantly"
 durations_other: ""
 
-# Q29. Takes over software from other teams. One of:
+# Q35. Takes over software from other teams. One of:
 #   Yes | Yes, following a technical assessment | Case-by-case | No
 takeover: "Yes"
 
-# Q30. Works with the project's technical staff. One of:
+# Q36. Works with the project's technical staff. One of:
 #   Yes | Yes, on a case-by-case basis | No
 collaborate: "Yes"
 
-# Q31. How services are funded
-funding:
-  - "No direct charge to researchers"
-  - "Centrally funded"
-  - "Fee-for-service"
-  - "Internal cost recovery"
-  - "Grant-funded"
-  - "Department-funded"
-  - "Combination of funding models"
-funding_other: ""
+# ===== Cost & funding =====
 
-# Q32. How charges are calculated
+# Q37. Cost to researchers. One of:
+#   No cost | Free initial help, then charged | Charged
+cost: "No cost"
+
+# Q38. Where no-cost help ends (one line; leave "" if it doesn't apply)
+free_limit: ""
+
+# Q39. How charges are calculated
 charges:
-  - "Hourly"
-  - "Fixed project price"
-  - "Monthly fee"
   - "Annual fee"
-  - "Generally based on FTE"
-  - "Hosting/infrastructure usage"
-  - "Software/license costs"
   - "Cloud consumption"
-  - "Not applicable"
+  - "Fixed project price"
+  - "Hosting/infrastructure usage"
+  - "Hourly"
+  - "Monthly fee"
+  - "Percent effort / FTE on the project budget"
+  - "Software/license costs"
 charges_other: ""
 
-# Q33. Minimum commitment. One of:
-#   No minimum | Less than $5,000 | $5,000-$10,000 | $10,001-$25,000 | More than $25,000 | Varies by project | Not applicable
+# Q40. Minimum commitment. One of:
+#   No minimum | Less than $5,000 | $5,000-$10,000 | $10,001-$25,000 | More than $25,000 | Varies by project
 minimum: "No minimum"
 
-# Q34. Lead time to start. One of:
-#   Less than 1 week | 1-2 weeks | 3-4 weeks | 1-2 months | More than 2 months | Varies based on project | Currently not accepting new work
+# Q41. How the team is funded
+funding:
+  - "Centrally funded"
+  - "Department-funded"
+  - "Fee-for-service"
+  - "Grant-funded"
+  - "Internal cost recovery"
+funding_other: ""
+
+# ===== Availability & support =====
+
+# Q42. Accepting new work. One of:
+#   Yes | Yes, with limited capacity | Not at this time
+accepting: "Yes"
+
+# Q43. Lead time to start. One of:
+#   Less than 1 week | 1-2 weeks | 3-4 weeks | 1-2 months | More than 2 months | Varies based on project
 lead_time: "Less than 1 week"
 
-# Q35. Production support after launch. One of:
-#   Yes | Yes, for applications developed by our team | Yes, on a separate support agreement | Case-by-case | No
+# Q44. Production support after launch. One of:
+#   Yes | Yes, for applications developed by our team | Yes, on a separate support agreement | Yes, but only for a limited time | Case-by-case | No
 production_support: "Yes"
 
-# Q36. Support coverage
+# Q45. Support coverage
 support_coverage:
   - "Standard Hopkins business hours"
   - "Extended-hours support"
@@ -324,22 +354,32 @@ support_coverage:
   - "Not applicable"
 support_coverage_other: ""
 
-# Q37. Supports public or open source release. One of:
-#   Yes | Yes, on a case-by-case basis | No | Unsure
-open_source: "Yes"
+# ===== Open source, software ownership & sustainability =====
 
-# Q38. Hands off code and documentation. One of:
+# Q46. Open source support
+open_source:
+  - "Contribute to existing open source projects"
+  - "Develop new open source software"
+  - "Prepare software for public release"
+  - "Advise on licensing, governance, or community"
+  - "Maintain software after public release"
+  - "Cannot currently support open source work"
+  - "Unsure"
+open_source_other: ""
+
+# Q47. Hands off code and documentation. One of:
 #   Yes | Yes, depending on the engagement | No | Not applicable
 handoff_docs: "Yes"
 
-# Q39. Long-term maintenance. One of:
+# Q48. Long-term maintenance. One of:
 #   Yes | Yes, for systems developed by our team | Case-by-case | No
 maintenance: "Yes"
 
-# Q40. Example projects (optional; Markdown is fine)
-examples: ""
+# ===== Additional information =====
 
-# Q41. Good to know (optional; Markdown is fine)
+# Q49. Good to know (optional; Markdown is fine)
 notes: ""
 ---
-Describe your team in 300-500 characters (2-3 sentences): who you support, your core services or specialty, and what makes your team a good fit.
+Q18 (optional). A short paragraph shown beneath the summary RSSN builds from your answers:
+your team's size, what sets you apart, unique tools or resources, or the projects you're best
+suited for. About 500 characters. Delete this text if you don't want a paragraph.

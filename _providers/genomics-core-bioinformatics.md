@@ -10,34 +10,37 @@ website: ""
 contact:
   name: "Elena Petrova"
   email: "elena.petrova@example.edu"
+team_type: "Research support service"
 availability: "Hopkins-wide"
 eligible:
-  - "JHU faculty"
-  - "JHHS faculty"
   - "Cross-institution JHU/JHHS projects"
+  - "JHHS faculty"
+  - "JHU faculty"
 services:
+  - "Python or R Package Development"
   - "Data Pipeline Automation"
   - "High-Performance/Parallel Computing"
-  - "Python or R Package Development"
 strengths:
   - "Data Pipeline Automation"
   - "High-Performance/Parallel Computing"
+services_other: ""
+examples: ""
+hands_on: "Yes"
 languages:
   - "Python"
   - "R"
 databases:
   - "PostgreSQL"
 devops:
-  - "GitHub"
   - "Docker"
+  - "GitHub"
 hosting:
   - "Amazon Web Services (AWS)"
-  - "High-performance computing (HPC)"
   - "Containerized environments"
-research_frequency: "Research is our primary focus"
+  - "High-performance computing (HPC)"
 research_areas:
-  - "Biomedical research"
   - "Basic science"
+  - "Biomedical research"
   - "Genomics/bioinformatics"
 stages:
   - "Grant budgeting / cost estimates"
@@ -45,17 +48,18 @@ stages:
   - "Data/software archiving"
 grant_estimates: "Yes"
 pre_award: "Yes"
+consult_scope: "A brief conversation (about an hour or less)"
 data_types:
   - "De-identified health information"
-  - "Human-subject research data"
   - "Genomic data"
+  - "Human-subject research data"
 compliance:
-  - "IRB / human-subject research"
   - "Data Use Agreements (DUAs)"
+  - "IRB / human-subject research"
 security_approach: "Our team can assist the researcher with the process"
 engagement_types:
-  - "Technical consultation/advisory services"
   - "Full project delivery"
+  - "Technical consultation/advisory services"
 project_sizes:
   - "40-200 hours"
   - "201-500 hours"
@@ -64,20 +68,24 @@ durations:
   - "3-6 months"
 takeover: "Yes, following a technical assessment"
 collaborate: "Yes"
+cost: "Charged"
+free_limit: ""
+charges:
+  - "Cloud consumption"
+  - "Hourly"
+minimum: "No minimum"
 funding:
   - "Fee-for-service"
-charges:
-  - "Hourly"
-  - "Cloud consumption"
-minimum: "No minimum"
+accepting: "Yes"
 lead_time: "3-4 weeks"
 production_support: "No"
 support_coverage:
   - "Best-effort support"
-open_source: "Yes"
+open_source:
+  - "Develop new open source software"
+  - "Prepare software for public release"
 handoff_docs: "Yes"
 maintenance: "No"
-examples: ""
 notes: ""
 ---
 Bioinformaticians supporting sequencing projects end to end, from single-cell RNA-seq and spatial transcriptomics to whole-genome variant calling. We write Nextflow pipelines that run on the Hopkins cluster or AWS and hand back documented, rerunnable code.

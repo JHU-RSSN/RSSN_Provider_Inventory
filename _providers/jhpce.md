@@ -1,6 +1,6 @@
 ---
-# Imported from the RSSN Research IT Provider Questionnaire.
-# Allowed values for each list are in _data/taxonomy.yml.
+# Pilot response to the Draft 2 questionnaire, carried over to Draft 3 fields.
+# Blank fields are Draft 3 questions the pilot didn't ask. Allowed values are in _data/taxonomy.yml.
 title: "JHPCE"
 institution: "JHU"
 school: "Bloomberg School of Public Health"
@@ -13,59 +13,62 @@ submitted_by:
   name: "Mark Miller"
   email: "marcus@jhu.edu"
 updated: 2026-09-22
+team_type: ""
 availability: "Hopkins-wide"
 eligible:
+  - "Cross-institution JHU/JHHS projects"
+  - "JHHS faculty"
+  - "JHHS staff"
   - "JHU faculty"
   - "JHU staff"
   - "JHU students/trainees working on sponsored research"
-  - "JHHS faculty"
-  - "JHHS staff"
   - "Johns Hopkins research centers/institutes"
-  - "Cross-institution JHU/JHHS projects"
-  - "Projects involving external research collaborators"
   - "Other Hopkins-affiliated groups"
+  - "Projects involving external research collaborators"
 services:
   - "AI-Assisted Coding"
+  - "Python or R Package Development"
+  - "Version Control & Collaboration"
   - "Data Pipeline Automation"
-  - "DevOps & Infrastructure Operations"
-  - "High-Performance/Parallel Computing"
   - "Machine Learning Operations"
   - "Machine Learning/AI Development"
-  - "Python or R Package Development"
-  - "Technical Consulting & Solution Architecture"
-  - "Version Control and Collaboration"
-strengths:
   - "DevOps & Infrastructure Operations"
   - "High-Performance/Parallel Computing"
-  - "Python or R Package Development"
   - "Technical Consulting & Solution Architecture"
+strengths:
+  - "Python or R Package Development"
+  - "DevOps & Infrastructure Operations"
+  - "High-Performance/Parallel Computing"
+  - "Technical Consulting & Solution Architecture"
+services_other: ""
+examples: ""
+hands_on: ""
 languages:
+  - "C / C++"
+  - "MATLAB"
+  - "PHP"
   - "Python"
   - "R"
   - "SAS"
   - "Stata"
-  - "MATLAB"
-  - "C / C++"
-  - "PHP"
 databases: []
 devops:
   - "GitHub"
-devops_other: "Docker via Singularity/Apptainer"
+  - "Singularity/Apptainer"
 hosting:
-  - "On-premises servers"
-  - "High-performance computing (HPC)"
   - "Containerized environments"
-research_frequency: "Frequently"
+  - "High-performance computing (HPC)"
+  - "On-premises servers"
 research_areas:
-  - "Biomedical research"
   - "Basic science"
-  - "Public health"
-  - "Population health"
-  - "Data science"
+  - "Biomedical research"
   - "Computational science"
-  - "Social sciences"
+  - "Data science"
   - "Education research"
   - "Genomics/bioinformatics"
+  - "Population health"
+  - "Public health"
+  - "Social sciences"
   - "General/research area independent"
 research_areas_other: "Statistics"
 stages:
@@ -76,18 +79,19 @@ stages:
   - "Ongoing maintenance/support"
 grant_estimates: "Yes"
 pre_award: "Yes, on a limited basis"
+consult_scope: ""
 data_types:
-  - "Public data"
-  - "Non-sensitive research data"
+  - "Data under NIST 800-171 controls"
   - "De-identified health information"
   - "Genomic data"
+  - "Non-sensitive research data"
   - "Proprietary/confidential research data"
-  - "Data under NIST 800-171 controls"
+  - "Public data"
 compliance:
+  - "Data Use Agreements (DUAs)"
   - "HIPAA"
   - "IRB / human-subject research"
   - "Johns Hopkins IT Risk/Security review"
-  - "Data Use Agreements (DUAs)"
   - "Research involving external collaborators"
   - "Restricted-access research data"
 security_approach: "Our team can assist the researcher with the process"
@@ -103,22 +107,24 @@ durations:
   - "Varies significantly"
 takeover: "No"
 collaborate: "Yes, on a case-by-case basis"
-funding:
-  - "Fee-for-service"
-  - "Internal cost recovery"
+cost: ""
+free_limit: ""
 charges:
   - "Hosting/infrastructure usage"
 minimum: "No minimum"
+funding:
+  - "Fee-for-service"
+  - "Internal cost recovery"
+accepting: ""
 lead_time: "Less than 1 week"
 production_support: "Yes"
 support_coverage:
   - "Standard Hopkins business hours"
   - "Extended-hours support"
   - "After-hours/on-call support"
-open_source: "Yes"
+open_source: []
 handoff_docs: "Not applicable"
 maintenance: "Case-by-case"
-examples: ""
 notes: ""
 ---
 The JHPCE cluster is a high-performance, Linux-based computing environment that provides researchers with access to an advanced computing platform for analysis with large RAM and computing requirements. The JHPCE cluster supports a large, curated software library, including common scientific and statistical tools, bioinformatics applications, and programming languages.

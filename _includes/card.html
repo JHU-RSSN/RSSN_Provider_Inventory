@@ -5,10 +5,11 @@
 {%- if n_strengths > 0 %}{% assign chips = p.strengths %}{% assign chips_label = "Areas of strength" %}{% else %}{% assign chips = p.services %}{% assign chips_label = "Services" %}{% endif -%}
 {%- assign extra = chips.size | minus: 3 -%}
 {%- assign avail = site.data.taxonomy.availability | where: "label", p.availability | first -%}
+{%- assign acc = site.data.taxonomy.accepting | where: "label", p.accepting | first -%}
 <article class="card{% if p.sample %} card--sample{% endif %}{% if avail.internal %} card--internal{% endif %}" data-id="{{ p.url }}" style="--card-accent: {{ school.color | default: '#002D72' }}">
-  <p class="card__eyebrow">{{ school.short | default: p.school }}{% if avail.internal %}<span class="unit-tag">Unit only</span>{% endif %}{% if p.sample %}<span class="sample-tag">Sample</span>{% endif %}</p>
+  <p class="card__eyebrow">{{ school.short | default: p.school }}{% if avail.internal %}<span class="unit-tag">Unit only</span>{% endif %}{% if acc.paused %}<span class="paused-tag">Not accepting new work</span>{% elsif p.accepting == "Yes, with limited capacity" %}<span class="limited-tag">Limited capacity</span>{% endif %}{% if p.sample %}<span class="sample-tag">Sample</span>{% endif %}</p>
   <h2 class="card__title"><a href="{{ p.url | relative_url }}">{{ p.title }}</a></h2>
-  <p class="card__summary">{{ p.content | strip_html | normalize_whitespace | truncatewords: 28 }}</p>
+  <p class="card__summary">{% include summary.html provider=p short="1" %}</p>
   <ul class="chips" aria-label="{{ chips_label }}">
     {%- for s in chips limit: 3 %}
     <li class="chip">{{ s }}</li>
@@ -18,7 +19,6 @@
     {%- endif %}
   </ul>
   <dl class="card__meta">
-    <div><dt>Institution</dt><dd>{{ p.institution }}</dd></div>
     <div><dt>Available to</dt><dd>{{ p.availability }}</dd></div>
     {%- if p.lead_time and p.lead_time != "" %}
     <div><dt>Lead time</dt><dd>{{ p.lead_time }}</dd></div>

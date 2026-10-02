@@ -1,0 +1,29 @@
+{%- comment -%}
+  The provider summary, built from structured answers (Questionnaire Q18 explains this to teams):
+  unit and team name, team type (Q9), who they support (Q10), areas of strength (Q12-15),
+  cost to researchers (Q37), lead time (Q43), and whether they're accepting new work (Q42).
+  Wording comes from the "phrase" values in _data/taxonomy.yml.
+  Include it with provider=page for the full summary, or with provider=p short="1" for the
+  card version: team type and cost only, since the card shows the rest. A card with neither
+  falls back to the start of the team's optional paragraph.
+{%- endcomment -%}
+{%- assign sum_p = include.provider -%}
+{%- assign sum_tt = site.data.taxonomy.team_type | where: "label", sum_p.team_type | first -%}
+{%- assign sum_av = site.data.taxonomy.availability | where: "label", sum_p.availability | first -%}
+{%- assign sum_co = site.data.taxonomy.cost | where: "label", sum_p.cost | first -%}
+{%- assign sum_ac = site.data.taxonomy.accepting | where: "label", sum_p.accepting | first -%}
+{%- capture sum_org -%}{% if sum_p.school and sum_p.school != "" %}{{ sum_p.school }}, {% endif %}{{ sum_p.institution }}{%- endcapture -%}
+{%- if include.short %}
+{%- comment %} Cards already show the name, school, and availability. {% endcomment %}
+{%- if sum_tt.label %}{{ sum_tt.label }}.{% endif %}
+{%- if sum_co.phrase %} {{ sum_co.phrase }}{% endif %}
+{%- assign sum_has = sum_tt.label | append: sum_co.phrase %}
+{%- if sum_has == "" %}{{ sum_p.content | strip_html | normalize_whitespace | truncatewords: 24 }}{% endif %}
+{%- else %}
+{{ sum_p.title }} ({{ sum_org }}) is {{ sum_tt.phrase | default: "a team" }}{% if sum_av.phrase %}, {{ sum_av.phrase }}{% endif %}.
+{%- assign sum_n_strengths = sum_p.strengths.size | plus: 0 %}
+{%- if sum_n_strengths > 0 %} Areas of strength: {{ sum_p.strengths | join: "; " }}.{% endif %}
+{%- if sum_co.phrase %} {{ sum_co.phrase }}{% endif %}
+{%- if sum_p.lead_time and sum_p.lead_time != "" %} Typical lead time: {{ sum_p.lead_time | downcase }}.{% endif %}
+{%- if sum_ac.phrase %} {{ sum_ac.phrase }}{% endif %}
+{%- endif %}
