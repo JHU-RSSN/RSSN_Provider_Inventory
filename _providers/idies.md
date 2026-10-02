@@ -1,7 +1,7 @@
 ---
 # Imported from the RSSN Research IT Provider Questionnaire.
 # Allowed values for each list are in _data/taxonomy.yml.
-title: "IDIES"
+title: "Institute for Data Intensive Engineering and Science (IDIES)"
 institution: "JHU"
 school: "Whiting School of Engineering"
 unit: "WSE/DSAI"
