@@ -10,8 +10,8 @@ A prototype GitHub Pages site for the Research Software Support Network (RSSN) s
 
 The site is built with [Jekyll](https://jekyllrb.com/), which GitHub Pages runs automatically. There's no server or database. Every push to `main` rebuilds the site in a minute or two.
 
-- Each team is one Markdown file in `_providers/`. Jekyll turns each file into a profile page at `/providers/<file-name>/` and a card on the home page.
-- The home page's search and filters run in the browser (`assets/js/directory.js`) using data Jekyll writes into the page at build time.
+- Each team is one Markdown file in `_providers/`. Jekyll turns each file into a profile page at `/providers/<file-name>/`, plus a card and a table row on the home page.
+- The home page's search, filters, sorting, and Cards/Table switch run in the browser (`assets/js/directory.js`) using data Jekyll writes into the page at build time.
 - `_data/fields.yml` lists every listing field, grouped the way the questionnaire groups them. It drives the profile page, the search data, the filter panel, and the import script.
 - Allowed values for every list field live in `_data/taxonomy.yml`. They mirror the RSSN Research IT Provider Questionnaire.
 
@@ -64,7 +64,7 @@ Each card and profile opens with a summary built from the answers, as Q18 promis
 
 ### Pausing new requests
 
-`accepting` (Q42) is its own field so a team can pause or resume requests with a one-line edit: set it to `"Not at this time"` and the card gets a "Not accepting new work" tag and the profile a banner.
+`accepting` (Q42) is its own field so a team can pause or resume requests with a one-line edit: set it to `"Not at this time"` and the card and table show it under "Taking new work," and the profile gets a banner.
 
 Any list or single-answer field can also have a `<field>_other` text value for write-in answers. Listings also carry `updated` (date of the response or last review), `submitted_by` (who filled out the questionnaire, if different from the contact), and `sample: true` for fictional listings.
 
@@ -78,9 +78,19 @@ JHED IDs from the questionnaire are intentionally left out, since this repositor
 
 ## Teams that only serve their own unit
 
-Some teams are listed so RSSN knows the capability exists, even though they don't take outside requests. Availability answers marked `internal: true` in `_data/taxonomy.yml` ("No - our services are limited to our own department/unit") flag these teams. Their cards get a "Unit only" tag, and their profiles open with a "Not taking outside requests" banner.
+Some teams are listed so RSSN knows the capability exists, even though they don't take outside requests. Availability answers marked `internal: true` in `_data/taxonomy.yml` ("No - our services are limited to our own department/unit") flag these teams. On cards and in the table their "Available to" value is shown in plum with a lock, and their profiles open with a "Not taking outside requests" banner.
 
 On the home page they're hidden by default behind a pre-checked "Only show teams that take requests from outside their unit" box at the top of the filters. The result count says how many are hidden, with a link to show them. "Clear all" doesn't change this box.
+
+## Cards and table views
+
+The home page shows cards by default. The Table button switches to a table with one row per team: name and school, top three areas of strength, available to, lead time, and taking new work. Each row's arrow opens a details row (the team's description, all strengths, languages, and data types); "Expand all" opens every visible row. Table rows come from `_includes/table-row.html`, cards from `_includes/card.html`, and both use `_includes/availability.html` and `_includes/accepting.html` for those values.
+
+- **Filters, search, view, and sort all live in the page address** (`?view=table&sort=lead_time&dir=desc`), so they survive switching views, refreshing, and sharing a link.
+- **Sorting** works from the Sort menu above either view or from the table's column headers (click again to reverse). Team and School sort A–Z. Available to, Lead time, and Taking new work sort in the order their answers are listed in `_data/taxonomy.yml`, so reordering a list there changes the sort. "Varies based on project" and "It's complicated" sort after the real answers, and blank answers ("Not reported") sort last, in either direction. Ties sort by team name.
+- **Default order** lists real listings A–Z, then sample listings. Once a sort is chosen, samples mix in with the real listings.
+- **Phones** (720px wide or less) show cards only; the Table button is hidden there.
+- **Teams that don't do hands-on technical work** (Q19 = "No") show N/A for languages in the table and for the whole Technical capabilities section on their profile, instead of leaving those questions blank.
 
 ## Design
 

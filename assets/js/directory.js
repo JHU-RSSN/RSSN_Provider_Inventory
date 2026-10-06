@@ -1,6 +1,7 @@
-/* RSSN Provider Inventory: search and filtering for the directory page.
-   Cards are rendered by Jekyll; this script shows/hides them and builds the
-   filter panel from the provider data embedded in the page. */
+/* RSSN Provider Inventory: search, filtering, sorting and views for the directory page.
+   Cards and table rows are rendered by Jekyll; this script shows/hides and reorders them,
+   switches between the card and table views, and builds the filter panel from the
+   provider data embedded in the page. */
 (function () {
   "use strict";
 
@@ -64,7 +65,7 @@
   // Teams that only serve their own unit ("internal: true" availability answers) are
   // hidden unless the pre-checked "outside requests only" box is unchecked.
 
-  var state = { q: "", sel: {}, expanded: {}, showInternal: false };
+  var state = { q: "", sel: {}, expanded: {}, showInternal: false, view: "cards", sort: "", dir: "asc" };
   GROUPS.forEach(function (g) { state.sel[g.key] = new Set(); });
 
   var els = {
@@ -80,20 +81,120 @@
     empty: document.getElementById("empty-state"),
     emptyExtra: document.getElementById("empty-extra"),
     scope: document.getElementById("scope-toggle"),
-    outsideOnly: document.getElementById("outside-only")
+    outsideOnly: document.getElementById("outside-only"),
+    results: document.querySelector(".results"),
+    controls: document.getElementById("results-controls"),
+    sort: document.getElementById("sort"),
+    viewButtons: document.querySelectorAll(".view-switch [data-view]"),
+    expandAll: document.getElementById("expand-all"),
+    table: document.getElementById("provider-table")
   };
   var defaultEmptyText = els.emptyExtra.textContent;
 
   var cards = {};
   els.grid.querySelectorAll(".card").forEach(function (c) { cards[c.getAttribute("data-id")] = c; });
+  var rows = {};
+  els.table.querySelectorAll("tbody[data-id]").forEach(function (b) { rows[b.getAttribute("data-id")] = b; });
 
   els.scope.hidden = false;
+  els.controls.hidden = false;
+
+  /* ---------- sorting ---------- */
+  // Answer-list columns sort in questionnaire order (their order in _data/taxonomy.yml),
+  // not alphabetically. "Varies"-type answers sort after the real answers and blanks come
+  // last, whichever direction is chosen. Ties fall back to team name A-Z.
+  var TRAILING = { "Varies based on project": true, "It's complicated": true };
+  function listOrder(key) { return (taxonomy[key] || []).map(labelOf); }
+  var SORTS = {
+    title: function (p) { return { tier: 0, v: (p.title || "").toLowerCase() }; },
+    school: function (p) { return p.schoolShort ? { tier: 0, v: p.schoolShort.toLowerCase() } : { tier: 2, v: "" }; },
+    availability: answerSort("availability"),
+    lead_time: answerSort("lead_time"),
+    accepting: answerSort("accepting")
+  };
+  function answerSort(key) {
+    var order = listOrder(key);
+    return function (p) {
+      var val = p[key];
+      if (!val) return { tier: 2, v: 0 };
+      if (TRAILING[val]) return { tier: 1, v: 0 };
+      var i = order.indexOf(val);
+      return i === -1 ? { tier: 1, v: 1 } : { tier: 0, v: i };
+    };
+  }
+  var startIndex = {};
+  providers.forEach(function (p, i) { startIndex[p.id] = i; });
+
+  function sortedProviders() {
+    var list = providers.slice();
+    if (!state.sort) {
+      return list.sort(function (a, b) { return startIndex[a.id] - startIndex[b.id]; });
+    }
+    var fn = SORTS[state.sort];
+    var sign = state.dir === "desc" ? -1 : 1;
+    return list.sort(function (a, b) {
+      var x = fn(a), y = fn(b);
+      if (x.tier !== y.tier) return x.tier - y.tier;
+      if (x.v !== y.v) return (x.v < y.v ? -1 : 1) * sign;
+      return a.title.localeCompare(b.title);
+    });
+  }
+
+  function applyOrder() {
+    sortedProviders().forEach(function (p) {
+      if (cards[p.id]) els.grid.appendChild(cards[p.id]);
+      if (rows[p.id]) els.table.appendChild(rows[p.id]);
+    });
+    els.sort.value = state.sort;
+    els.table.querySelectorAll("th[data-sort]").forEach(function (th) {
+      if (th.getAttribute("data-sort") === state.sort) {
+        th.setAttribute("aria-sort", state.dir === "desc" ? "descending" : "ascending");
+      } else {
+        th.removeAttribute("aria-sort");
+      }
+    });
+  }
+
+  function setSort(key, dir) {
+    state.sort = key;
+    state.dir = dir || "asc";
+    applyOrder();
+    writeURL();
+  }
+
+  /* ---------- views ---------- */
+  function setView(view) {
+    state.view = view;
+    els.results.classList.toggle("results--table", view === "table");
+    els.viewButtons.forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-view") === view));
+    });
+    els.expandAll.hidden = view !== "table";
+    writeURL();
+  }
+
+  function setExpanded(body, open) {
+    var btn = body.querySelector(".row-toggle");
+    var details = body.querySelector(".ptable__details");
+    btn.setAttribute("aria-expanded", String(open));
+    details.hidden = !open;
+    body.classList.toggle("is-open", open);
+  }
+
+  function syncExpandAll() {
+    var visible = Object.keys(rows).filter(function (id) { return !rows[id].hidden; });
+    var anyClosed = visible.some(function (id) { return !rows[id].classList.contains("is-open"); });
+    els.expandAll.textContent = anyClosed || !visible.length ? "Expand all" : "Collapse all";
+  }
 
   /* ---------- state <-> URL ---------- */
   function readURL() {
     var params = new URLSearchParams(window.location.search);
     state.q = params.get("q") || "";
     state.showInternal = params.get("internal") === "show";
+    state.view = params.get("view") === "table" ? "table" : "cards";
+    state.sort = SORTS.hasOwnProperty(params.get("sort")) ? params.get("sort") : "";
+    state.dir = params.get("dir") === "desc" ? "desc" : "asc";
     GROUPS.forEach(function (g) {
       state.sel[g.key] = new Set(params.getAll(g.key));
     });
@@ -103,6 +204,9 @@
     var params = new URLSearchParams();
     if (state.q) params.set("q", state.q);
     if (state.showInternal) params.set("internal", "show");
+    if (state.view === "table") params.set("view", "table");
+    if (state.sort) params.set("sort", state.sort);
+    if (state.sort && state.dir === "desc") params.set("dir", "desc");
     GROUPS.forEach(function (g) {
       state.sel[g.key].forEach(function (v) { params.append(g.key, v); });
     });
@@ -228,6 +332,8 @@
     var matches = filtered(null);
     var ids = new Set(matches.map(function (p) { return p.id; }));
     Object.keys(cards).forEach(function (id) { cards[id].hidden = !ids.has(id); });
+    Object.keys(rows).forEach(function (id) { rows[id].hidden = !ids.has(id); });
+    syncExpandAll();
 
     var forQ = state.q ? " for “" + esc(state.q) + "”" : "";
     els.emptyExtra.textContent = defaultEmptyText;
@@ -338,10 +444,39 @@
   });
   if (narrow.addEventListener) narrow.addEventListener("change", syncLayout);
 
+  els.sort.addEventListener("change", function () { setSort(els.sort.value, "asc"); });
+
+  els.table.querySelector("thead").addEventListener("click", function (e) {
+    var th = e.target.closest("th[data-sort]");
+    if (!th || !e.target.closest("button")) return;
+    var key = th.getAttribute("data-sort");
+    setSort(key, state.sort === key && state.dir === "asc" ? "desc" : "asc");
+  });
+
+  els.viewButtons.forEach(function (b) {
+    b.addEventListener("click", function () { setView(b.getAttribute("data-view")); });
+  });
+
+  els.table.addEventListener("click", function (e) {
+    var btn = e.target.closest(".row-toggle");
+    if (!btn) return;
+    var body = btn.closest("tbody");
+    setExpanded(body, !body.classList.contains("is-open"));
+    syncExpandAll();
+  });
+
+  els.expandAll.addEventListener("click", function () {
+    var open = els.expandAll.textContent === "Expand all";
+    Object.keys(rows).forEach(function (id) { if (!rows[id].hidden) setExpanded(rows[id], open); });
+    syncExpandAll();
+  });
+
   /* ---------- start ---------- */
   readURL();
   els.q.value = state.q;
   els.outsideOnly.checked = !state.showInternal;
   syncLayout();
+  applyOrder();
+  setView(state.view);
   render();
 })();

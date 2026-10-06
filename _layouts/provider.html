@@ -70,7 +70,13 @@ layout: default
         {%- if section.id == "technical" and page.hands_on == "No" %}
         <section class="profile__section" aria-labelledby="technical-heading">
           <h2 id="technical-heading">{{ section.title }}</h2>
-          <p class="section-note">This team doesn't do hands-on technical work such as software development, data engineering, or hosting.</p>
+          <p class="section-note">This team doesn't do hands-on technical work such as software development, data engineering, or hosting, so the questionnaire skipped these questions.</p>
+          <dl class="facts">
+            {%- for f in section.fields %}
+            {%- if f.show != "facts" %}{% continue %}{% endif %}
+            <div class="facts__row"><dt>{{ f.label }}</dt><dd class="not-reported">N/A</dd></div>
+            {%- endfor %}
+          </dl>
         </section>
         {%- continue %}
         {%- endif %}
@@ -86,7 +92,9 @@ layout: default
           <div class="facts__row">
             <dt>{{ f.label }}</dt>
             <dd>
-              {%- if f.type == "many" %}
+              {%- if f.type == "many" and v.size == 1 and v[0] == "Not applicable" %}
+              <span class="not-reported">N/A</span>
+              {%- elsif f.type == "many" %}
               <ul class="chips chips--wrap">
                 {%- for x in v %}<li class="chip">{{ x }}</li>{% endfor %}
               </ul>

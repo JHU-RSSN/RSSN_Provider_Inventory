@@ -1,0 +1,73 @@
+{%- comment -%}
+  One provider in the table view: a summary row plus a details row that the
+  arrow button opens. Each provider gets its own <tbody> so directory.js can
+  hide and reorder it as one unit.
+{%- endcomment -%}
+{%- assign p = include.provider -%}
+{%- assign school = site.data.taxonomy.schools | where: "name", p.school | first -%}
+{%- assign n_strengths = p.strengths.size | plus: 0 -%}
+{%- if n_strengths > 0 %}{% assign chips = p.strengths %}{% assign chips_label = "Areas of strength" %}{% else %}{% assign chips = p.services %}{% assign chips_label = "Services" %}{% endif -%}
+{%- assign extra = chips.size | minus: 3 -%}
+{%- assign row_id = "details-" | append: p.slug -%}
+<tbody class="ptable__group" data-id="{{ p.url }}">
+  <tr class="ptable__row">
+    <td class="ptable__toggle">
+      <button type="button" class="row-toggle" aria-expanded="false" aria-controls="{{ row_id }}">
+        <span class="visually-hidden">Details for {{ p.title }}</span>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 3l4 4-4 4"/></svg>
+      </button>
+    </td>
+    <th scope="row" class="ptable__team">
+      <a class="ptable__name" href="{{ p.url | relative_url }}">{{ p.title }}</a>{% if p.sample %}<span class="sample-tag">Sample</span>{% endif %}
+      <span class="ptable__school"><span class="school-dot" style="background: {{ school.color | default: '#002D72' }}" aria-hidden="true"></span>{{ school.short | default: p.school }}</span>
+    </th>
+    <td class="ptable__strengths">
+      <ul class="chips chips--table" aria-label="{{ chips_label }}">
+        {%- for s in chips limit: 3 %}
+        <li class="chip">{{ s }}</li>
+        {%- endfor %}
+        {%- if extra > 0 %}
+        <li class="chip chip--more">+{{ extra }} more</li>
+        {%- endif %}
+      </ul>
+    </td>
+    <td>{% include availability.html provider=p %}</td>
+    <td>{% if p.lead_time and p.lead_time != "" %}{{ p.lead_time }}{% else %}<span class="not-reported">Not reported</span>{% endif %}</td>
+    <td>{% include accepting.html provider=p %}</td>
+  </tr>
+  <tr class="ptable__details" id="{{ row_id }}" hidden>
+    <td></td>
+    <td colspan="5">
+      <div class="ptable__detail-grid">
+        <div class="ptable__about">
+          <h3>About</h3>
+          {%- assign about = p.content | strip_html | normalize_whitespace | truncatewords: 50 %}
+          {%- if about != "" %}<p>{{ about }}</p>{% else %}<p>{% include summary.html provider=p %}</p>{% endif %}
+          <a class="ptable__profile-link" href="{{ p.url | relative_url }}">View full profile <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <div>
+          <h3>{% if n_strengths > 0 %}All areas of strength{% else %}Services{% endif %}</h3>
+          <ul class="chips chips--wrap">
+            {%- for s in chips %}<li class="chip">{{ s }}</li>{% endfor %}
+          </ul>
+        </div>
+        <div>
+          <h3>Languages</h3>
+          {%- assign n_lang = p.languages.size | plus: 0 %}
+          {%- if p.hands_on == "No" %}
+          <p class="not-reported">N/A (team doesn’t do hands-on technical work)</p>
+          {%- elsif n_lang == 1 and p.languages[0] == "Not applicable" %}
+          <p class="not-reported">N/A</p>
+          {%- elsif n_lang > 0 %}
+          <p>{{ p.languages | join: ", " }}</p>
+          {%- else %}
+          <p class="not-reported">Not reported</p>
+          {%- endif %}
+          <h3>Data types</h3>
+          {%- assign n_dt = p.data_types.size | plus: 0 %}
+          {%- if n_dt > 0 %}<p>{{ p.data_types | join: ", " }}</p>{% else %}<p class="not-reported">Not reported</p>{% endif %}
+        </div>
+      </div>
+    </td>
+  </tr>
+</tbody>

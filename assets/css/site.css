@@ -763,3 +763,186 @@ code { font-size: 0.9em; }
 .paused-tag { background: #CF4520; border: 1px solid #CF4520; color: #fff; }
 .limited-tag { background: var(--surface); border: 1px solid #9AA8BF; color: var(--muted); }
 .internal-banner--paused { background: #FBEAE5; border-bottom-color: #F0C4B6; }
+
+/* ---------- Availability and status values (cards and table) ---------- */
+/* Teams that only serve their own unit: plum, with a lock, in place of a separate tag. */
+.unit-only {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: #51284F;
+}
+.unit-only svg { flex: none; }
+.not-reported { color: #6B7590; }
+.card__meta .paused-tag,
+.card__meta .limited-tag,
+.ptable .paused-tag,
+.ptable .limited-tag { margin-left: 0; }
+
+/* ---------- View, sort, and expand controls ---------- */
+.results__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-left: auto;
+}
+.sort-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.sort-control select {
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid #7A849A;
+  border-radius: var(--radius);
+  padding: 7px 8px;
+  min-height: 38px;
+}
+.view-switch {
+  display: inline-flex;
+  border: 1px solid var(--heritage-blue);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.view-switch button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0 14px;
+  min-height: 38px;
+  background: var(--surface);
+  color: var(--heritage-blue);
+  border: 0;
+  cursor: pointer;
+}
+.view-switch button + button { border-left: 1px solid var(--heritage-blue); }
+.view-switch button[aria-pressed="true"] { background: var(--heritage-blue); color: #fff; }
+.view-switch button:focus-visible { outline-offset: -4px; outline-color: var(--gold); }
+
+/* Which view shows. Without JavaScript the cards show and the table stays hidden. */
+.results .ptable-wrap { display: none; }
+.results--table .card-grid { display: none; }
+.results--table .ptable-wrap { display: block; }
+
+/* ---------- Table view ---------- */
+.ptable-wrap {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow-x: auto;
+}
+.ptable {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.ptable thead th {
+  background: var(--tint);
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.ptable thead th button {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  cursor: pointer;
+}
+.ptable thead th button:hover { color: var(--heritage-blue); }
+.ptable thead th button:focus-visible { outline: 3px solid var(--medium-blue); outline-offset: 2px; }
+.ptable th[aria-sort] { color: var(--heritage-blue); }
+.sort-icon {
+  width: 8px;
+  height: 10px;
+  background: currentColor;
+  opacity: 0.45;
+  clip-path: polygon(50% 0, 100% 40%, 0 40%, 0 60%, 100% 60%, 50% 100%);
+}
+th[aria-sort="ascending"] .sort-icon { opacity: 1; clip-path: polygon(50% 10%, 100% 80%, 0 80%); }
+th[aria-sort="descending"] .sort-icon { opacity: 1; clip-path: polygon(0 20%, 100% 20%, 50% 90%); }
+.ptable__group { border-bottom: 1px solid #E3E8F0; }
+.ptable__group:hover .ptable__row,
+.ptable__group.is-open { background: #F7F9FC; }
+.ptable__row > * { padding: 11px 12px; vertical-align: top; text-align: left; }
+.ptable__row > td.ptable__toggle { padding: 8px 0 8px 10px; width: 44px; }
+.ptable thead th.ptable__toggle { width: 44px; padding-right: 0; }
+.row-toggle {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--heritage-blue);
+  cursor: pointer;
+}
+.row-toggle:hover { border-color: #AEBBD0; }
+.row-toggle svg { transition: transform 120ms; }
+.row-toggle[aria-expanded="true"] svg { transform: rotate(90deg); }
+.ptable__team { font-weight: 400; max-width: 290px; }
+.ptable__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.3;
+  text-decoration: none;
+}
+.ptable__name:hover { text-decoration: underline; text-underline-offset: 3px; }
+.ptable__school {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.school-dot { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+.ptable__strengths { min-width: 240px; }
+.chips--table { margin: 0; gap: 5px; }
+.ptable__details > td { padding: 2px 16px 20px 12px; }
+.ptable__detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px 28px;
+}
+.ptable__details h3 {
+  margin: 0 0 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ptable__details p { margin: 0 0 12px; line-height: 1.55; }
+.ptable__details .chips { margin-bottom: 0; }
+.ptable__profile-link { font-weight: 600; text-decoration: none; }
+.ptable__profile-link:hover { text-decoration: underline; }
+
+/* Phones: the table needs more width than a phone has, so only cards show. */
+@media (max-width: 720px) {
+  .view-switch, #expand-all { display: none; }
+  .results--table .card-grid { display: grid; }
+  .results--table .ptable-wrap { display: none; }
+  .results__controls { margin-left: 0; }
+}

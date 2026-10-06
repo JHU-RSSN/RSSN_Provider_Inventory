@@ -1,0 +1,12 @@
+{%- comment -%} "Taking new work" value for cards and the table (Questionnaire Q42). {%- endcomment -%}
+{%- assign ac_p = include.provider -%}
+{%- assign ac_t = site.data.taxonomy.accepting | where: "label", ac_p.accepting | first -%}
+{%- if ac_t.paused -%}
+<span class="paused-tag">Not at this time</span>
+{%- elsif ac_p.accepting == "Yes, with limited capacity" -%}
+<span class="limited-tag">Limited capacity</span>
+{%- elsif ac_p.accepting and ac_p.accepting != "" -%}
+{{ ac_p.accepting }}
+{%- else -%}
+<span class="not-reported">Not reported</span>
+{%- endif -%}

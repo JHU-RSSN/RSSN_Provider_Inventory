@@ -1,0 +1,13 @@
+{%- comment -%}
+  "Available to" value for cards and the table. Teams that only serve their own unit
+  ("internal: true" in _data/taxonomy.yml) get the plum lock style instead of a separate tag.
+{%- endcomment -%}
+{%- assign av_p = include.provider -%}
+{%- assign av_t = site.data.taxonomy.availability | where: "label", av_p.availability | first -%}
+{%- if av_t.internal -%}
+<span class="unit-only"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="5.5" width="8" height="5.5" rx="1"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg>{{ av_p.availability }}</span>
+{%- elsif av_p.availability and av_p.availability != "" -%}
+{{ av_p.availability }}
+{%- else -%}
+<span class="not-reported">Not reported</span>
+{%- endif -%}
