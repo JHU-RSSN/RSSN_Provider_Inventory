@@ -1,0 +1,45 @@
+name: Problem with a listing
+description: Something on a team's profile is wrong, out of date, or missing.
+title: "[Listing] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping keep the inventory accurate! If you're on the team and know what the listing should say, you can also fix it yourself with the **Suggest an edit on GitHub** link at the bottom of the team's profile.
+  - type: input
+    id: listing
+    attributes:
+      label: Which listing?
+      description: The team's name, or paste the address of its profile page.
+      placeholder: e.g. JHPCE
+    validations:
+      required: true
+  - type: dropdown
+    id: problem
+    attributes:
+      label: What kind of problem?
+      options:
+        - Information is out of date
+        - Information is wrong
+        - A link doesn't work
+        - This team is listed twice
+        - A team is missing from the inventory
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What's wrong, and what should it say instead?
+      description: Be as specific as you can. Include the correct information if you know it.
+    validations:
+      required: true
+  - type: dropdown
+    id: relationship
+    attributes:
+      label: Are you part of this team?
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: false
