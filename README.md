@@ -2,7 +2,7 @@
 
 A prototype GitHub Pages site for the Research Software Support Network (RSSN) service provider inventory. It lists Johns Hopkins teams that support research software, data, and computing, with search, filters, and a profile page for each team.
 
-**Live site:** https://meganforbes.github.io/RSSN_Provider_Inventory_Prototpye/
+**Live site:** https://jhu-rssn.github.io/RSSN_Provider_Inventory/
 
 > The site follows Draft 3 of the RSSN Research IT Provider Questionnaire. Listings without `sample: true` come from pilot responses to Draft 2 (September 2026), carried over to Draft 3's fields; questions Draft 2 didn't ask are left blank, and every team will resubmit on the final form. Listings with `sample: true` are fictional examples kept to show how the directory works; delete them once real listings cover the same ground.
 
@@ -32,7 +32,7 @@ If the questionnaire adds or renames an answer choice, add it to `_data/taxonomy
 
 ## Adding or updating a listing by hand
 
-Contributors don't need to clone anything. The site's [Add your service](https://meganforbes.github.io/RSSN_Provider_Inventory_Prototpye/add-your-service/) page walks them through proposing a change on github.com. Every provider profile also has a "Suggest an edit on GitHub" link.
+Contributors don't need to clone anything. The site's [Add your service](https://jhu-rssn.github.io/RSSN_Provider_Inventory/add-your-service/) page walks them through proposing a change on github.com. Every provider profile also has a "Suggest an edit on GitHub" link.
 
 1. Copy `_includes/provider-template.md` into `_providers/` and give it a lowercase, hyphenated name, like `imaging-software-team.md`. The file name becomes the page's URL.
 2. Fill in the fields. List values must match `_data/taxonomy.yml` exactly, or the listing won't show up under that filter.
@@ -95,7 +95,7 @@ bundle install
 bundle exec jekyll serve
 ```
 
-Then open http://localhost:4000/RSSN_Provider_Inventory_Prototpye/.
+Then open http://localhost:4000/RSSN_Provider_Inventory/.
 
 ## Moving the repository
 
