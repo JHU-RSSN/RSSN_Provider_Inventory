@@ -1,0 +1,33 @@
+name: Site problem or suggestion
+description: Something on the site is broken or confusing, or you have an idea to make it better.
+title: "[Site] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the feedback! For a problem with one team's information, please use the **Problem with a listing** form instead.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of feedback is this?
+      options:
+        - Something is broken
+        - Something is confusing or hard to find
+        - Suggestion or idea
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Tell us about it
+      description: What happened, or what would you like to see? If something broke, what were you trying to do?
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Which page? (optional)
+      description: Paste the address of the page, if it's about a specific one.
+    validations:
+      required: false
