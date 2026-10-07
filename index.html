@@ -10,6 +10,8 @@ title: Find support
 <section class="search-band">
   <div class="search-band__inner">
     <h1 class="search-band__title">Find a Hopkins team for your research software, data, or computing project</h1>
+    {%- comment %} Placeholder wording; the link comes from rssn_help_url in _config.yml. {% endcomment %}
+    <p class="search-band__lead"><strong>Not sure where to start?</strong> Tell the Research Software Support Network about your project and we'll point you to the right people. <a href="{{ site.rssn_help_url }}">Ask RSSN for help&nbsp;&rarr;</a> Or browse the teams below on your own.</p>
     <form class="search" role="search" action="{{ '/' | relative_url }}" method="get" id="search-form">
       <label class="visually-hidden" for="q">Search providers</label>
       <input type="search" id="q" name="q" placeholder="Search by service, technology, data type, or team name" autocomplete="off">

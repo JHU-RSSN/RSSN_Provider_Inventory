@@ -108,6 +108,8 @@ h1, h2, h3 { text-wrap: balance; }
   text-decoration: none;
 }
 .brand:hover { color: #fff; }
+.brand--logo { flex-direction: row; align-items: center; }
+.brand__logo { display: block; height: 44px; width: auto; max-width: min(320px, 60vw); }
 .brand__title {
   font-family: var(--font-display);
   font-weight: 700;
@@ -195,6 +197,14 @@ h1, h2, h3 { text-wrap: balance; }
   cursor: pointer;
 }
 .search button:hover { background: var(--heritage-dark); }
+.search-band__lead {
+  margin: -8px 0 4px;
+  max-width: 72ch;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+.search-band__lead a { font-weight: 600; }
+.search-band__lead--quiet { margin: 0 0 18px; font-size: 0.95rem; color: var(--muted); }
 .search-band__hint {
   margin: 10px 0 0;
   font-size: 0.875rem;

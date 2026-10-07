@@ -15,9 +15,14 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="site-header__inner">
-      <a class="brand" href="{{ '/' | relative_url }}">
+      <a class="brand{% if site.logo and site.logo != "" %} brand--logo{% endif %}" href="{{ '/' | relative_url }}">
+        {%- if site.logo and site.logo != "" %}
+        <img class="brand__logo" src="{{ site.logo | relative_url }}" alt="{{ site.network_name }}">
+        <span class="visually-hidden">{{ site.title }}</span>
+        {%- else %}
         <span class="brand__title">{{ site.title }}</span>
         <span class="brand__network">{{ site.network_name }}</span>
+        {%- endif %}
       </a>
       <nav class="site-nav" aria-label="Main">
         <a href="{{ '/' | relative_url }}"{% if page.url == "/" %} aria-current="page"{% endif %}>Find support</a>

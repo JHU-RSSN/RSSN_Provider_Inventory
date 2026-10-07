@@ -7,6 +7,15 @@ description: Find Johns Hopkins teams that help researchers with software, data,
 repository: JHU-RSSN/RSSN_Provider_Inventory
 branch: main
 
+# Header logo. When central comms provides the RSSN logo lockup, add the file (an SVG is
+# best, in the white/reversed version, since the header is Heritage Blue) to assets/img/
+# and set its path here, e.g. "/assets/img/rssn-logo.svg". Leave "" to show the text name.
+logo: ""
+
+# The main RSSN site, where researchers should start when they need help. The home page
+# points people there above the search box. Placeholder until the RSSN site is live.
+rssn_help_url: "#"
+
 # Where "Request a change" emails go (the request-a-change page). Leave "" to have
 # people address the email themselves.
 change_requests_email: ""
