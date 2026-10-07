@@ -104,9 +104,16 @@ title: Find support
     "schoolShort": {{ site.data.taxonomy.schools | where: "name", p.school | map: "short" | first | default: p.school | jsonify }},
     "contact": {{ p.contact.name | jsonify }},
     "description": {{ p.content | strip_html | normalize_whitespace | jsonify }},
+    {%- include service-levels.html provider=p %}
     {%- for section in site.data.fields.sections %}{% for f in section.fields %}
     {%- assign other_key = f.key | append: "_other" %}
+    {%- if f.key == "services" %}
+    "services": {{ svc_offered | jsonify }},
+    {%- elsif f.key == "strengths" %}
+    "strengths": {{ svc_strengths | jsonify }},
+    {%- else %}
     {{ f.key | jsonify }}: {{ p[f.key] | jsonify }},
+    {%- endif %}
     {%- if p[other_key] %}
     {{ other_key | jsonify }}: {{ p[other_key] | jsonify }},
     {%- endif %}

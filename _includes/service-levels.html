@@ -1,0 +1,20 @@
+{%- comment -%}
+  Reads a listing's services grid (Questionnaire Q15-18), where each service is
+  "not offered", "offered", or "strength", and sets two lists for the including template:
+    svc_offered    every service marked offered or strength, in questionnaire order
+    svc_strengths  the services marked strength
+  Use: {% include service-levels.html provider=p %}
+{%- endcomment -%}
+{%- assign svc_off_str = "" -%}
+{%- assign svc_str_str = "" -%}
+{%- for svc_pair in include.provider.services -%}
+  {%- assign svc_level = svc_pair[1] | downcase | strip -%}
+  {%- if svc_level == "offered" or svc_level == "strength" -%}
+    {%- if svc_off_str == "" %}{% assign svc_off_str = svc_pair[0] %}{% else %}{% assign svc_off_str = svc_off_str | append: "|" | append: svc_pair[0] %}{% endif -%}
+  {%- endif -%}
+  {%- if svc_level == "strength" -%}
+    {%- if svc_str_str == "" %}{% assign svc_str_str = svc_pair[0] %}{% else %}{% assign svc_str_str = svc_str_str | append: "|" | append: svc_pair[0] %}{% endif -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign svc_offered = svc_off_str | split: "|" -%}
+{%- assign svc_strengths = svc_str_str | split: "|" -%}

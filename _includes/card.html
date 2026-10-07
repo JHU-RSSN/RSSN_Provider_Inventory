@@ -1,8 +1,9 @@
 {%- assign p = include.provider -%}
 {%- assign school = site.data.taxonomy.schools | where: "name", p.school | first -%}
 {%- comment %} Chips show the team's areas of strength, falling back to its services. {% endcomment -%}
-{%- assign n_strengths = p.strengths.size | plus: 0 -%}
-{%- if n_strengths > 0 %}{% assign chips = p.strengths %}{% assign chips_label = "Areas of strength" %}{% else %}{% assign chips = p.services %}{% assign chips_label = "Services" %}{% endif -%}
+{%- include service-levels.html provider=p -%}
+{%- assign n_strengths = svc_strengths.size | plus: 0 -%}
+{%- if n_strengths > 0 %}{% assign chips = svc_strengths %}{% assign chips_label = "Areas of strength" %}{% else %}{% assign chips = svc_offered %}{% assign chips_label = "Services" %}{% endif -%}
 {%- assign extra = chips.size | minus: 3 -%}
 {%- assign avail = site.data.taxonomy.availability | where: "label", p.availability | first -%}
 <article class="card{% if p.sample %} card--sample{% endif %}{% if avail.internal %} card--internal{% endif %}" data-id="{{ p.url }}" style="--card-accent: {{ school.color | default: '#002D72' }}">

@@ -5,8 +5,9 @@
 {%- endcomment -%}
 {%- assign p = include.provider -%}
 {%- assign school = site.data.taxonomy.schools | where: "name", p.school | first -%}
-{%- assign n_strengths = p.strengths.size | plus: 0 -%}
-{%- if n_strengths > 0 %}{% assign chips = p.strengths %}{% assign chips_label = "Areas of strength" %}{% else %}{% assign chips = p.services %}{% assign chips_label = "Services" %}{% endif -%}
+{%- include service-levels.html provider=p -%}
+{%- assign n_strengths = svc_strengths.size | plus: 0 -%}
+{%- if n_strengths > 0 %}{% assign chips = svc_strengths %}{% assign chips_label = "Areas of strength" %}{% else %}{% assign chips = svc_offered %}{% assign chips_label = "Services" %}{% endif -%}
 {%- assign extra = chips.size | minus: 3 -%}
 {%- assign row_id = "details-" | append: p.slug -%}
 <tbody class="ptable__group" data-id="{{ p.url }}">

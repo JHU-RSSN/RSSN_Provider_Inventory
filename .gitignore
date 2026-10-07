@@ -6,3 +6,4 @@ _site/
 vendor/
 Gemfile.lock
 /Claude outputs
+__pycache__/

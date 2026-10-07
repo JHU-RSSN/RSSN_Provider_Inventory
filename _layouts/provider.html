@@ -3,8 +3,9 @@ layout: default
 ---
 {%- assign tax = site.data.taxonomy -%}
 {%- assign school = tax.schools | where: "name", page.school | first -%}
-{%- assign strengths = page.strengths -%}
-{%- assign services = page.services -%}
+{%- include service-levels.html provider=page -%}
+{%- assign strengths = svc_strengths -%}
+{%- assign services = svc_offered -%}
 <main class="profile-page">
   <a class="back-link" href="{{ '/' | relative_url }}"><span aria-hidden="true">&larr;</span> All providers</a>
 
@@ -134,7 +135,9 @@ layout: default
         </div>
 
         {%- assign n_eligible = page.eligible.size | plus: 0 %}
-        {%- if n_eligible > 0 or page.eligible_other %}
+        {%- capture who_extra %}{{ page.eligible_other }}{{ page.availability_details }}{{ page.availability_other }}{% endcapture %}
+        {%- assign who_extra = who_extra | strip %}
+        {%- if n_eligible > 0 or who_extra != "" %}
         <div class="aside-block">
           <h2>Who can engage this team</h2>
           <ul class="plain-list">
@@ -143,7 +146,9 @@ layout: default
             {%- endfor %}
             {%- if page.eligible_other and page.eligible_other != "" %}<li>{{ page.eligible_other }}</li>{% endif %}
           </ul>
-          {%- if page.availability_other and page.availability_other != "" %}
+          {%- if page.availability_details and page.availability_details != "" %}
+          <p class="facts__other"><span>Availability:</span> {{ page.availability_details }}</p>
+          {%- elsif page.availability_other and page.availability_other != "" %}
           <p class="facts__other"><span>Availability:</span> {{ page.availability_other }}</p>
           {%- endif %}
         </div>
@@ -161,7 +166,7 @@ layout: default
         </div>
 
         <p class="edit-note">
-          {%- if page.updated %}Last updated {{ page.updated | date: "%B %-d, %Y" }}{% if page.submitted_by.name and page.submitted_by.name != "" %} by {{ page.submitted_by.name }}{% endif %}.<br>{% endif %}
+          {%- if page.updated %}Last updated {{ page.updated | date: "%B %-d, %Y" }}.<br>{% endif %}
           {%- if page.sample %}This is a sample listing, not a real team.<br>{% endif %}
           Is something out of date?
           <a href="https://github.com/{{ site.repository }}/edit/{{ site.branch }}/{{ page.path }}">Suggest an edit on GitHub</a>

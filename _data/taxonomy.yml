@@ -9,7 +9,7 @@
 #   answer  the questionnaire wording, when it differs (used by scripts/import_responses.py)
 #   phrase  wording used in the generated card summary (see _includes/summary.html)
 
-# Q5. Institution
+# Q7. Institution
 institutions:
   - label: JHU
     answer: Johns Hopkins University (JHU)
@@ -18,7 +18,7 @@ institutions:
   - label: Joint JHU/JHHS
     answer: Joint JHU/JHHS organization
 
-# Q6. Schools, divisions, and central units. "short" is the label shown on cards.
+# Q8. Schools, divisions, and central units. "short" is the label shown on cards.
 # "color" is the card accent, chosen from the Hopkins secondary palette.
 # "aliases" help the import script recognize the school inside free-text answers.
 # A provider whose school isn't listed here still works; its card uses Heritage Blue.
@@ -48,7 +48,7 @@ schools:
     color: "#FF9E1B"   # Orange
     aliases: [JH IT, JHIT, IT@JH, Johns Hopkins Information Technology]
 
-# Q9. Which best describes your team?
+# Q11. Which best describes your team?
 team_type:
   - label: Research support service
     answer: Our primary mission is providing services or support to researchers
@@ -60,7 +60,7 @@ team_type:
     answer: We provide IT or technical services, and research support is one part of our work
     phrase: an IT service team that supports research
 
-# Q10. Available to researchers outside your own unit?
+# Q12. Available to researchers outside your own unit?
 # "internal: true" marks answers meaning the team doesn't take requests from outside
 # its own unit. The directory hides those teams until the "outside requests only" box is unchecked.
 availability:
@@ -81,24 +81,27 @@ availability:
     phrase: working only within its own unit
     internal: true
   - label: It's complicated
-    answer: It's complicated
+    answer: It's complicated!
     phrase: with availability that depends on the request
 
-# Q11. Which researchers or organizations can engage your team?
+# Q14. Which researchers or organizations can engage your team?
 eligible:
   - Cross-institution JHU/JHHS projects
   - JHHS faculty
   - JHHS staff
   - JHU faculty
   - JHU staff
-  - JHU students/trainees working on sponsored research
-  - Johns Hopkins research centers/institutes
-  - Other Hopkins-affiliated groups
+  - label: JHU students/trainees working on sponsored research
+    answer: JHU students / trainees working on sponsored research
+  - label: Johns Hopkins research centers/institutes
+    answer: Johns Hopkins research centers / institutes
+  - label: Other Hopkins-affiliated groups
+    answer: Other Hopkins-affiliated groups - please note which in the "other" field below
   - Projects involving external research collaborators
 
-# Q12-15. Services, in the questionnaire's four groups. Each team marks every service
-# Not offered, Offered, or Area of strength; listings store the offered ones in `services`
-# and the areas of strength (up to five) in `strengths`.
+# Q15-18. Services, in the questionnaire's four groups. Each team marks every service
+# Not offered, Offered, or Offered & Area of strength. Listings store every service under
+# `services` as "not offered", "offered", or "strength" (no more than five strengths).
 service_groups:
   - Software Development & Engineering
   - Data, AI & Analytics
@@ -167,12 +170,12 @@ service_levels:
   - Offered
   - Area of strength
 
-# Q19. Does your team do hands-on technical work? "No" skips Q20-23.
+# Q22. Does your team do hands-on technical work? "No" skips Q23-26.
 hands_on:
   - "Yes"
   - "No"
 
-# Q20. Programming languages or development technologies
+# Q23. Programming languages or development technologies
 languages:
   - Angular
   - C / C++
@@ -195,7 +198,7 @@ languages:
   - Vue
   - Not applicable
 
-# Q21. Database technologies
+# Q24. Database technologies
 databases:
   - Azure SQL
   - Cloud-native databases
@@ -207,7 +210,7 @@ databases:
   - PostgreSQL
   - Not applicable
 
-# Q22. Infrastructure/DevOps technologies
+# Q25. Infrastructure/DevOps technologies
 devops:
   - Amazon EKS
   - Azure DevOps
@@ -223,7 +226,7 @@ devops:
   - Other Infrastructure as Code
   - Not applicable
 
-# Q23. Computing/hosting environments
+# Q26. Computing/hosting environments
 hosting:
   - Amazon Web Services (AWS)
   - Containerized environments
@@ -235,7 +238,7 @@ hosting:
   - Vendor/SaaS platforms
   - Not applicable
 
-# Q24. Research areas
+# Q27. Research areas
 research_areas:
   - Basic science
   - Biomedical research
@@ -253,7 +256,7 @@ research_areas:
   - Social sciences
   - General/research area independent
 
-# Q25. Research project stages, in the order they typically occur
+# Q28. Research project stages, in the order they typically occur
 stages:
   - Early consultation / feasibility
   - Grant proposal development
@@ -268,20 +271,20 @@ stages:
   - Project closeout
   - Data/software archiving
 
-# Q26. Technical estimates for grant proposals
+# Q29. Technical estimates for grant proposals
 grant_estimates:
   - "Yes"
   - Yes, on a case-by-case basis
   - "No"
 
-# Q27. Consulting before funding is awarded. "No" skips Q28.
+# Q30. Consulting before funding is awarded. "No" skips Q31.
 pre_award:
   - "Yes"
   - Yes, on a limited basis
   - Depends on the project
   - "No"
 
-# Q28. What to expect from an initial or pre-award consultation
+# Q31. What to expect from an initial or pre-award consultation
 consult_scope:
   - label: A brief conversation (about an hour or less)
     answer: A brief conversation (about an hour or less)
@@ -290,7 +293,7 @@ consult_scope:
   - label: Scoped case by case
     answer: Scoped case by case
 
-# Q29. Types of data
+# Q32. Types of data
 data_types:
   - Data under NIST 800-171 controls
   - De-identified health information
@@ -305,7 +308,7 @@ data_types:
   - Depends on the hosting/environment
   - Unsure / requires review
 
-# Q30. Requirements or review processes
+# Q33. Requirements or review processes
 compliance:
   - Accessibility requirements
   - Business Associate Agreements (BAAs)
@@ -317,7 +320,7 @@ compliance:
   - Restricted-access research data
   - None of the above
 
-# Q31. How does your team typically handle security/compliance requirements?
+# Q34. How does your team typically handle security/compliance requirements?
 security_approach:
   - Our team can lead the technical security/compliance process
   - Our team can assist the researcher with the process
@@ -326,7 +329,7 @@ security_approach:
   - Varies by project
   - Not applicable
 
-# Q32. Engagement types
+# Q35. Engagement types
 engagement_types:
   - Embedded technical staff
   - Full project delivery
@@ -338,7 +341,7 @@ engagement_types:
   - Staff augmentation
   - Technical consultation/advisory services
 
-# Q33. Project sizes
+# Q36. Project sizes
 project_sizes:
   - Less than 40 hours
   - 40-200 hours
@@ -348,7 +351,7 @@ project_sizes:
   - Ongoing/long-term engagements
   - No typical project size
 
-# Q34. Engagement duration
+# Q37. Engagement duration
 durations:
   - One-time consultation
   - Less than 1 month
@@ -360,21 +363,21 @@ durations:
   - Funding dependent
   - Varies significantly
 
-# Q35. Take over software developed by another team?
+# Q38. Take over software developed by another team?
 takeover:
   - "Yes"
   - Yes, following a technical assessment
   - Case-by-case
   - "No"
 
-# Q36. Collaborate with technical staff already on the project?
+# Q39. Collaborate with technical staff already on the project?
 collaborate:
   - "Yes"
   - Yes, on a case-by-case basis
   - "No"
 
-# Q37. Is there a cost to researchers? Branches: "No cost" skips to Q41;
-# "Free initial help" goes to Q38; "Charged" skips to Q39.
+# Q40. Is there a cost to researchers? Branches: "No cost" skips to Q44;
+# "Free initial help" goes to Q41; "Charged" skips to Q42.
 cost:
   - label: No cost
     answer: No cost for any services
@@ -386,7 +389,7 @@ cost:
     answer: All services are charged
     phrase: Services are charged to researchers.
 
-# Q39. How are charges calculated?
+# Q42. How are charges calculated?
 charges:
   - Annual fee
   - Cloud consumption
@@ -397,7 +400,7 @@ charges:
   - Percent effort / FTE on the project budget
   - Software/license costs
 
-# Q40. Minimum project size or financial commitment (dollar ranges vs. hours still open)
+# Q43. Minimum project size or financial commitment (dollar ranges vs. hours still open)
 minimum:
   - No minimum
   - Less than $5,000
@@ -406,7 +409,7 @@ minimum:
   - More than $25,000
   - Varies by project
 
-# Q41. How is your team funded? (Context for RSSN; not shown as a filter.)
+# Q44. How is your team funded? (Context for RSSN; not shown as a filter.)
 funding:
   - label: Centrally funded
     answer: Centrally funded (by the University or Health System)
@@ -419,7 +422,7 @@ funding:
   - label: Internal cost recovery
     answer: Internal cost recovery
 
-# Q42. Is your team currently accepting new work? Kept as its own field so a team can
+# Q45. Is your team currently accepting new work? Kept as its own field so a team can
 # pause or resume requests with a one-line edit. "paused: true" adds a card tag.
 accepting:
   - label: "Yes"
@@ -430,7 +433,7 @@ accepting:
     phrase: Not accepting new work at this time.
     paused: true
 
-# Q43. Lead time for a new engagement
+# Q46. Lead time for a new engagement
 lead_time:
   - Less than 1 week
   - 1-2 weeks
@@ -439,7 +442,7 @@ lead_time:
   - More than 2 months
   - Varies based on project
 
-# Q44. Ongoing production support after launch
+# Q47. Ongoing production support after launch
 production_support:
   - "Yes"
   - Yes, for applications developed by our team
@@ -448,7 +451,7 @@ production_support:
   - Case-by-case
   - "No"
 
-# Q45. Support coverage
+# Q48. Support coverage
 support_coverage:
   - Standard Hopkins business hours
   - Extended-hours support
@@ -458,7 +461,7 @@ support_coverage:
   - Project-specific support arrangements
   - Not applicable
 
-# Q46. How can your team support research software that is or will be open source?
+# Q49. How can your team support research software that is or will be open source?
 open_source:
   - label: Contribute to existing open source projects
     answer: Contribute to or develop existing open source projects
@@ -472,17 +475,15 @@ open_source:
     answer: Maintain or sustain software after public release
   - label: Cannot currently support open source work
     answer: Our team cannot currently support open source work
-  - label: Unsure
-    answer: Unsure
 
-# Q47. Hand off source code and documentation at the end of an engagement
+# Q50. Hand off source code and documentation at the end of an engagement
 handoff_docs:
   - "Yes"
   - Yes, depending on the engagement
   - "No"
   - Not applicable
 
-# Q48. Long-term maintenance or sustainability services
+# Q51. Long-term maintenance or sustainability services
 maintenance:
   - "Yes"
   - Yes, for systems developed by our team
