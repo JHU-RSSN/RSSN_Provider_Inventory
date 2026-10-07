@@ -1,0 +1,104 @@
+---
+layout: default
+title: Request a change
+permalink: /request-a-change/
+---
+{%- comment -%}
+  Shows a team's whole listing as the questionnaire: every question, every answer choice,
+  with the team's current answers already selected. Visitors change what's out of date and
+  the page writes a plain-text summary of the changes for them to email to RSSN.
+  Nothing is saved or sent by the site; assets/js/request-change.js does all the work in
+  the browser. Open it as /request-a-change/?team=<listing file name>.
+{%- endcomment -%}
+{%- assign sorted = site.providers | sort: "title" -%}
+<main class="content-page change-page">
+  <h1>Request a change to a listing</h1>
+  <p>This page shows everything a team's listing says, as the questionnaire asked it: every question, every answer choice, and the team's current answers already selected. Change anything that's out of date, then use <strong>Prepare my email</strong> at the bottom. The page writes a short summary of your changes for you to email to RSSN, and RSSN updates the listing. Nothing is saved or sent until you send the email yourself.</p>
+  <p class="change-page__alt">Comfortable with GitHub? You can also <a id="github-edit-link" href="https://github.com/{{ site.repository }}/tree/{{ site.branch }}/_providers">edit the listing file directly</a>.</p>
+
+  <form class="change-picker" id="team-picker" action="" method="get">
+    <label for="team-select">Team</label>
+    <select id="team-select" name="team">
+      <option value="">Choose a team…</option>
+      {%- for p in sorted %}
+      <option value="{{ p.slug }}">{{ p.title }}{% if p.sample %} (sample){% endif %}</option>
+      {%- endfor %}
+    </select>
+    <button type="submit" class="button button--secondary">Show listing</button>
+  </form>
+
+  <noscript><p class="change-page__alt"><strong>This page needs JavaScript.</strong> You can still request a change by emailing RSSN{% if site.change_requests_email %} at <a href="mailto:{{ site.change_requests_email }}">{{ site.change_requests_email }}</a>{% endif %}.</p></noscript>
+
+  <form id="change-form" class="change-form" hidden>
+    <div id="change-questions"></div>
+
+    <section class="change-section" aria-labelledby="change-else-heading">
+      <h2 id="change-else-heading">Anything else</h2>
+      <label class="change-q__label" for="change-else">Anything else RSSN should know about this change? (optional)</label>
+      <textarea id="change-else" rows="3"></textarea>
+      <div class="change-you">
+        <div>
+          <label class="change-q__label" for="change-name">Your name</label>
+          <input type="text" id="change-name" autocomplete="name">
+        </div>
+        <div>
+          <label class="change-q__label" for="change-email">Your email</label>
+          <input type="email" id="change-email" autocomplete="email">
+        </div>
+      </div>
+      <p class="change-note">Your name and email only go into the email you send, so RSSN can follow up. They aren't saved or shown on the site.</p>
+    </section>
+
+    <div class="change-bar" id="change-bar">
+      <span class="change-bar__count" id="change-count" aria-live="polite">No changes yet</span>
+      <button type="button" class="button" id="change-prepare">Prepare my email</button>
+    </div>
+
+    <section class="change-output" id="change-output" hidden tabindex="-1" aria-labelledby="change-output-heading">
+      <h2 id="change-output-heading">Your change request</h2>
+      <p id="change-output-help"></p>
+      <textarea id="change-summary" rows="14" readonly></textarea>
+      <p class="button-row">
+        <a class="button" id="change-mailto" href="#">Open in my email</a>
+        <button type="button" class="button button--secondary" id="change-copy">Copy the text</button>
+        <span class="copy-status" id="change-copy-status" aria-live="polite"></span>
+      </p>
+    </section>
+  </form>
+</main>
+
+<script type="application/json" id="change-config">
+{
+  "email": {{ site.change_requests_email | default: "" | jsonify }},
+  "siteUrl": {{ site.url | append: site.baseurl | jsonify }},
+  "repository": {{ site.repository | jsonify }},
+  "branch": {{ site.branch | jsonify }}
+}
+</script>
+<script type="application/json" id="change-listings">
+{
+{%- for p in sorted %}
+  {{ p.slug | jsonify }}: {
+    "title": {{ p.title | jsonify }},
+    "url": {{ p.url | jsonify }},
+    "path": {{ p.path | jsonify }},
+    "institution": {{ p.institution | jsonify }},
+    "school": {{ p.school | jsonify }},
+    "unit": {{ p.unit | jsonify }},
+    "website": {{ p.website | jsonify }},
+    "contact": {{ p.contact | jsonify }},
+    "body": {{ p.content | strip_html | strip | jsonify }},
+    {%- for section in site.data.fields.sections %}{% for f in section.fields %}
+    {%- if f.derived or f.key == "institution" or f.key == "school" %}{% continue %}{% endif %}
+    {%- assign other_key = f.key | append: "_other" %}
+    {{ f.key | jsonify }}: {{ p[f.key] | jsonify }},
+    {{ other_key | jsonify }}: {{ p[other_key] | jsonify }},
+    {%- endfor %}{% endfor %}
+    "_end": true
+  }{% unless forloop.last %},{% endunless %}
+{%- endfor %}
+}
+</script>
+<script type="application/json" id="taxonomy-data">{{ site.data.taxonomy | jsonify }}</script>
+<script type="application/json" id="fields-data">{{ site.data.fields | jsonify }}</script>
+<script src="{{ '/assets/js/request-change.js' | relative_url }}"></script>

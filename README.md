@@ -69,12 +69,18 @@ If the questionnaire adds or renames an answer choice, add it to `_data/taxonomy
 
 ## Adding or updating a listing by hand
 
-Contributors don't need to clone anything. The site's [Add your service](https://jhu-rssn.github.io/RSSN_Provider_Inventory/add-your-service/) page walks them through proposing a change on github.com. Every provider profile also has a "Suggest an edit on GitHub" link.
+Contributors don't need to clone anything. The site's [Add your service](https://jhu-rssn.github.io/RSSN_Provider_Inventory/add-your-service/) page walks them through proposing a change on github.com. Every provider profile has two buttons: "See all answers & request a change" (email, no GitHub needed) and "Suggest an edit on GitHub" (quicker for maintainers, since it arrives as a ready-to-merge pull request).
 
 1. Copy `_includes/provider-template.md` into `_providers/` and give it a lowercase, hyphenated name, like `imaging-software-team.md`. The file name becomes the page's URL.
 2. Select answers by deleting the `# ` in front of them, and mark each service `not offered`, `offered`, or `strength`.
 3. Replace the placeholder text at the bottom with the team's optional paragraph (Q21, about 500 characters), or delete it.
 4. Open a pull request. A reviewer merges it, and the listing goes live.
+
+### Change requests by email (no GitHub needed)
+
+Every profile has a **See all answers & request a change** button. It opens `/request-a-change/?team=<file-name>` (`request-a-change.html` and `assets/js/request-change.js`), which shows the team's whole listing as the questionnaire: every question, every answer choice, and the current answers selected. The visitor changes what's out of date and clicks **Prepare my email**; the page writes a plain-text summary (for example "Q23. Languages: Add: Java / Remove: PHP", or "Databases: Not offered -> Offered") and opens it in their email program, with a Copy button as a fallback. Nothing is saved or sent by the site, so there's nothing to maintain beyond the page itself. The questions and choices come from `_data/fields.yml` and `_data/taxonomy.yml`, so the page stays in step with the listing files.
+
+Emails go to `change_requests_email` in `_config.yml`. A reviewer applies the requested changes to the listing file on GitHub (each change maps to adding or removing `# ` on a line), then checks it with `scripts/check_listings.py`.
 
 ### Reviewing a pull request
 
