@@ -4,7 +4,9 @@
   cost to researchers (Q40), lead time (Q46), and whether they're accepting new work (Q45).
   Wording comes from the "phrase" values in _data/taxonomy.yml.
   Include it with provider=page for the full summary, or with provider=p short="1" for the
-  card version: team type and cost only, since the card shows the rest. A card with neither
+  card version: team type and cost only, since the card shows the rest.
+  When the only cost answer is an Other write-in (cost_other), the summary points to the full
+  listing instead; pass on_profile="1" on the profile page to say "see Cost & funding below". A card with neither
   falls back to the start of the team's optional paragraph.
 {%- endcomment -%}
 {%- assign sum_p = include.provider -%}
@@ -24,7 +26,9 @@
 {%- include service-levels.html provider=sum_p %}
 {%- assign sum_n_strengths = svc_strengths.size | plus: 0 %}
 {%- if sum_n_strengths > 0 %} Areas of strength: {{ svc_strengths | join: "; " }}.{% endif %}
-{%- if sum_co.phrase %} {{ sum_co.phrase }}{% endif %}
+{%- if sum_co.phrase %} {{ sum_co.phrase }}
+{%- elsif sum_p.cost_other and sum_p.cost_other != "" %}{% if include.on_profile %} For cost to researchers, see Cost &amp; funding below.{% else %} For cost to researchers, see the full listing.{% endif %}
+{%- endif %}
 {%- if sum_p.lead_time and sum_p.lead_time != "" %} Typical lead time: {{ sum_p.lead_time | downcase }}.{% endif %}
 {%- if sum_ac.phrase %} {{ sum_ac.phrase }}{% endif %}
 {%- endif %}

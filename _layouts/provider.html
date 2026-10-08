@@ -31,7 +31,7 @@ layout: default
 
     <div class="profile__body">
       <div class="profile__main">
-        <p class="profile__summary">{% include summary.html provider=page %}</p>
+        <p class="profile__summary">{% include summary.html provider=page on_profile="1" %}</p>
         {%- assign paragraph = content | strip %}
         {%- if paragraph != "" %}
         <div class="profile__description">{{ content }}</div>
@@ -157,7 +157,8 @@ layout: default
         <div class="aside-block aside-block--quiet">
           <h2>At a glance</h2>
           <dl class="glance">
-            {%- if page.cost and page.cost != "" %}<div><dt>Cost to researchers</dt><dd>{{ page.cost }}</dd></div>{% endif %}
+            {%- if page.cost and page.cost != "" %}<div><dt>Cost to researchers</dt><dd>{{ page.cost }}</dd></div>
+            {%- elsif page.cost_other and page.cost_other != "" %}<div><dt>Cost to researchers</dt><dd><a href="#cost-heading">See Cost &amp; funding</a></dd></div>{% endif %}
             {%- if page.lead_time and page.lead_time != "" %}<div><dt>Lead time</dt><dd>{{ page.lead_time }}</dd></div>{% endif %}
             {%- if page.minimum and page.minimum != "" %}<div><dt>Minimum</dt><dd>{{ page.minimum }}</dd></div>{% endif %}
             {%- if page.pre_award and page.pre_award != "" %}<div><dt>Pre-award help</dt><dd>{{ page.pre_award }}</dd></div>{% endif %}
