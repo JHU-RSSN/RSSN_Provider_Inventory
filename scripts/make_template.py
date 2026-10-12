@@ -25,8 +25,8 @@ def main():
         "updated": "2026-01-01",
         "services": {s["name"]: "not offered" for s in cfg.services},
     }
-    intro = ["# RSSN provider listing. Each field matches a question on the RSSN Research IT Provider",
-             "# Questionnaire (Draft 3). Nothing is selected yet: select your answers as described below."]
+    intro = ["# RSSN provider listing. Each field matches a question on the RSSN Service Provider Inventory",
+             "# questionnaire (2026 Qualtrics version). Nothing is selected yet: select your answers as described below."]
     out = ROOT / "_includes/provider-template.md"
     out.write_text(render(blank, BODY, cfg, intro=intro), encoding="utf-8", newline="\n")
     print(f"wrote {out.relative_to(ROOT)}")

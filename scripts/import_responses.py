@@ -1,22 +1,30 @@
 #!/usr/bin/env python3
-"""Turn questionnaire responses (the Microsoft Forms Excel export) into provider listings.
+"""Turn questionnaire responses (the Qualtrics export) into provider listings.
 
-Written for Draft 3 of the RSSN Research IT Provider Questionnaire, as built in Forms.
+Written for the RSSN Service Provider Inventory questionnaire (Qualtrics, 2026 version).
 
     pip install openpyxl pyyaml
     python scripts/import_responses.py responses.xlsx --dry-run   # report only, change nothing
     python scripts/import_responses.py responses.xlsx             # write new and updated listings
 
+Export from Qualtrics as "Export data" with "Use choice text" for values, and with the
+question-text and import-ID header rows (the defaults). A .csv export works too. Responses that
+aren't finished, and preview responses, are skipped.
+
+Columns are matched by question number, which is the export tag (Q8, Q25, ...). A multi-select
+question's columns (Q25_1, Q25_2, ...) are joined into one answer, and its "Other (please
+specify)" write-in (Q25_21_TEXT) is kept in that field's "_other" text.
+
 Each response becomes _providers/<team-name>.md, in the format described in
 scripts/listing_format.py (every answer choice listed; unselected ones commented out).
 Answers are matched against the allowed values in _data/taxonomy.yml; anything that doesn't
-match (a write-in "Other" answer, say) goes in that field's "<key>_other" text.
+match goes in that field's "<key>_other" text.
 
 SAFETY CHECKS FOR RESPONSES THAT ALREADY HAVE A LISTING
 Teams are asked to edit their listing on GitHub, but a team could also edit and resubmit
 its form. So the script never simply overwrites a listing:
 
-  1. Each listing records its Forms response ID (form_response_id), and the script finds
+  1. Each listing records its response ID (form_response_id), and the script finds
      the listing by that ID, so renaming the team in the form updates the same file.
   2. A response is only looked at again if it changed since it was last imported.
      Unchanged responses are skipped.
@@ -35,15 +43,15 @@ its form. So the script never simply overwrites a listing:
   or edit the listing by hand to the answer you want and re-run.
 
 PRIVACY: only answers respondents agreed to publish go into listings. The names and emails
-of the person who filled out the form (Q1-2) and the approving team lead (Q5-6) are never
+of the person who filled out the form (Q2-3) and the approving team lead (Q6-7) are never
 written to the repository; the approver is printed in the report for RSSN's follow-up.
 
 Commit _imports/import_log.json along with the listings, and review the git diff before
 committing. Check the school and unit especially, since the form collects them as one answer.
 
-The four service grids (Q15-18) are found by their answers: any column whose answers are
-all "Not offered", "Offered", or "Offered & Area of strength" is a grid row, and the service
-it belongs to is the one whose name appears in the column heading.
+The four service grids (Q16-19) are found by their answers: any column whose answers are
+all "Not offered", "Offered", or "Area of Strength" is a grid row, and the service it
+belongs to is the one whose name appears in the column heading.
 """
 import argparse
 import datetime as dt
@@ -62,20 +70,18 @@ from listing_format import (LEVEL_FROM_FORM, MAX_STRENGTHS, PRIVATE_KEYS, PROVID
 
 LOG_PATH = ROOT / "_imports" / "import_log.json"
 
-# Columns that aren't part of _data/fields.yml, matched by the start of the heading.
-INFO_COLUMNS = {
-    "respondent_name": "Name of the person completing",
-    "respondent_email": "Email address of the person completing",
-    "contact_name": "Primary contact name",
-    "contact_email": "Primary contact email",
-    "approver_name": "Name of the team lead or director",
-    "approver_email": "Email address of the team lead or director",
-    "title": "Team or service name",
-    "paragraph": "Is there anything else you would like to highlight",
-    "website": "Website or service information URL",
+# Questions that aren't in _data/fields.yml (by question number, which is the export tag).
+INFO_Q = {
+    "respondent_name": 2, "respondent_email": 3,          # not published
+    "contact_name": 4, "contact_email": 5,
+    "approver_name": 6, "approver_email": 7,               # not published
+    "title": 10, "website": 11,
+    "paragraph": 23,                                       # optional text under the summary
 }
-# Forms' own columns, matched exactly.
-FORMS_COLUMNS = {"response_id": "id", "completed": "completion time", "modified": "last modified time"}
+# Qualtrics' own columns.
+EXPORT_COLUMNS = {"response_id": "ResponseId", "completed": "EndDate", "modified": "RecordedDate"}
+GRID_QS = {16, 17, 18, 19}                                 # the service grids
+TAG = re.compile(r"^Q(\d+)(?:_(\d+))?(_TEXT)?$")
 
 
 def norm(s):
@@ -137,23 +143,90 @@ class Matcher:
         return None
 
 
+def read_export(path):
+    """Read a Qualtrics export. Returns (headers, rows) with normalized headers:
+      Q25        one column per question; a multi-select's choice columns are joined with ";"
+      Q25_TEXT   the "Other (please specify)" write-in for that question
+      Q16_1...   the service grid columns, headed by their question text (so the service is found by name)
+      ResponseId, EndDate, ...   Qualtrics' own columns, unchanged
+    Only finished responses that aren't previews are returned, and the Qualtrics header rows are dropped."""
+    if str(path).lower().endswith(".csv"):
+        import csv
+        with open(path, encoding="utf-8-sig", newline="") as fh:
+            raw = [list(r) for r in csv.reader(fh)]
+    else:
+        ws = openpyxl.load_workbook(path).active
+        raw = [["" if v is None else v for v in r] for r in ws.iter_rows(values_only=True)]
+    tags = [str(t or "").strip() for t in raw[0]]
+    texts = [str(t or "").strip() for t in raw[1]] if len(raw) > 1 else [""] * len(tags)
+
+    heads, target, joined = [], [], set()
+    index = {}
+    for i, tag in enumerate(tags):
+        m = TAG.match(tag)
+        if not m:
+            head, join = tag, False
+        elif m.group(3):
+            head, join = f"Q{m.group(1)}_TEXT", True
+        elif m.group(2) and int(m.group(1)) in GRID_QS:
+            head, join = (texts[i] or tag), False
+        elif m.group(2):
+            head, join = f"Q{m.group(1)}", True
+        else:
+            head, join = f"Q{m.group(1)}", False
+        if head not in index:
+            index[head] = len(heads)
+            heads.append(head)
+        target.append(index[head])
+        if join:
+            joined.add(index[head])
+
+    out = []
+    for r in raw[2:]:
+        vals = [[] for _ in heads]
+        for i, j in enumerate(target):
+            v = r[i] if i < len(r) else None
+            if v in (None, ""):
+                continue
+            vals[j].append(v)
+        row = [";".join(str(v) for v in vs) if j in joined else (vs[0] if vs else "")
+               for j, vs in enumerate(vals)]
+        out.append(row)
+
+    def col(name):
+        return index.get(name)
+
+    keep = []
+    for row in out:
+        rid = row[col("ResponseId")] if col("ResponseId") is not None else ""
+        if not (str(rid).startswith("R_") or str(rid).isdigit()):
+            continue   # the question-text and import-ID rows, or blank lines
+        if col("Finished") is not None and str(row[col("Finished")]).strip() not in ("1", "True", "true"):
+            continue
+        if col("DistributionChannel") is not None and str(row[col("DistributionChannel")]).strip() == "preview":
+            continue
+        keep.append(row)
+    return heads, keep
+
+
 def find_columns(headers, fields):
+    """Column index for each stored answer, by question number. A write-in for a choice
+    question is found under "<key>_text"."""
     cols = {}
-    heads = [norm(h or "") for h in headers]
-    for key, name in FORMS_COLUMNS.items():
-        if name in heads:
-            cols[key] = heads.index(name)
-    wanted = dict(INFO_COLUMNS)
+    for key, name in EXPORT_COLUMNS.items():
+        if name in headers:
+            cols[key] = list(headers).index(name)
+    for key, n in INFO_Q.items():
+        if f"Q{n}" in headers:
+            cols[key] = list(headers).index(f"Q{n}")
     for f in fields:
-        if f.get("question"):
-            wanted[f["key"]] = f["question"]
-    for key, qtext in wanted.items():
-        qn = norm(qtext)
-        hits = [i for i, h in enumerate(heads) if h.startswith(qn) and i not in cols.values()]
-        if key == "institution":  # be exact: "Institution" could start other headings
-            hits = [i for i, h in enumerate(heads) if h == "institution"] or hits
-        if hits:
-            cols[key] = hits[0]
+        if f.get("q") is None or "-" in str(f["q"]):
+            continue
+        tag = f"Q{f['q']}"
+        if tag in headers:
+            cols[f["key"]] = list(headers).index(tag)
+        if tag + "_TEXT" in headers:
+            cols[f["key"] + "_text"] = list(headers).index(tag + "_TEXT")
     return cols
 
 
@@ -296,11 +369,15 @@ def parse_row(row, cols, grid, cfg):
         answers = split_answers(raw) if f["type"] == "many" else ([str(raw).strip()] if raw not in (None, "") else [])
         vals, other = [], []
         for a in answers:
+            if re.match(r"other\b", norm(a)):   # "Other (please specify)": its text is in the write-in column
+                continue
             hit = m.match(a)
             if hit:
                 vals.extend(x for x in hit if x not in vals)
             else:
                 other.append(a)
+        if k + "_text" in cols and cell(k + "_text"):
+            other.append(re.sub(r"\s+", " ", str(cell(k + "_text"))).strip())
         order = cfg.options(k)
         vals.sort(key=lambda v: order.index(v) if v in order else len(order))
         rec[k] = vals if f["type"] == "many" else (vals[0] if vals else "")
@@ -337,7 +414,7 @@ def take_from_form(merged, key, form, form_body, state):
 def load_log():
     if LOG_PATH.exists():
         return json.loads(LOG_PATH.read_text(encoding="utf-8"))
-    return {"_about": "Written by scripts/import_responses.py: a fingerprint of each Forms response's answers as "
+    return {"_about": "Written by scripts/import_responses.py: a fingerprint of each response's answers as "
                       "last imported, used to tell form changes from GitHub edits. Commit it with the listings.",
             "responses": {}}
 
@@ -385,7 +462,7 @@ def main():
     ap.add_argument("xlsx", help="Excel export of the questionnaire responses")
     ap.add_argument("--dry-run", action="store_true", help="report what would change; write nothing")
     ap.add_argument("--only", nargs="+", metavar="NAME_OR_ID",
-                    help="only these listings (file name without .md, or Forms response ID)")
+                    help="only these listings (file name without .md, or response ID)")
     side = ap.add_mutually_exclusive_group()
     side.add_argument("--form-wins", action="store_true", help="settle conflicts with the form's answers")
     side.add_argument("--listing-wins", action="store_true", help="settle conflicts by keeping the listing's answers")
@@ -395,15 +472,15 @@ def main():
 
     cfg = Config()
     log = load_log()
-    ws = openpyxl.load_workbook(args.xlsx).active
-    rows = list(ws.iter_rows(values_only=True))
-    cols = find_columns(rows[0], cfg.stored_fields())
+    heads, rows = read_export(args.xlsx)
+    cols = find_columns(heads, cfg.stored_fields())
     if "response_id" not in cols:
-        sys.exit("No 'ID' column found. Export the responses from Forms with 'Open results in Excel'.")
-    missing = [f["key"] for f in cfg.stored_fields() if f.get("question") and f["key"] not in cols]
+        sys.exit("No ResponseId column found. Export the responses from Qualtrics (Data & Analysis > Export data, "
+                 "Use choice text).")
+    missing = [f["key"] for f in cfg.stored_fields() if f.get("q") and f"Q{f['q']}" not in heads]
     if missing:
         print("Note: no column found for:", ", ".join(missing), "(listings keep whatever they have for those)")
-    grid = find_grid_columns(rows[0], rows[1:], cfg.services, set(cols.values()))
+    grid = find_grid_columns(heads, rows, cfg.services, set(cols.values()))
     if len(grid) < len(cfg.services):
         print("Note: no service-grid column found for:",
               ", ".join(s["name"] for s in cfg.services if s["name"] not in grid))
@@ -412,7 +489,7 @@ def main():
     PROVIDERS.mkdir(parents=True, exist_ok=True)
     counts = {"new": 0, "updated": 0, "unchanged": 0, "conflicts": 0}
 
-    for row in rows[1:]:
+    for row in rows:
         form, form_body, present = parse_row(row, cols, grid, cfg)
         if not form["title"]:
             continue

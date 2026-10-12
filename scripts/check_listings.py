@@ -106,7 +106,7 @@ def check(path, cfg):
     if data.get("hands_on") == "No":
         tech = [k for k in ("languages", "databases", "devops", "hosting") if as_list(data.get(k))]
         if tech:
-            warnings.append(f'Q22 (hands_on) is "No" but {", ".join(tech)} has answers selected; the site shows them as N/A')
+            warnings.append(f'Q24 (hands_on) is "No" but {", ".join(tech)} has answers selected; the site shows them as N/A')
 
     known = set(HEADER_KEYS) | set(PRIVATE_KEYS) | {f["key"] for f in cfg.fields} | {f["key"] + "_other" for f in cfg.fields}
     unknown = [k for k in data if k not in known]

@@ -11,11 +11,11 @@ removing "# " rather than typing an answer from memory:
       - "JHHS faculty"
       # - "JHHS staff"
 
-    # Q12. Available to. CHOOSE ONE.
+    # Q13. Available to. CHOOSE ONE.
     availability: "Hopkins-wide"
     # availability: "JHU only"
 
-The four service grids (Q15-18) are one map, with one word per service, the way the
+The four service grids (Q16-19) are one map, with one word per service, the way the
 form's grid works:
 
     services:
@@ -42,7 +42,7 @@ LEVEL_FROM_FORM = {
     "offered": "offered",
     "offered & area of strength": "strength",
     "offered and area of strength": "strength",
-    "area of strength": "strength",  # Draft 2 / early Draft 3 wording
+    "area of strength": "strength",  # earlier wording (Draft 2 and Draft 3 Forms)
     "strength": "strength",
 }
 MAX_STRENGTHS = 5
@@ -52,7 +52,7 @@ HEADER_KEYS = ["sample", "form_response_id", "title", "institution", "school", "
                "contact", "updated"]
 
 # Questionnaire answers that respondents didn't agree to publish: who filled out the form
-# (Q1-2) and the approving team lead (Q5-6). The repository is public, so these are never
+# (Q2-3) and the approving team lead (Q6-7). The repository is public, so these are never
 # written to listing files, even though older listings had them.
 PRIVATE_KEYS = ["submitted_by", "approved_by"]
 
@@ -235,7 +235,7 @@ def render(rec, body, cfg, intro=None):
     """Front matter + body text for one listing. `rec` holds front-matter values by key;
     services may be a {name: level} map or the older services/strengths lists."""
     L = ["---"]
-    L.extend(intro or ["# RSSN provider listing, from the RSSN Research IT Provider Questionnaire (Draft 3)."])
+    L.extend(intro or ["# RSSN provider listing, from the RSSN Service Provider Inventory questionnaire (2026 Qualtrics version)."])
     L.append("#")
     L.extend(EDIT_HELP)
     if rec.get("sample"):
@@ -245,7 +245,7 @@ def render(rec, body, cfg, intro=None):
         L.append("")
         L.append("# Links this listing to its Microsoft Forms response. Please don't change it.")
         L.append(f"form_response_id: {q(rec['form_response_id'])}")
-    L += ["", "# Q9. Team or service name, as researchers should see it", f"title: {q(rec.get('title'))}"]
+    L += ["", "# Q10. Team or service name, as researchers should see it", f"title: {q(rec.get('title'))}"]
 
     f = cfg.by_key["institution"]
     L += ["", f"# Q{f['q']}. {f['label']}. CHOOSE ONE."]
@@ -256,8 +256,8 @@ def render(rec, body, cfg, intro=None):
           "# write it on its own line the same way. Listed ones get a colored card accent."]
     L += _one_lines("school", rec.get("school"), cfg.options("school"))
     L += ["# Department or unit within that school (free text)", f"unit: {q(rec.get('unit'))}"]
-    L += ["", "# Q10. Website or service information URL (optional)", f"website: {q(rec.get('website'))}"]
-    L += ["", "# Q3-4. Primary contact, shown on the public site"] + _person("contact", rec.get("contact"))
+    L += ["", "# Q11. Website or service information URL (optional)", f"website: {q(rec.get('website'))}"]
+    L += ["", "# Q4-5. Primary contact, shown on the public site"] + _person("contact", rec.get("contact"))
     updated = rec.get("updated")
     if isinstance(updated, (dt.date, dt.datetime)):
         updated = updated.isoformat()[:10]
@@ -283,7 +283,7 @@ def render(rec, body, cfg, intro=None):
             elif t == "many":
                 note = ""
                 if k in ("languages", "databases", "devops", "hosting"):
-                    note = " (leave all unselected if Q22 is \"No\")"
+                    note = " (leave all unselected if Q24 is \"No\")"
                 L.append(f"# Q{f['q']}. {f['label']}. CHOOSE ALL THAT APPLY{note}.")
                 L += _many_lines(k, rec.get(k), cfg.options(k))
             elif t == "short":

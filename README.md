@@ -4,7 +4,7 @@ A prototype GitHub Pages site for the Research Software Support Network (RSSN) s
 
 **Live site:** https://jhu-rssn.github.io/RSSN_Provider_Inventory/
 
-> The site follows Draft 3 of the RSSN Research IT Provider Questionnaire. Listings without `sample: true` come from pilot responses to Draft 2 (September 2026), carried over to Draft 3's fields; questions Draft 2 didn't ask are left blank, and every team will resubmit on the final form. Listings with `sample: true` are fictional examples kept to show how the directory works; delete them once real listings cover the same ground.
+> The site follows the RSSN Service Provider Inventory questionnaire (Qualtrics, 2026 version). Listings without `sample: true` are the pilot listings: six from the Draft 2 pilot and two from the Draft 3 Forms test. They were brought across to the 2026 questions with `scripts/port_listings.py`. Each one has a port report in `_imports/port-reports/` listing what changed, what to confirm with the team, and what the team wasn't asked. Listings with `sample: true` are fictional examples kept to show how the directory works; delete them once real listings are in.
 
 ## How it works
 
@@ -20,7 +20,7 @@ The site is built with [Jekyll](https://jekyllrb.com/), which GitHub Pages runs 
 Every listing file lists every answer choice from the questionnaire, so people editing on GitHub select and unselect answers instead of typing them from memory. Choices that weren't picked are commented out with `# `, and Jekyll ignores commented lines, so the site only sees the selected answers. Each question's comment says whether it's **CHOOSE ONE** or **CHOOSE ALL THAT APPLY**:
 
 ```yaml
-# Q12. Available to. CHOOSE ONE.
+# Q13. Available to. CHOOSE ONE.
 availability: "Hopkins-wide"
 # availability: "JHU only"
 
@@ -30,7 +30,7 @@ eligible:
   # - "JHHS staff"
 ```
 
-The four service grids (Q15–18) are one `services` map that works like the form's grid: every service is followed by `not offered`, `offered`, or `strength` (offered and an area of strength; no more than five). The site works out the services and areas of strength from it (`_includes/service-levels.html`).
+The four service grids (Q16–19) are one `services` map that works like the form's grid: every service is followed by `not offered`, `offered`, or `strength` (offered and an area of strength; no more than five). The site works out the services and areas of strength from it (`_includes/service-levels.html`).
 
 ```yaml
 services:
@@ -43,29 +43,44 @@ services:
 
 ## Importing questionnaire responses
 
-`scripts/import_responses.py` turns the Microsoft Forms Excel export of the Draft 3 questionnaire into listings, one file per response:
+`scripts/import_responses.py` turns the Qualtrics export of the questionnaire into listings, one file per response. Export with "Use choice text" for values and the default header rows (or as a .csv):
 
 ```sh
 pip install openpyxl pyyaml
-python scripts/import_responses.py "Research Software Support Network ... .xlsx" --dry-run   # report only
-python scripts/import_responses.py "Research Software Support Network ... .xlsx"
+python scripts/import_responses.py responses.xlsx --dry-run   # report only
+python scripts/import_responses.py responses.xlsx
 ```
 
-Answers are matched to the values in `_data/taxonomy.yml`. Anything that doesn't match, like an "Other" answer, is kept as text in that field's `_other` key. The service grids are recognized by their answers (Not offered / Offered / Offered & Area of strength), so the exact column headings Forms uses don't matter. For each file, the script lists what to check: answers that aren't listed choices, more than five areas of strength, or "None of the above" chosen alongside other compliance answers. Review each new file before committing, especially `school` and `unit`, since the form collects those as one free-text answer.
+Answers are matched to the values in `_data/taxonomy.yml`. Anything that doesn't match, like an "Other" answer, is kept as text in that field's `_other` key. Columns are matched by question number (the Qualtrics export tag, such as `Q25`), and a multi-select question's columns are joined into one answer. The service grids are recognized by their answers (Not offered / Offered / Area of Strength). For each file, the script lists what to check: answers that aren't listed choices, more than five areas of strength, or "None of the above" chosen alongside other compliance answers. Review each new file before committing, especially `school` and `unit`, since the form collects those as one free-text answer.
 
 **Teams should edit their listing on GitHub, not by resubmitting the form.** In case someone resubmits anyway, the script never simply overwrites a listing:
 
-1. Each listing records its Forms response ID (`form_response_id`), and the script finds the listing by that ID, so a team renamed in the form still updates the same file.
-2. A response is only looked at again if it changed since it was last imported (Forms' "Last modified time"). Unchanged responses are skipped.
+1. Each listing records its response ID (`form_response_id`), and the script finds the listing by that ID, so a team renamed in the form still updates the same file.
+2. A response is only looked at again if it changed since it was last imported (Qualtrics' "RecordedDate"). Unchanged responses are skipped.
 3. `_imports/import_log.json` keeps a fingerprint of every answer as last imported. For each answer the script compares the form, the listing, and that record: an answer changed only in the form is updated; one changed only on GitHub is kept; one changed in both is a **conflict**. Conflicts keep the listing's answer and are reported on every run until someone settles them, either by editing the listing or with `--only <file-name> --form-wins` (or `--listing-wins`).
 
 A listing that was never imported (the pilot listings, for example) has no record, so when its team submits the form, every difference is reported as a conflict. If the new response should replace the pilot data, run `--only <file-name> --form-wins`.
 
 Commit `_imports/import_log.json` along with the listings; without it, the script can't tell form changes from GitHub edits. Jekyll ignores the `_imports` folder.
 
-The script was tested against a mock Draft 3 export. Run it with `--dry-run` on the first real export and check the "no column found" notes before trusting the output. It hasn't been confirmed yet that Forms keeps the same response ID when someone edits a submitted response; check this the first time it happens.
+The script was tested against a synthetic export laid out the way Qualtrics exports (tag, question-text and import-ID header rows; multi-select columns; write-in columns). Run it with `--dry-run` on the first real export and check the "no column found" notes before trusting the output.
 
 If the questionnaire adds or renames an answer choice, add it to `_data/taxonomy.yml` first so it imports as a filterable value instead of a write-in.
+
+## Approval sheets for approvers (PDF)
+
+`scripts/approval_sheet.py` makes a PDF for each questionnaire response, to email to the team's approver. Each sheet shows every question and every answer choice, with the team's answers ticked, the same way the change-request page does, so unselected choices are visible too. For a team that already has a listing, the top of the sheet lists what would change on the live site, and the approver checks those first.
+
+```sh
+pip install openpyxl pyyaml
+python scripts/approval_sheet.py responses.xlsx                                   # new and changed responses
+python scripts/approval_sheet.py responses.xlsx --all                             # every response
+python scripts/approval_sheet.py responses.xlsx --only biomedical-imaging-analysis-core
+```
+
+The PDFs go in `approvals/`, which is in `.gitignore`. The script prints the approver's name and email for each sheet, but it doesn't send anything. PDFs are printed with Microsoft Edge or Google Chrome, which are already on most Windows computers; if the script can't find them, pass the path with `--browser "C:\path\to\msedge.exe"`. Without a browser, it leaves HTML files to print from a browser instead.
+
+Sheets name the person who filled out the form (Q2-3) and the approver (Q6-7), so generate them in the private repository only and never commit or publish them.
 
 ## Adding or updating a listing by hand
 
@@ -86,32 +101,36 @@ Emails go to `change_requests_email` in `_config.yml`. A reviewer applies the re
 
 `python scripts/check_listings.py` checks every listing (or just the files you name) for the mistakes that are easy to make when editing: two answers left selected on a CHOOSE ONE question, an answer whose spelling no longer matches a choice (it would drop out of filters), a service marked with some other word, more than five strengths, or a line whose spacing broke the file. It reports line numbers and suggests the closest listed choice. It needs Python with PyYAML; if you'd rather not run it, check the same things by eye in the pull request's diff.
 
+## Bringing older listings across
+
+`scripts/port_listings.py` moves the existing listings to the 2026 questionnaire's wording. It renames each answer to the current choice (the old wordings are kept in `previous` and `previous_services` in `_data/taxonomy.yml`), moves any answer with no current choice into that field's write-in text, and writes one report per non-sample listing to `_imports/port-reports/`. Each report has four parts: what was renamed, what to confirm with the team, the questions the earlier questionnaire didn't ask, and the questions left blank. Run it with `--dry-run` first. Add `--earlier-xlsx <Draft 2 export>` to also check the pilot answers against each listing. The script names no approver or submitter.
+
 ### Listing fields
 
 Every field maps to a questionnaire question. The full list, with labels and question numbers, is in `_data/fields.yml`.
 
-| Questionnaire section (Draft 3) | Fields |
+| Questionnaire section (2026) | Fields |
 | --- | --- |
-| Provider information (Q1–10) | `contact.name`, `contact.email` (Q3–4), `institution`, `school`, `unit`, `title`, `website`. Q1–2 (who filled out the form) and Q5–6 (the approving team lead) aren't stored; see below. |
-| Who you support (Q11–14) | `team_type`, `availability`, `availability_details` (Q13), `eligible` |
-| Services & expertise (Q15–20) | `services` (Q15–18: every service as not offered / offered / strength), `services_other` (Q19), `examples` (Q20) |
-| Optional paragraph (Q21) | the body text below the front matter |
-| Technical capabilities (Q22–26) | `hands_on`, `languages`, `databases`, `devops`, `hosting` |
-| Research experience (Q27–31) | `research_areas`, `stages`, `grant_estimates`, `pre_award`, `consult_scope` |
-| Data, security & compliance (Q32–34) | `data_types`, `compliance`, `security_approach` |
-| Engagement model (Q35–39) | `engagement_types`, `project_sizes`, `durations`, `takeover`, `collaborate` |
-| Cost & funding (Q40–44) | `cost`, `free_limit`, `charges`, `minimum`, `funding` |
-| Availability & support (Q45–48) | `accepting`, `lead_time`, `production_support`, `support_coverage` |
-| Open source & sustainability (Q49–51) | `open_source`, `handoff_docs`, `maintenance` |
-| Additional information (Q52) | `notes` |
+| Provider information (Q2–11) | `contact.name`, `contact.email` (Q4–5), `institution`, `school`, `unit`, `title`, `website`. Q2–3 (who filled out the form) and Q6–7 (the approver) are never published |
+| Who you support (Q12–14) | `team_type`, `availability`, `availability_details` (Q20), `eligible` |
+| Services & expertise (Q16–23) | `services` (Q16–19: every service as not offered / offered / strength), `services_other` (Q21), `examples` (Q22) |
+| Optional paragraph (Q23) | the body text below the front matter |
+| Technical capabilities (Q24–28) | `hands_on`, `languages`, `databases`, `devops`, `hosting` |
+| Research experience (Q29–33) | `research_areas`, `stages`, `grant_estimates`, `pre_award`, `consult_scope` |
+| Data, security & compliance (Q34–36) | `data_types`, `compliance`, `security_approach` |
+| Engagement model (Q37–41) | `engagement_types`, `project_sizes`, `durations`, `takeover`, `collaborate` |
+| Cost & funding (Q42–46) | `cost`, `free_limit`, `charges`, `minimum`, `funding` |
+| Availability & support (Q47–50) | `accepting`, `lead_time`, `production_support`, `support_coverage` |
+| Open source & sustainability (Q51–53) | `open_source`, `handoff_docs`, `maintenance` |
+| Additional information (Q54) | `notes` |
 
 ### The summary
 
-Each card and profile opens with a summary built from the answers, as Q21 promises respondents: unit and team name, team type, availability, areas of strength, cost, lead time, and whether the team is accepting new work. The wording comes from the `phrase` values in `_data/taxonomy.yml`, and the template is `_includes/summary.html`. Cards use a shorter version (team type and cost), since they already show the rest.
+Each card and profile opens with a summary built from the answers, as Q23 promises respondents: unit and team name, team type, availability, areas of strength, cost, lead time, and whether the team is accepting new work. The wording comes from the `phrase` values in `_data/taxonomy.yml`, and the template is `_includes/summary.html`. Cards use a shorter version (team type and cost), since they already show the rest.
 
 ### Pausing new requests
 
-`accepting` (Q45) is its own field so a team can pause or resume requests with a quick edit: select `"Not at this time"` and the card and table show it under "Taking new work," and the profile gets a banner.
+`accepting` (Q47) is its own field so a team can pause or resume requests with a quick edit: select `"Not at this time"` and the card and table show it under "Taking new work," and the profile gets a banner.
 
 Any list or single-answer field can also have a `<field>_other` text value for write-in answers. Listings also carry `updated` (date of the response or last review), `form_response_id` (links the listing to its Forms response), and `sample: true` for fictional listings.
 
@@ -137,7 +156,7 @@ The home page shows cards by default. The Table button switches to a table with 
 - **Sorting** works from the Sort menu above either view or from the table's column headers (click again to reverse). Team and School sort A–Z. Available to, Lead time, and Taking new work sort in the order their answers are listed in `_data/taxonomy.yml`, so reordering a list there changes the sort. "Varies based on project" and "It's complicated" sort after the real answers, and blank answers ("Not reported") sort last, in either direction. Ties sort by team name.
 - **Default order** lists real listings A–Z, then sample listings. Once a sort is chosen, samples mix in with the real listings.
 - **Phones** (720px wide or less) show cards only; the Table button is hidden there.
-- **Teams that don't do hands-on technical work** (Q22 = "No") show N/A for languages in the table and for the whole Technical capabilities section on their profile, instead of leaving those questions blank.
+- **Teams that don't do hands-on technical work** (Q24 = "No") show N/A for languages in the table and for the whole Technical capabilities section on their profile, instead of leaving those questions blank.
 
 ## Design
 
