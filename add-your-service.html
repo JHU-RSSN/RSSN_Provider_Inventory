@@ -3,24 +3,14 @@ layout: default
 title: Add your service
 permalink: /add-your-service/
 ---
-{%- capture template %}{% include provider-template.md %}{% endcapture -%}
 <main class="content-page">
   <h1>Add or update your team's listing</h1>
-  <p>Each team on this site is one file in our GitHub repository. You add or update a listing by proposing a change to that file. An RSSN reviewer checks it, and it goes live a minute or two after it's approved.</p>
-  <p>You'll need a free GitHub account. You don't need to install anything.</p>
+  <p>New listings are added through the RSSN Research IT Provider Questionnaire. Existing listings are updated by request, either by email or on GitHub.</p>
 
   <h2>Add a new listing</h2>
-  <ol>
-    <li>Click <strong>Copy the template</strong>, then <strong>Start a new listing on GitHub</strong>. GitHub opens a new, empty file.</li>
-    <li>Paste the template into the file, and change the file name at the top to your team's name in lowercase with hyphens, like <code>imaging-software-team.md</code>.</li>
-    <li>Fill in each field. The fields follow the RSSN Research IT Provider Questionnaire, and every answer choice is already in the file. A line that starts with <code>#&nbsp;</code> isn't selected: delete the <code>#&nbsp;</code> to select it. Questions marked <strong>CHOOSE ONE</strong> should have exactly one line selected; <strong>CHOOSE ALL THAT APPLY</strong> questions can have any number. After each service, write <code>not offered</code>, <code>offered</code>, or <code>strength</code> (no more than five strengths). Anything that doesn't fit goes in the matching <code>_other</code> line.</li>
-    <li>Replace the text at the bottom with an optional short paragraph about your team (about 500 characters), or delete it. The site builds your card's summary from your answers, so there's no need to repeat them.</li>
-    <li>Click <strong>Commit changes</strong>, then <strong>Propose changes</strong>, then <strong>Create pull request</strong>.</li>
-  </ol>
+  <p>Complete the RSSN Research IT Provider Questionnaire. Your answers become your team's listing, and RSSN reviews them before it goes live.</p>
   <p class="button-row">
-    <button type="button" class="button button--secondary" id="copy-template">Copy the template</button>
-    <a class="button" id="new-listing" href="https://github.com/{{ site.repository }}/new/{{ site.branch }}/_providers?filename=your-team-name.md">Start a new listing on GitHub</a>
-    <span class="copy-status" id="copy-status" aria-live="polite"></span>
+    <a class="button" href="https://jh.qualtrics.com/jfe/form/SV_25j88N5th82nDsq">Start the questionnaire</a>
   </p>
 
   <h2>Already filled out the questionnaire?</h2>
@@ -29,24 +19,4 @@ permalink: /add-your-service/
   <h2>Update an existing listing</h2>
   <p><strong>The easy way:</strong> open your team's profile and click <strong>See all answers &amp; request a change via email</strong>, or <a href="{{ '/request-a-change/' | relative_url }}">choose your team here</a>. You'll see every question with all of its answer choices and your team's current answers selected. Change what's out of date, and the page writes an email to RSSN listing your changes. RSSN updates the listing for you.</p>
   <p><strong>On GitHub:</strong> open your team's profile on this site and click <strong>Suggest an edit on GitHub</strong> at the bottom. Every answer choice is listed in the file, so you only need to select or unselect lines: delete the <code>#&nbsp;</code> in front of an answer to select it, or type <code>#&nbsp;</code> in front of it to unselect it. To change a service, change the word after it to <code>not offered</code>, <code>offered</code>, or <code>strength</code>. Update the <code>updated:</code> date, then propose your changes the same way.</p>
-
-  <h2>The listing template</h2>
-  <p>If you'd rather copy it yourself, this is the full template:</p>
-  <pre class="template-block"><code id="template-text">{{ template | escape }}</code></pre>
 </main>
-<script>
-  // Copy the listing template to the clipboard. (The template is too long to prefill through a GitHub link.)
-  (function () {
-    var btn = document.getElementById("copy-template");
-    var status = document.getElementById("copy-status");
-    var text = document.getElementById("template-text").textContent;
-    btn.addEventListener("click", function () {
-      if (!navigator.clipboard) { status.textContent = "Select the template below and copy it."; return; }
-      navigator.clipboard.writeText(text).then(function () {
-        status.textContent = "Template copied.";
-      }, function () {
-        status.textContent = "Couldn't copy. Select the template below and copy it.";
-      });
-    });
-  })();
-</script>

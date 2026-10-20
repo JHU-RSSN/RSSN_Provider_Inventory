@@ -84,12 +84,17 @@ Sheets name the person who filled out the form (Q2-3) and the approver (Q6-7), s
 
 ## Adding or updating a listing by hand
 
-Contributors don't need to clone anything. The site's [Add your service](https://jhu-rssn.github.io/RSSN_Provider_Inventory/add-your-service/) page walks them through proposing a change on github.com. Every provider profile has two buttons: "See all answers & request a change via email" (email, no GitHub needed) and "Suggest an edit on GitHub" (quicker for maintainers, since it arrives as a ready-to-merge pull request).
+New listings are not added through GitHub. Teams add a new listing by completing the RSSN Research IT Provider Questionnaire (https://jh.qualtrics.com/jfe/form/SV_25j88N5th82nDsq), and RSSN imports the responses into a listing file. The site's [Add your service](https://jhu-rssn.github.io/RSSN_Provider_Inventory/add-your-service/) page links to the survey.
 
-1. Copy `_includes/provider-template.md` into `_providers/` and give it a lowercase, hyphenated name, like `imaging-software-team.md`. The file name becomes the page's URL.
+Existing listings can be changed in two ways. Every provider profile has two buttons: "Suggest an edit on GitHub" (listed first; quicker for maintainers, since it arrives as a ready-to-merge pull request) and "See all answers & request a change via email" (email, no GitHub needed).
+
+To edit a listing file by hand:
+
+1. Open the team's file in `_providers/`, or use the profile's "Suggest an edit on GitHub" button.
 2. Select answers by deleting the `# ` in front of them, and mark each service `not offered`, `offered`, or `strength`.
-3. Replace the placeholder text at the bottom with the team's optional paragraph (Q21, about 500 characters), or delete it.
-4. Open a pull request. A reviewer merges it, and the listing goes live.
+3. Open a pull request. A reviewer merges it, and the listing goes live.
+
+`_includes/provider-template.md` is no longer a template for new listings; it is still rebuilt by `scripts/make_template.py` for reference.
 
 ### Change requests by email (no GitHub needed)
 
