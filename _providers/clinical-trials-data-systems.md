@@ -26,12 +26,23 @@ institution: "JHHS"
 
 # Q9. School, division, or central office. CHOOSE ONE, or if yours isn't listed,
 # write it on its own line the same way. Listed ones get a colored card accent.
-# school: "Whiting School of Engineering"
-school: "School of Medicine"
+# school: "Academic and Business Centers"
+# school: "Applied Physics Laboratory"
 # school: "Bloomberg School of Public Health"
-# school: "Sheridan Libraries"
-# school: "Office of Research"
-# school: "Johns Hopkins IT"
+# school: "Carey Business School"
+# school: "IT@JH"
+# school: "JHTV"
+# school: "Krieger School of Arts and Sciences"
+# school: "Libraries"
+# school: "Peabody Institute"
+# school: "School of Advanced International Studies"
+# school: "School of Education"
+# school: "School of Government and Policy"
+school: "School of Medicine"
+# school: "School of Nursing"
+# school: "University Administration"
+# school: "University Student Services"
+# school: "Whiting School of Engineering"
 # Department or unit within that school (free text)
 unit: "Office of Clinical Research Informatics"
 

@@ -24,35 +24,63 @@ institutions:
   - label: Joint JHU/JHHS
     answer: "Joint JHU/JHHS organization"
 
-# Q9. Schools, divisions, and central units. "short" is the label shown on cards.
-# "color" is the card accent, chosen from the Hopkins secondary palette.
+# Q9. Schools, divisions, and central units. "short" is the label shown on cards: the
+# abbreviation where the JHU Editorial Style Guide has one, otherwise the shortest form.
 # "aliases" help the import script recognize the school inside free-text answers.
-# A provider whose school isn't listed here still works; its card uses Heritage Blue.
+# All cards use Heritage Blue, so no school has its own color.
+# A provider whose school isn't listed here still works; its card shows the answer as written.
 schools:
-  - name: Whiting School of Engineering
-    short: Whiting School
-    color: "#0077D8"   # Medium Blue
-    aliases: [Whiting School, WSE]
-  - name: School of Medicine
-    short: School of Medicine
-    color: "#008767"   # Homewood Green
-    aliases: [SOM, JHU SOM]
-  - name: Bloomberg School of Public Health
-    short: Bloomberg School
-    color: "#A45C98"   # Purple
-    aliases: [Bloomberg School, School of Public Health, BSPH, JHSPH]
-  - name: Sheridan Libraries
-    short: Sheridan Libraries
-    color: "#CBA052"   # Sand
-    aliases: [Sheridan, JHU Libraries]
-  - name: Office of Research
-    short: Office of Research
-    color: "#68ACE5"   # Spirit Blue
+  - name: Academic and Business Centers
+    short: Academic and Business Centers
     aliases: []
-  - name: Johns Hopkins IT
-    short: JH IT
-    color: "#FF9E1B"   # Orange
-    aliases: [JH IT, JHIT, IT@JH, Johns Hopkins Information Technology]
+  - name: Applied Physics Laboratory
+    short: APL
+    aliases: [Advanced Physics Lab, JHU APL]
+  - name: Bloomberg School of Public Health
+    short: BSPH
+    aliases: [Bloomberg School, School of Public Health, JHSPH]
+  - name: Carey Business School
+    short: Carey
+    aliases: [Carey School]
+  - name: IT@JH
+    short: IT@JH
+    aliases: [JH IT, JHIT, IT@JH, Johns Hopkins IT, Johns Hopkins Information Technology]
+  - name: JHTV
+    short: JHTV
+    aliases: []
+  - name: Krieger School of Arts and Sciences
+    short: KSAS
+    aliases: [Krieger School, KSAS]
+  - name: Libraries
+    short: Libraries
+    aliases: [Sheridan Libraries, JHU Libraries]
+  - name: Peabody Institute
+    short: Peabody
+    aliases: []
+  - name: School of Advanced International Studies
+    short: SAIS
+    aliases: [Johns Hopkins SAIS]
+  - name: School of Education
+    short: SOE
+    aliases: [SOE]
+  - name: School of Government and Policy
+    short: SGP
+    aliases: [SGP]
+  - name: School of Medicine
+    short: SOM
+    aliases: [SOM, JHU SOM]
+  - name: School of Nursing
+    short: SON
+    aliases: [SON]
+  - name: University Administration
+    short: University Administration
+    aliases: [Office of Research]
+  - name: University Student Services
+    short: University Student Services
+    aliases: []
+  - name: Whiting School of Engineering
+    short: WSE
+    aliases: [Whiting School, WSE]
 
 # Q12. Which best describes your team?
 team_type:

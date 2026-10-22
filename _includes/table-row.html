@@ -5,6 +5,8 @@
 {%- endcomment -%}
 {%- assign p = include.provider -%}
 {%- assign school = site.data.taxonomy.schools | where: "name", p.school | first -%}
+{%- assign eyebrow = school.short | default: p.school -%}
+{%- if p.school == "Academic and Business Centers" and p.unit != "" %}{% assign eyebrow = p.unit %}{% endif -%}
 {%- include service-levels.html provider=p -%}
 {%- assign n_strengths = svc_strengths.size | plus: 0 -%}
 {%- if n_strengths > 0 %}{% assign chips = svc_strengths %}{% assign chips_label = "Areas of strength" %}{% else %}{% assign chips = svc_offered %}{% assign chips_label = "Services" %}{% endif -%}
@@ -20,7 +22,7 @@
     </td>
     <th scope="row" class="ptable__team">
       <a class="ptable__name" href="{{ p.url | relative_url }}">{{ p.title }}</a>{% if p.sample %}<span class="sample-tag">Sample</span>{% endif %}
-      <span class="ptable__school"><span class="school-dot" style="background: {{ school.color | default: '#002D72' }}" aria-hidden="true"></span>{{ school.short | default: p.school }}</span>
+      <span class="ptable__school">{{ eyebrow }}</span>
     </th>
     <td class="ptable__strengths">
       <ul class="chips chips--table" aria-label="{{ chips_label }}">

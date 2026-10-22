@@ -68,7 +68,7 @@ def check(path, cfg):
                 errors.append(f"{label} is a CHOOSE ONE question but has a list of answers")
             elif v not in (None, "") and str(v) not in cfg.options(k):
                 if k == "school":
-                    warnings.append(f'school "{v}" isn\'t one of the listed schools, so its card has no color accent')
+                    warnings.append(f'school "{v}" isn\'t one of the listed schools, so its card shows the answer as written')
                 else:
                     errors.append(f'{label}: "{v}" is not one of the choices.{suggest(v, cfg.options(k))}')
         elif t == "many":
