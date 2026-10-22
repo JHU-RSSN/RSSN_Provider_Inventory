@@ -7,4 +7,3 @@ vendor/
 Gemfile.lock
 /Claude outputs
 __pycache__/
-approvals/

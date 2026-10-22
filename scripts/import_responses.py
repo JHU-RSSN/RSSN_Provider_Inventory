@@ -44,7 +44,7 @@ its form. So the script never simply overwrites a listing:
 
 PRIVACY: only answers respondents agreed to publish go into listings. The names and emails
 of the person who filled out the form (Q2-3) and the approving team lead (Q6-7) are never
-written to the repository; the approver is printed in the report for RSSN's follow-up.
+copied into a listing or printed in the report.
 
 Commit _imports/import_log.json along with the listings, and review the git diff before
 committing. Check the school and unit especially, since the form collects them as one answer.
@@ -310,13 +310,10 @@ def parse_row(row, cols, grid, cfg):
     rec["updated"] = (when.date() if when else dt.date.today()).isoformat()
 
     # Only the primary contact (Q3-4) is published. Who filled out the form (Q1-2) and the
-    # approver (Q5-6) stay out of the listing; the approver is printed for RSSN's follow-up.
+    # approver (Q5-6) are never read here, so they can't reach the listing or the report.
     rec["contact"] = {"name": text("contact_name"), "email": text("contact_email")}
     if "contact_name" in cols:
         present.add("contact")
-    approver = " ".join(x for x in (text("approver_name"), text("approver_email") and f"<{text('approver_email')}>") if x)
-    submitter = " ".join(x for x in (text("respondent_name"), text("respondent_email") and f"<{text('respondent_email')}>") if x)
-    rec["_approver"] = approver or ("(none given; submitted by " + submitter + ")" if submitter else "(none given)")
 
     site = text("website")
     if site and not re.match(r"https?://", site):
@@ -500,7 +497,6 @@ def main():
             continue
 
         when = form.pop("_response_time")
-        approver = form.pop("_approver")
         when_s = when.isoformat(timespec="seconds") if when else ""
         form_vals = {k: v for k, v in values(form, form_body, cfg).items() if k in present}
         notes = []
@@ -517,7 +513,7 @@ def main():
         if not path.exists():
             form["form_response_id"] = rid
             counts["new"] += 1
-            print(f"new      {path.name}\n         send for approval to: {approver}")
+            print(f"new      {path.name}")
             if not form["contact"]["email"]:
                 notes.append("no primary contact email (Q4); the listing's contact is blank")
             for n in notes:
@@ -579,7 +575,7 @@ def main():
             notes.append(f"the listing was edited ({cur['updated']}) after this response was last saved ({when.date()})")
         if took:
             counts["updated"] += 1
-            print(f"update   {label}\n         from the form: {', '.join(took)}\n         approver: {approver}")
+            print(f"update   {label}\n         from the form: {', '.join(took)}")
         elif conflicts:
             print(f"conflict {label}")
         else:

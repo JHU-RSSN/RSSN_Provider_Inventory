@@ -67,21 +67,6 @@ The script was tested against a synthetic export laid out the way Qualtrics expo
 
 If the questionnaire adds or renames an answer choice, add it to `_data/taxonomy.yml` first so it imports as a filterable value instead of a write-in.
 
-## Approval sheets for approvers (PDF)
-
-`scripts/approval_sheet.py` makes a PDF for each questionnaire response, to email to the team's approver. Each sheet shows every question and every answer choice, with the team's answers ticked, the same way the change-request page does, so unselected choices are visible too. For a team that already has a listing, the top of the sheet lists what would change on the live site, and the approver checks those first.
-
-```sh
-pip install openpyxl pyyaml
-python scripts/approval_sheet.py responses.xlsx                                   # new and changed responses
-python scripts/approval_sheet.py responses.xlsx --all                             # every response
-python scripts/approval_sheet.py responses.xlsx --only biomedical-imaging-analysis-core
-```
-
-The PDFs go in `approvals/`, which is in `.gitignore`. The script prints the approver's name and email for each sheet, but it doesn't send anything. PDFs are printed with Microsoft Edge or Google Chrome, which are already on most Windows computers; if the script can't find them, pass the path with `--browser "C:\path\to\msedge.exe"`. Without a browser, it leaves HTML files to print from a browser instead.
-
-Sheets name the person who filled out the form (Q2-3) and the approver (Q6-7), so generate them in the private repository only and never commit or publish them.
-
 ## Adding or updating a listing by hand
 
 New listings are not added through GitHub. Teams add a new listing by completing the RSSN Research IT Provider Questionnaire (https://jh.qualtrics.com/jfe/form/SV_25j88N5th82nDsq), and RSSN imports the responses into a listing file. The site's [Add your service](https://jhu-rssn.github.io/RSSN_Provider_Inventory/add-your-service/) page links to the survey.
