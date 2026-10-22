@@ -201,7 +201,7 @@ def read_export(path):
         rid = row[col("ResponseId")] if col("ResponseId") is not None else ""
         if not (str(rid).startswith("R_") or str(rid).isdigit()):
             continue   # the question-text and import-ID rows, or blank lines
-        if col("Finished") is not None and str(row[col("Finished")]).strip() not in ("1", "True", "true"):
+        if col("Finished") is not None and str(row[col("Finished")]).strip().lower() not in ("1", "true"):
             continue
         if col("DistributionChannel") is not None and str(row[col("DistributionChannel")]).strip() == "preview":
             continue

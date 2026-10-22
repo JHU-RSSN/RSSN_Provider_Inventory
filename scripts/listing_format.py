@@ -43,6 +43,7 @@ LEVEL_FROM_FORM = {
     "offered & area of strength": "strength",
     "offered and area of strength": "strength",
     "area of strength": "strength",  # earlier wording (Draft 2 and Draft 3 Forms)
+    "offered,area of strength": "strength",  # Qualtrics export of a grid cell with both boxes checked
     "strength": "strength",
 }
 MAX_STRENGTHS = 5
