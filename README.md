@@ -1,10 +1,10 @@
-# RSSN Provider Inventory (prototype)
+# RSSN Provider Inventory
 
-A prototype GitHub Pages site for the Research Software Support Network (RSSN) service provider inventory. It lists Johns Hopkins teams that support research software, data, and computing, with search, filters, and a profile page for each team.
+A  GitHub Pages site for the Research Software Support Network (RSSN) service provider inventory. The provider inventory lists Johns Hopkins teams that support research software, data, and computing, with search, filters, and a profile page for each team.
 
 **Live site:** https://jhu-rssn.github.io/RSSN_Provider_Inventory/
 
-> The site follows the RSSN Service Provider Inventory questionnaire (Qualtrics, 2026 version). Listings are generated from the questionnaire's exports by `scripts/import_responses.py`. Listings with `sample: true` are fictional examples kept to show how the directory works.
+> The site follows the RSSN Service Provider Inventory questionnaire (Qualtrics, 2026 version). Listings are generated from the questionnaire's exports by `scripts/import_responses.py`.
 
 ## How it works
 
@@ -13,7 +13,7 @@ The site is built with [Jekyll](https://jekyllrb.com/), which GitHub Pages runs 
 - Each team is one Markdown file in `_providers/`. Jekyll turns each file into a profile page at `/providers/<file-name>/`, plus a card and a table row on the home page.
 - The home page's search, filters, sorting, and Cards/Table switch run in the browser (`assets/js/directory.js`) using data Jekyll writes into the page at build time.
 - `_data/fields.yml` lists every listing field, grouped the way the questionnaire groups them. It drives the profile page, the search data, the filter panel, and the import script.
-- Allowed values for every list field live in `_data/taxonomy.yml`. They mirror the RSSN Research IT Provider Questionnaire.
+- Allowed values for every list field live in `_data/taxonomy.yml`. They mirror the RSSN Service Provider Questionnaire.
 
 ## The listing file format
 
