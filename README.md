@@ -4,7 +4,7 @@ A prototype GitHub Pages site for the Research Software Support Network (RSSN) s
 
 **Live site:** https://jhu-rssn.github.io/RSSN_Provider_Inventory/
 
-> The site follows the RSSN Service Provider Inventory questionnaire (Qualtrics, 2026 version). Listings without `sample: true` are the pilot listings: six from the Draft 2 pilot and two from the Draft 3 Forms test. They were brought across to the 2026 questions with `scripts/port_listings.py`. Each one has a port report in `_imports/port-reports/` listing what changed, what to confirm with the team, and what the team wasn't asked. Listings with `sample: true` are fictional examples kept to show how the directory works; delete them once real listings are in.
+> The site follows the RSSN Service Provider Inventory questionnaire (Qualtrics, 2026 version). Listings are generated from the questionnaire's exports by `scripts/import_responses.py`. Listings with `sample: true` are fictional examples kept to show how the directory works.
 
 ## How it works
 
@@ -59,7 +59,7 @@ Answers are matched to the values in `_data/taxonomy.yml`. Anything that doesn't
 2. A response is only looked at again if it changed since it was last imported (Qualtrics' "RecordedDate"). Unchanged responses are skipped.
 3. `_imports/import_log.json` keeps a fingerprint of every answer as last imported. For each answer the script compares the form, the listing, and that record: an answer changed only in the form is updated; one changed only on GitHub is kept; one changed in both is a **conflict**. Conflicts keep the listing's answer and are reported on every run until someone settles them, either by editing the listing or with `--only <file-name> --form-wins` (or `--listing-wins`).
 
-A listing that was never imported (the pilot listings, for example) has no record, so when its team submits the form, every difference is reported as a conflict. If the new response should replace the pilot data, run `--only <file-name> --form-wins`.
+A listing that was never imported has no record, so when its team submits the form, every difference is reported as a conflict. If the new response should replace the existing listing, run `--only <file-name> --form-wins`.
 
 Commit `_imports/import_log.json` along with the listings; without it, the script can't tell form changes from GitHub edits. Jekyll ignores the `_imports` folder.
 
@@ -90,10 +90,6 @@ Emails go to `change_requests_email` in `_config.yml`. A reviewer applies the re
 ### Reviewing a pull request
 
 `python scripts/check_listings.py` checks every listing (or just the files you name) for the mistakes that are easy to make when editing: two answers left selected on a CHOOSE ONE question, an answer whose spelling no longer matches a choice (it would drop out of filters), a service marked with some other word, more than five strengths, or a line whose spacing broke the file. It reports line numbers and suggests the closest listed choice. It needs Python with PyYAML; if you'd rather not run it, check the same things by eye in the pull request's diff.
-
-## Bringing older listings across
-
-`scripts/port_listings.py` moves the existing listings to the 2026 questionnaire's wording. It renames each answer to the current choice (the old wordings are kept in `previous` and `previous_services` in `_data/taxonomy.yml`), moves any answer with no current choice into that field's write-in text, and writes one report per non-sample listing to `_imports/port-reports/`. Each report has four parts: what was renamed, what to confirm with the team, the questions the earlier questionnaire didn't ask, and the questions left blank. Run it with `--dry-run` first. Add `--earlier-xlsx <Draft 2 export>` to also check the pilot answers against each listing. The script names no approver or submitter.
 
 ### Listing fields
 
