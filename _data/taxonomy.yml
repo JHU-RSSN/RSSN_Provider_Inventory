@@ -42,18 +42,18 @@ schools:
   - name: Carey Business School
     short: Carey
     aliases: [Carey School]
-  - name: IT@JH
-    short: IT@JH
-    aliases: [JH IT, JHIT, IT@JH, Johns Hopkins IT, Johns Hopkins Information Technology]
+  - name: Johns Hopkins IT
+    short: JHIT
+    aliases: [IT@JH, JH IT, JHIT, Johns Hopkins Information Technology]
   - name: JHTV
     short: JHTV
     aliases: []
   - name: Krieger School of Arts and Sciences
     short: KSAS
     aliases: [Krieger School, KSAS]
-  - name: Libraries
+  - name: University Libraries and Museums
     short: Libraries
-    aliases: [Sheridan Libraries, JHU Libraries]
+    aliases: [Libraries, Sheridan Libraries, JHU Libraries, Peabody Library, Frary Library, Cheney Medical Archives, Homewood Museum, Evergreen Museum and Library, Friedheim Library, Welch Medical Library]
   - name: Peabody Institute
     short: Peabody
     aliases: []
@@ -534,6 +534,9 @@ maintenance:
 
 # Earlier wording, by question (the same map, shown in one place):
 previous:
+  school:
+    "IT@JH": Johns Hopkins IT
+    "Libraries": University Libraries and Museums
   availability:
     "Yes - Hopkins-wide": Hopkins-wide
     "Yes - JHU only": JHU only
