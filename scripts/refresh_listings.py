@@ -21,7 +21,7 @@ from listing_format import PROVIDERS, Config, EDIT_HELP, read_listing, render, s
 
 
 def intro_lines(path):
-    """The file's own opening comment (e.g. "Pilot response..."), without the edit help."""
+    """The file's own opening comment, without the edit help."""
     front, _ = split_front_matter(Path(path).read_text(encoding="utf-8"))
     out = []
     for line in front.split("\n"):

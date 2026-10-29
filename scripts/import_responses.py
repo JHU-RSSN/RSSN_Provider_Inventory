@@ -21,8 +21,9 @@ Answers are matched against the allowed values in _data/taxonomy.yml; anything t
 match goes in that field's "<key>_other" text.
 
 SAFETY CHECKS FOR RESPONSES THAT ALREADY HAVE A LISTING
-Teams are asked to edit their listing on GitHub, but a team could also edit and resubmit
-its form. So the script never simply overwrites a listing:
+Qualtrics is the source of truth: teams change their answers by resubmitting the
+questionnaire, and the listing's answers can also be edited by hand on GitHub. So the script
+never simply overwrites a listing:
 
   1. Each listing records its response ID (form_response_id), and the script finds
      the listing by that ID, so renaming the team in the form updates the same file.
@@ -34,7 +35,7 @@ its form. So the script never simply overwrites a listing:
        - changed only on GitHub          -> the listing's answer is kept
        - changed in both, differently    -> CONFLICT: the listing's answer is kept and the
                                             conflict is reported every run until settled
-     A listing that was never imported (the pilot listings, for example) has no record,
+     A listing that was never imported has no record,
      so every difference from the form is reported as a conflict.
 
   Settle the conflicts for one listing with

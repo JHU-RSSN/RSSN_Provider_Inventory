@@ -35,21 +35,20 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 PROVIDERS = ROOT / "_providers"
 
-# Words a listing uses for each service, and the Forms grid answers they come from.
+# Words a listing uses for each service, and the questionnaire grid answers they come from.
 LEVELS = ["not offered", "offered", "strength"]
 LEVEL_FROM_FORM = {
     "not offered": "not offered",
     "offered": "offered",
     "offered & area of strength": "strength",
     "offered and area of strength": "strength",
-    "area of strength": "strength",  # earlier wording (Draft 2 and Draft 3 Forms)
     "offered,area of strength": "strength",  # Qualtrics export of a grid cell with both boxes checked
     "strength": "strength",
 }
 MAX_STRENGTHS = 5
 
 # Front-matter keys handled outside fields.yml, in the order they're written.
-HEADER_KEYS = ["sample", "form_response_id", "title", "institution", "school", "unit", "website",
+HEADER_KEYS = ["form_response_id", "title", "institution", "school", "unit", "website",
                "contact", "updated"]
 
 # Questionnaire answers that respondents didn't agree to publish: who filled out the form
@@ -239,12 +238,9 @@ def render(rec, body, cfg, intro=None):
     L.extend(intro or ["# RSSN provider listing, from the RSSN Service Provider Inventory questionnaire (2026 Qualtrics version)."])
     L.append("#")
     L.extend(EDIT_HELP)
-    if rec.get("sample"):
-        L.append("")
-        L.append("sample: true")
     if rec.get("form_response_id"):
         L.append("")
-        L.append("# Links this listing to its Microsoft Forms response. Please don't change it.")
+        L.append("# Links this listing to its questionnaire response. Please don't change it.")
         L.append(f"form_response_id: {q(rec['form_response_id'])}")
     L += ["", "# Q10. Team or service name, as researchers should see it", f"title: {q(rec.get('title'))}"]
 

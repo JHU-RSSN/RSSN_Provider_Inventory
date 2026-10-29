@@ -1,6 +1,6 @@
 # RSSN Provider Inventory
 
-A  GitHub Pages site for the Research Software Support Network (RSSN) service provider inventory. The provider inventory lists Johns Hopkins teams that support research software, data, and computing, with search, filters, and a profile page for each team.
+The GitHub Pages site for the Research Software Support Network (RSSN) service provider inventory. The provider inventory lists Johns Hopkins teams that support research software, data, and computing, with search, filters, and a profile page for each team.
 
 **Live site:** https://jhu-rssn.github.io/RSSN_Provider_Inventory/
 
@@ -53,7 +53,7 @@ python scripts/import_responses.py responses.xlsx
 
 Answers are matched to the values in `_data/taxonomy.yml`. Anything that doesn't match, like an "Other" answer, is kept as text in that field's `_other` key. Columns are matched by question number (the Qualtrics export tag, such as `Q25`), and a multi-select question's columns are joined into one answer. The service grids are recognized by their answers (Not offered / Offered / Area of Strength). For each file, the script lists what to check: answers that aren't listed choices, more than five areas of strength, or "None of the above" chosen alongside other compliance answers. Review each new file before committing, especially `school` and `unit`, since the form collects those as one free-text answer.
 
-**Teams should edit their listing on GitHub, not by resubmitting the form.** In case someone resubmits anyway, the script never simply overwrites a listing:
+**Qualtrics is the source of truth.** Teams change their answers by resubmitting the questionnaire, and the script never simply overwrites a listing:
 
 1. Each listing records its response ID (`form_response_id`), and the script finds the listing by that ID, so a team renamed in the form still updates the same file.
 2. A response is only looked at again if it changed since it was last imported (Qualtrics' "RecordedDate"). Unchanged responses are skipped.
@@ -71,11 +71,11 @@ If the questionnaire adds or renames an answer choice, add it to `_data/taxonomy
 
 New listings are not added through GitHub. Teams add a new listing by completing the RSSN Research IT Provider Questionnaire (https://jh.qualtrics.com/jfe/form/SV_25j88N5th82nDsq), and RSSN imports the responses into a listing file. The site's [Add your service](https://jhu-rssn.github.io/RSSN_Provider_Inventory/add-your-service/) page links to the survey.
 
-Existing listings can be changed in two ways. Every provider profile has two buttons: "Suggest an edit on GitHub" (listed first; quicker for maintainers, since it arrives as a ready-to-merge pull request) and "See all answers & request a change via email" (email, no GitHub needed).
+Existing listings are changed by request. Every provider profile has a "See all answers & request a change via email" button, which writes the email for you.
 
 To edit a listing file by hand:
 
-1. Open the team's file in `_providers/`, or use the profile's "Suggest an edit on GitHub" button.
+1. Open the team's file in `_providers/`.
 2. Select answers by deleting the `# ` in front of them, and mark each service `not offered`, `offered`, or `strength`.
 3. Open a pull request. A reviewer merges it, and the listing goes live.
 
@@ -85,7 +85,7 @@ To edit a listing file by hand:
 
 Every profile has a **See all answers & request a change via email** button. It opens `/request-a-change/?team=<file-name>` (`request-a-change.html` and `assets/js/request-change.js`), which shows the team's whole listing as the questionnaire: every question, every answer choice, and the current answers selected. The visitor changes what's out of date and clicks **Prepare my email**; the page writes a plain-text summary (for example "Q23. Languages: Add: Java / Remove: PHP", or "Databases: Not offered -> Offered") and opens it in their email program, with a Copy button as a fallback. Nothing is saved or sent by the site, so there's nothing to maintain beyond the page itself. The questions and choices come from `_data/fields.yml` and `_data/taxonomy.yml`, so the page stays in step with the listing files.
 
-Emails go to `change_requests_email` in `_config.yml`. A reviewer applies the requested changes to the listing file on GitHub (each change maps to adding or removing `# ` on a line), then checks it with `scripts/check_listings.py`.
+Emails go to `change_requests_email` in `_config.yml`. RSSN staff make the requested changes in Qualtrics, then export and import the response as usual.
 
 ### Reviewing a pull request
 
@@ -118,9 +118,9 @@ Each card and profile opens with a summary built from the answers, as Q23 promis
 
 `accepting` (Q47) is its own field so a team can pause or resume requests with a quick edit: select `"Not at this time"` and the card and table show it under "Taking new work," and the profile gets a banner.
 
-Any list or single-answer field can also have a `<field>_other` text value for write-in answers. Listings also carry `updated` (date of the response or last review), `form_response_id` (links the listing to its Forms response), and `sample: true` for fictional listings.
+Any list or single-answer field can also have a `<field>_other` text value for write-in answers. Listings also carry `updated` (date of the response or last review), `form_response_id` (links the listing to its questionnaire response).
 
-Only answers respondents agreed to publish go into listings, since this repository and site are public. The name and email of the person who filled out the questionnaire (Q1–2) and of the team lead who approves the listing (Q5–6) stay in the Forms results: the import script prints the approver for each new or updated listing so RSSN can send it for approval, but never writes them to a file, and `scripts/check_listings.py` flags a listing that contains them. The primary contact (Q3–4) is published, as the form says.
+Only answers respondents agreed to publish go into listings, since this repository and site are public. The name and email of the person who filled out the questionnaire (Q2–3) and of the team lead who approves the listing (Q6–7) stay in the Qualtrics export: the import script prints the approver for each new or updated listing so RSSN can send it for approval, but never writes them to a file, and `scripts/check_listings.py` flags a listing that contains them. The primary contact (Q4–5) is published, as the form says.
 
 ## Adding a filter or field
 
@@ -140,7 +140,7 @@ The home page shows cards by default. The Table button switches to a table with 
 
 - **Filters, search, view, and sort all live in the page address** (`?view=table&sort=lead_time&dir=desc`), so they survive switching views, refreshing, and sharing a link.
 - **Sorting** works from the Sort menu above either view or from the table's column headers (click again to reverse). Team and School sort A–Z. Available to, Lead time, and Taking new work sort in the order their answers are listed in `_data/taxonomy.yml`, so reordering a list there changes the sort. "Varies based on project" and "It's complicated" sort after the real answers, and blank answers ("Not reported") sort last, in either direction. Ties sort by team name.
-- **Default order** lists real listings A–Z, then sample listings. Once a sort is chosen, samples mix in with the real listings.
+- **Default order** lists listings A–Z.
 - **Phones** (720px wide or less) show cards only; the Table button is hidden there.
 - **Teams that don't do hands-on technical work** (Q24 = "No") show N/A for languages in the table and for the whole Technical capabilities section on their profile, instead of leaving those questions blank.
 

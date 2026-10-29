@@ -14,7 +14,7 @@
 #   - Update the "updated:" date to today when you change anything.
 #   Allowed values: _data/taxonomy.yml. Reviewers can run scripts/check_listings.py.
 
-# Links this listing to its Microsoft Forms response. Please don't change it.
+# Links this listing to its questionnaire response. Please don't change it.
 form_response_id: "R_6p35ZRCBwjl17l7"
 
 # Q10. Team or service name, as researchers should see it

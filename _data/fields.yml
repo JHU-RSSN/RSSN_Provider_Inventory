@@ -3,8 +3,7 @@
 # tags, so q: 25 is column Q25 in a Qualtrics export. Grids (services) cover Q16-19.
 # Drives the profile page (_layouts/provider.html), the search data on the home page,
 # the filter panel (assets/js/directory.js), the listing file format (scripts/listing_format.py),
-# the import script (scripts/import_responses.py), the porting script (scripts/port_listings.py),
-# and the checker (scripts/check_listings.py).
+# the import script (scripts/import_responses.py), and the checker (scripts/check_listings.py).
 #
 #   key       front-matter key in each _providers/*.md file
 #   label     heading shown on the profile page and in filters

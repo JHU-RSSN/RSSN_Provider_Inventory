@@ -37,8 +37,6 @@
   if (!team) return;
 
   document.title = "Request a change: " + team.title + " · " + document.title.split(" · ").pop();
-  var gh = document.getElementById("github-edit-link");
-  if (gh && team.path) gh.href = "https://github.com/" + config.repository + "/edit/" + config.branch + "/" + team.path;
 
   /* ---------- helpers ---------- */
   function labelOf(o) { return (o && typeof o === "object") ? (o.label || o.name) : String(o); }

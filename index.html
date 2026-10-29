@@ -2,11 +2,8 @@
 layout: default
 title: Find support
 ---
-{%- comment %} Real listings first, then sample listings, each alphabetical. {% endcomment -%}
-{%- assign sorted = site.providers | sort: "title" -%}
-{%- assign real = sorted | where_exp: "p", "p.sample != true" -%}
-{%- assign samples = sorted | where_exp: "p", "p.sample == true" -%}
-{%- assign providers = real | concat: samples -%}
+{%- comment %} Listings, alphabetical by team name. {% endcomment -%}
+{%- assign providers = site.providers | sort: "title" -%}
 <section class="search-band">
   <div class="search-band__inner">
     <h1 class="search-band__title">Research Software Service Provider Inventory</h1>
@@ -100,7 +97,6 @@ title: Find support
   {
     "id": {{ p.url | jsonify }},
     "title": {{ p.title | jsonify }},
-    "sample": {{ p.sample | default: false | jsonify }},
     {%- assign avail = site.data.taxonomy.availability | where: "label", p.availability | first %}
     "internal": {% if avail.internal %}true{% else %}false{% endif %},
     "unit": {{ p.unit | jsonify }},

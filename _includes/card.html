@@ -8,8 +8,8 @@
 {%- if n_strengths > 0 %}{% assign chips = svc_strengths %}{% assign chips_label = "Areas of strength" %}{% else %}{% assign chips = svc_offered %}{% assign chips_label = "Services" %}{% endif -%}
 {%- assign extra = chips.size | minus: 3 -%}
 {%- assign avail = site.data.taxonomy.availability | where: "label", p.availability | first -%}
-<article class="card{% if p.sample %} card--sample{% endif %}{% if avail.internal %} card--internal{% endif %}" data-id="{{ p.url }}" style="--card-accent: #002D72">
-  <p class="card__eyebrow">{{ eyebrow }}{% if p.sample %}<span class="sample-tag">Sample</span>{% endif %}</p>
+<article class="card{% if avail.internal %} card--internal{% endif %}" data-id="{{ p.url }}" style="--card-accent: #002D72">
+  <p class="card__eyebrow">{{ eyebrow }}</p>
   <h2 class="card__title"><a href="{{ p.url | relative_url }}">{{ p.title }}</a></h2>
   <p class="card__summary">{% include summary.html provider=p short="1" %}</p>
   <ul class="chips" aria-label="{{ chips_label }}">

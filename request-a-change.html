@@ -14,14 +14,13 @@ permalink: /request-a-change/
 <main class="content-page change-page">
   <h1>Request a change to a listing</h1>
   <p>This page shows everything a team's listing says, as the questionnaire asked it: every question, every answer choice, and the team's current answers already selected. Change anything that's out of date, then use <strong>Prepare my email</strong> at the bottom. The page writes a short summary of your changes for you to email to RSSN, and RSSN updates the listing. Nothing is saved or sent until you send the email yourself.</p>
-  <p class="change-page__alt">Comfortable with GitHub? You can also <a id="github-edit-link" href="https://github.com/{{ site.repository }}/tree/{{ site.branch }}/_providers">edit the listing file directly</a>.</p>
 
   <form class="change-picker" id="team-picker" action="" method="get">
     <label for="team-select">Team</label>
     <select id="team-select" name="team">
       <option value="">Choose a team…</option>
       {%- for p in sorted %}
-      <option value="{{ p.slug }}">{{ p.title }}{% if p.sample %} (sample){% endif %}</option>
+      <option value="{{ p.slug }}">{{ p.title }}</option>
       {%- endfor %}
     </select>
     <button type="submit" class="button button--secondary">Show listing</button>
@@ -70,9 +69,7 @@ permalink: /request-a-change/
 <script type="application/json" id="change-config">
 {
   "email": {{ site.change_requests_email | default: "" | jsonify }},
-  "siteUrl": {{ site.url | append: site.baseurl | jsonify }},
-  "repository": {{ site.repository | jsonify }},
-  "branch": {{ site.branch | jsonify }}
+  "siteUrl": {{ site.url | append: site.baseurl | jsonify }}
 }
 </script>
 <script type="application/json" id="change-listings">

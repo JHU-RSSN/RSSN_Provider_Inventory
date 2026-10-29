@@ -2,7 +2,7 @@ title: RSSN Provider Inventory
 network_name: Research Software Support Network
 description: Find Johns Hopkins teams that help researchers with software, data, and computing.
 
-# The GitHub repository this site is built from. Used for "Suggest an edit on GitHub" links.
+# The GitHub repository this site is built from. Used for the "View this site on GitHub" and "Report a problem" links.
 # Update this (and baseurl) if the repo is renamed or moved to another account/org.
 repository: JHU-RSSN/RSSN_Provider_Inventory
 branch: main
@@ -18,14 +18,11 @@ rssn_help_url: "#"
 
 # Where "Request a change" emails go (the request-a-change page). Leave "" to have
 # people address the email themselves.
-change_requests_email: ""
+change_requests_email: "mforbes@jhu.edu"
 
 # Site address. For a project site, baseurl must match the repository name exactly.
 url: "https://jhu-rssn.github.io"
 baseurl: "/RSSN_Provider_Inventory"
-
-# Shows the "sample data" banner on every page. Set to false once real listings are in.
-prototype: true
 
 markdown: kramdown
 

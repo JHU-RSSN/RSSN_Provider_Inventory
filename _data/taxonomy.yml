@@ -9,11 +9,6 @@
 #   answer  the questionnaire wording, when it differs (used by scripts/import_responses.py)
 #   phrase  wording used in the generated card summary (see _includes/summary.html)
 #   internal, paused  flags used by the site (see _includes/availability.html, accepting.html)
-#
-# "previous" maps the wording used in earlier questionnaires (Draft 2 pilot, Draft 3 Forms) to
-# the value it becomes now. scripts/port_listings.py uses it to bring existing listings across,
-# and it is the only place those older values are kept. A value that is in neither the current
-# list nor "previous" is moved to the field's "_other" text and reported.
 
 # Q8. Institution
 institutions:
@@ -195,15 +190,6 @@ services:
     group: Consulting, Training, and Sustainability
     detail: Technical documentation; user training
 
-# Service names used in earlier questionnaires, and the name they have now.
-previous_services:
-  "High-Performance/Parallel Computing": High-performance computing (HPC) / Parallel computing
-  "High-performance computing (HPC)": High-performance computing (HPC) / Parallel computing
-  "Containerization and Cloud Computing": Containerization & Cloud Computing
-  "Version Control and Collaboration": Version Control & Collaboration
-  "Web Development": Web & Application Development
-  "Open source software licensing and sustainability": Open Source Licensing & Sustainability
-  "Open source licensing and sustainability": Open Source Licensing & Sustainability
 
 # Grid answers for Q16-19
 service_levels:
@@ -532,89 +518,6 @@ maintenance:
   - "No"
   - Not applicable
 
-# Earlier wording, by question (the same map, shown in one place):
-previous:
-  school:
-    "IT@JH": Johns Hopkins IT
-    "Libraries": University Libraries and Museums
-  availability:
-    "Yes - Hopkins-wide": Hopkins-wide
-    "Yes - JHU only": JHU only
-    "Yes - JHHS only": JHHS only
-    "Yes - only within certain schools/divisions": Certain schools/divisions
-    "Yes - but only within certain schools/divisions": Certain schools/divisions
-    "No - our services are limited to our own department/unit": Own department/unit only
-    "It's complicated!": It's complicated
-  eligible:
-    "Other Hopkins-affiliated groups": Other Johns Hopkins-affiliated groups
-    "Other Hopkins-affiliated groups - please note which in the \"other\" field below": Other Johns Hopkins-affiliated groups
-    "JHU students / trainees working on sponsored research": JHU students/trainees working on sponsored research
-    "Johns Hopkins research centers / institutes": Johns Hopkins research centers/institutes
-  databases:
-    "MySQL/MariaDB": MySQL / MariaDB
-    "NoSQL databases (other)": Other NoSQL databases
-    "NoSQL databases": Other NoSQL databases
-  devops:
-    "Amazon EKS": Amazon Elastic Kubernetes Services (EKS)
-    "Monitoring/logging platforms": Monitoring / logging platforms
-    "Singularity/Apptainer": Singularity / Apptainer
-    "Docker via Singularity/Apptainer": Singularity / Apptainer
-    "Other Infrastructure as Code": Other Infrastructure-as-Code tools
-  hosting:
-    "High-performance computing (HPC)": High-performance computing (HPC) / Parallel computing
-    "Hybrid cloud/on-premises environments": Hybrid cloud / on-premises environments
-    "Vendor/SaaS platforms": Vendor / SaaS platforms
-  research_areas:
-    "General/research area independent": General (not specific to a research area)
-  stages:
-    "Prototype/proof of concept": Prototype / proof-of-concept development
-    "Prototype/proof-of-concept development": Prototype / proof-of-concept development
-  pre_award:
-    "Depends on the project": Yes, on a case-by-case basis
-  consult_scope:
-    "Scoped case by case": Scoped case-by-case
-  data_types:
-    "Proprietary/confidential research data": Proprietary / confidential research data
-    "Depends on the hosting/environment": Depends on the hosting / environment
-  compliance:
-    "Johns Hopkins IT Risk/Security review": Johns Hopkins IT Risk / Security review
-    "Research involving external collaborators": Projects involving external collaborators
-  security_approach:
-    "Another Hopkins group handles this for us": Another Johns Hopkins group handles this for us
-  engagement_types:
-    "Joint/co-development with a research team": Joint / co-development with a research team
-    "Prototype/proof-of-concept development": Prototype / proof-of-concept development
-    "Technical consultation/advisory services": Technical consultation / advisory services
-  project_sizes:
-    "40-200 hours": 40–200 hours
-    "201-500 hours": 201–500 hours
-    "501-1,000 hours": 501–1,000 hours
-    "Ongoing/long-term engagements": Ongoing / long-term engagements
-  durations:
-    "1-3 months": 1 to under 3 months
-    "3-6 months": 3 to under 6 months
-    "6-12 months": 6 to 12 months
-    "Varies significantly": Varies by project
-  takeover:
-    "Case-by-case": Yes, on a case-by-case basis
-  charges:
-    "Generally based on FTE": Percent effort / FTE on the project budget
-  minimum:
-    "$5,000-$10,000": $5,000–$10,000
-    "$10,001-$25,000": $10,001–$25,000
-  funding:
-    "Centrally funded (by the University or Health System)": Centrally funded
-  lead_time:
-    "1-2 weeks": 1–2 weeks
-    "1-2 months": 1–2 months
-    "Varies based on project": Varies by project
-  production_support:
-    "Case-by-case": Yes, on a case-by-case basis
-  support_coverage:
-    "Standard Hopkins business hours": Standard Johns Hopkins business hours
-  maintenance:
-    "Case-by-case": Yes, depending on the engagement
-    "Yes, for systems developed by our team": Yes, depending on the engagement
 
 # Flat aliases: answer wording that is read as one or more listed values, whichever question
 # it came from (used when importing a multi-select answer that was typed as one string).

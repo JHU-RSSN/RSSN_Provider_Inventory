@@ -141,15 +141,6 @@ h1, h2, h3 { text-wrap: balance; }
 .site-nav a.site-nav__cta[aria-current="page"] { border-bottom-color: var(--gold); color: var(--gold); }
 .site-header :focus-visible { outline-color: var(--gold); }
 
-.prototype-banner {
-  background: #FFF6D1;
-  color: #3D3200;
-  border-bottom: 1px solid #EBD98A;
-  padding: 8px var(--gutter);
-  font-size: 0.875rem;
-  text-align: center;
-}
-
 /* ---------- Search band ---------- */
 .search-band {
   background: var(--tint);
@@ -546,24 +537,6 @@ h1, h2, h3 { text-wrap: balance; }
   color: var(--muted);
 }
 
-/* Sample listings */
-.sample-tag {
-  display: inline-block;
-  margin-left: 8px;
-  padding: 1px 6px;
-  border: 1px solid #C9B25A;
-  border-radius: 3px;
-  background: #FFF6D1;
-  color: #3D3200;
-  font-family: var(--font-body);
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  vertical-align: middle;
-}
-.profile__title .sample-tag { font-size: 0.8rem; vertical-align: 0.35em; }
-
 /* Profile: strengths, fact lists, free text */
 .strength-tag {
   display: inline-block;
@@ -692,8 +665,6 @@ code { font-size: 0.9em; }
   * { scroll-behavior: auto !important; transition: none !important; }
 }
 
-.prototype-banner .sample-tag { margin: 0 2px; background: #fff; }
-
 /* ---------- Teams that only serve their own unit ---------- */
 .scope-toggle {
   margin: 10px 0 6px;
@@ -717,8 +688,8 @@ code { font-size: 0.9em; }
 .results__aside { color: var(--muted); font-size: 0.9rem; }
 .results__aside .text-button { font-size: 0.9rem; }
 
-/* Plum, from the Hopkins secondary palette: distinct from the yellow Sample tag
-   and the Heritage Blue strength tags. White on Plum is about 12:1. */
+/* Plum, from the Hopkins secondary palette: distinct from the Heritage Blue strength tags.
+   White on Plum is about 12:1. */
 .unit-tag {
   display: inline-block;
   margin-left: 8px;
@@ -742,7 +713,7 @@ code { font-size: 0.9em; }
 }
 @media (max-width: 520px) { .internal-banner { padding: 12px 20px; } }
 
-/* ---------- Draft 3: summary, service groups, capacity tags ---------- */
+/* ---------- Summary, service groups, capacity tags ---------- */
 .profile__summary {
   margin: 0 0 16px;
   font-size: 1.08rem;
@@ -1097,6 +1068,6 @@ th[aria-sort="descending"] .sort-icon { opacity: 1; clip-path: polygon(0 20%, 10
   .change-q { padding: 10px 6px; }
 }
 @media print {
-  .site-header, .site-footer, .prototype-banner, .change-picker, .change-bar, .change-output, .change-page__alt { display: none !important; }
+  .site-header, .site-footer, .change-picker, .change-bar, .change-output, .change-page__alt { display: none !important; }
   .change-section { border: 0; padding: 0; }
 }
