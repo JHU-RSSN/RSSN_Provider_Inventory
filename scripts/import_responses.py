@@ -25,8 +25,10 @@ Qualtrics is the source of truth: teams change their answers by resubmitting the
 questionnaire, and the listing's answers can also be edited by hand on GitHub. So the script
 never simply overwrites a listing:
 
-  1. Each listing records its response ID (form_response_id), and the script finds
-     the listing by that ID, so renaming the team in the form updates the same file.
+  1. A response is matched to a listing by team name (Q10) and primary contact email (Q5).
+     Both match: the same listing. Only one matches: the script does not decide. It reports
+     the response as ambiguous and writes nothing for it. Neither matches: a new listing.
+     Response IDs are not used for matching, since a Qualtrics "Retake Response" gets a new ID.
   2. A response is only looked at again if it changed since it was last imported.
      Unchanged responses are skipped.
   3. _imports/import_log.json records a fingerprint of every answer as last imported.
@@ -42,6 +44,11 @@ never simply overwrites a listing:
      --only <file-name-or-response-id> --form-wins      use the form's answers
      --only <file-name-or-response-id> --listing-wins   keep the listing's answers
   or edit the listing by hand to the answer you want and re-run.
+
+  --report FILE writes, team by team, whether the export is new, changed, unchanged, or
+     ambiguous, and which answers differ from the listing. It writes no listings.
+  --replace (with --only) takes every answer from the export, ignoring edits made on GitHub.
+     Used when Qualtrics is the source for a listing being published or updated.
 
 PRIVACY: only answers respondents agreed to publish go into listings. The names and emails
 of the person who filled out the form (Q2-3) and the approving team lead (Q6-7) are never
@@ -59,6 +66,7 @@ import datetime as dt
 import json
 import re
 import sys
+from pathlib import Path
 
 try:
     import openpyxl
@@ -417,40 +425,52 @@ def load_log():
             "responses": {}}
 
 
-def existing_listings():
-    """({response id: path}, {file stem: path}) for the listings in _providers."""
-    by_id, by_stem = {}, {}
+def listing_index():
+    """[(path, team name, contact email, response ID)] for every listing in _providers."""
+    out = []
     for p in sorted(PROVIDERS.glob("*.md")):
-        by_stem[p.stem] = p
         try:
             data = read_listing(p)[0]
         except Exception:
             continue
-        if data.get("form_response_id"):
-            by_id[str(data["form_response_id"])] = p
-    return by_id, by_stem
+        contact = data.get("contact") or {}
+        out.append((p, norm(data.get("title") or ""), str(contact.get("email") or "").strip().lower(),
+                    str(data.get("form_response_id") or "")))
+    return out
 
 
-def locate(form, rid, entry, by_id, by_stem):
-    """The listing file for a response: by response ID, then the log, then the team name.
-    Returns (path, matched_by_name)."""
-    if rid in by_id:
-        return by_id[rid], False
-    if entry and (PROVIDERS / entry["file"]).exists():
-        return PROVIDERS / entry["file"], False
-    stem = slugify(form["title"])
-    cand = by_stem.get(stem)
-    if cand:
-        other_id = str(read_listing(cand)[0].get("form_response_id") or "")
-        if not other_id or other_id == rid:
-            return cand, True
-        n = 2
-        while f"{stem}-{n}" in by_stem:
-            n += 1
-        print(f"note   response {rid} ({form['title']}) has the same team name as {cand.name}, which came from "
-              f"response {other_id}. Using {stem}-{n}.md. If one team submitted twice, delete one of them.")
-        stem = f"{stem}-{n}"
-    return PROVIDERS / f"{stem}.md", False
+def match_listing(form, index):
+    """Find a response's listing by team name (Q10) and primary contact email (Q5).
+    Returns (status, paths): 'match' (both agree on one listing), 'new' (neither agrees), or
+    'ambiguous' (only one agrees, or several listings fit). Ambiguous responses are never
+    written; a person decides."""
+    title = norm(form["title"])
+    email = str((form.get("contact") or {}).get("email") or "").strip().lower()
+    by_name = [p for p, t, _, _ in index if t == title]
+    by_email = [p for p, _, e, _ in index if email and e == email]
+    both = [p for p in by_name if p in by_email]
+    if len(both) == 1:
+        return "match", both
+    if both or by_name or by_email:
+        return "ambiguous", sorted(set(by_name) | set(by_email) | set(both))
+    return "new", []
+
+
+def free_stem(title, taken):
+    """A file name (without .md) for a new listing that no other listing uses."""
+    stem = slugify(title)
+    cand, n = stem, 2
+    while cand in taken or (PROVIDERS / f"{cand}.md").exists():
+        cand = f"{stem}-{n}"
+        n += 1
+    return cand
+
+
+def changed_fields(form_vals, path, cfg):
+    """Answer keys where the export differs from the listing as it is now."""
+    cur, cur_body, _ = read_listing(path)
+    cur_vals = values(cur, cur_body, cfg)
+    return [k for k, fv in form_vals.items() if fv != cur_vals.get(k)]
 
 
 # ---------- main ----------
@@ -459,14 +479,22 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("xlsx", help="Excel export of the questionnaire responses")
     ap.add_argument("--dry-run", action="store_true", help="report what would change; write nothing")
+    ap.add_argument("--report", metavar="FILE",
+                    help="also write what the export would change, team by team, as JSON")
     ap.add_argument("--only", nargs="+", metavar="NAME_OR_ID",
                     help="only these listings (file name without .md, or response ID)")
+    ap.add_argument("--replace", action="store_true",
+                    help="with --only: take every answer from the export, ignoring edits made on GitHub")
     side = ap.add_mutually_exclusive_group()
     side.add_argument("--form-wins", action="store_true", help="settle conflicts with the form's answers")
     side.add_argument("--listing-wins", action="store_true", help="settle conflicts by keeping the listing's answers")
     args = ap.parse_args()
     if (args.form_wins or args.listing_wins) and not args.only:
         sys.exit("--form-wins and --listing-wins need --only, so conflicts are settled one listing at a time.")
+    if args.replace and not args.only:
+        sys.exit("--replace needs --only, so one listing is replaced at a time.")
+    if args.replace and (args.form_wins or args.listing_wins):
+        sys.exit("--replace can't be combined with --form-wins or --listing-wins.")
 
     cfg = Config()
     log = load_log()
@@ -483,18 +511,30 @@ def main():
         print("Note: no service-grid column found for:",
               ", ".join(s["name"] for s in cfg.services if s["name"] not in grid))
 
-    by_id, by_stem = existing_listings()
+    index = listing_index()
+    taken = {p.stem for p, _, _, _ in index}
     PROVIDERS.mkdir(parents=True, exist_ok=True)
-    counts = {"new": 0, "updated": 0, "unchanged": 0, "conflicts": 0}
+    counts = {"new": 0, "updated": 0, "unchanged": 0, "conflicts": 0, "ambiguous": 0}
+    report = []
+    settling = args.form_wins or args.listing_wins or args.replace
 
     for row in rows:
         form, form_body, present = parse_row(row, cols, grid, cfg)
         if not form["title"]:
             continue
         rid = form.get("form_response_id", "")
-        entry = log["responses"].get(rid)
-        path, by_name = locate(form, rid, entry, by_id, by_stem)
-        if args.only and path.stem not in args.only and rid not in args.only:
+        status, paths = match_listing(form, index)
+        stems = [p.stem for p in paths]
+        if args.only and rid not in args.only and not any(s in args.only for s in stems):
+            continue
+
+        if status == "ambiguous":
+            counts["ambiguous"] += 1
+            names = [p.name for p in paths]
+            print(f"ambiguous {form['title']}: only the team name or the contact email matches "
+                  f"{', '.join(names)}. Nothing written for this response. Check whether the team was renamed "
+                  f"or has a new contact, then fix the listing or the form and re-run.")
+            report.append({"response_id": rid, "team": form["title"], "status": "ambiguous", "candidates": names})
             continue
 
         when = form.pop("_response_time")
@@ -511,23 +551,31 @@ def main():
             notes.append("compliance has 'None of the above' with other choices")
 
         # ----- a new listing -----
-        if not path.exists():
-            form["form_response_id"] = rid
+        if status == "new":
+            path = PROVIDERS / f"{free_stem(form['title'], taken)}.md"
+            taken.add(path.stem)
             counts["new"] += 1
+            report.append({"response_id": rid, "team": form["title"], "status": "new", "file": path.name,
+                           "changed": []})
             print(f"new      {path.name}")
             if not form["contact"]["email"]:
                 notes.append("no primary contact email (Q4); the listing's contact is blank")
             for n in notes:
                 print(f"         check: {n}")
+            form["form_response_id"] = rid
+            index.append((path, norm(form["title"]), str(form["contact"]["email"] or "").strip().lower(), rid))
             if not args.dry_run:
                 path.write_text(render(form, form_body, cfg), encoding="utf-8", newline="\n")
                 log["responses"][rid] = {"file": path.name, "response_time": when_s, "conflicts": [],
                                          "answers": {k: fingerprint(v) for k, v in form_vals.items()}}
-            by_stem[path.stem], by_id[rid] = path, path
             continue
 
         # ----- an existing listing -----
-        settling = args.form_wins or args.listing_wins
+        path = paths[0]
+        entry = log["responses"].get(rid)
+        cur_changed = changed_fields(form_vals, path, cfg)
+        report.append({"response_id": rid, "team": form["title"], "file": path.name,
+                       "status": "changed" if cur_changed else "unchanged", "changed": cur_changed})
         if entry and when_s and when_s <= entry.get("response_time", "") and not entry.get("conflicts") and not settling:
             counts["unchanged"] += 1
             continue
@@ -547,6 +595,11 @@ def main():
             cv = cur_vals.get(k)
             fp_form = fingerprint(fv)
             if fv == cv:
+                new_base[k] = fp_form
+                continue
+            if args.replace:
+                take_from_form(merged, k, form, form_body, state)
+                took.append(k)
                 new_base[k] = fp_form
                 continue
             form_changed = base.get(k) != fp_form
@@ -571,7 +624,7 @@ def main():
             old = str(cur.get("updated") or "")
             merged["updated"] = max(old, form["updated"])
 
-        label = path.name + (" (matched by team name; first import for this listing)" if by_name else "")
+        label = path.name
         if cur.get("updated") and when and str(cur["updated"]) > when.date().isoformat():
             notes.append(f"the listing was edited ({cur['updated']}) after this response was last saved ({when.date()})")
         if took:
@@ -608,8 +661,12 @@ def main():
         LOG_PATH.parent.mkdir(exist_ok=True)
         LOG_PATH.write_text(json.dumps(log, indent=1, ensure_ascii=False, sort_keys=True) + "\n",
                             encoding="utf-8", newline="\n")
+    if args.report:
+        Path(args.report).write_text(json.dumps(report, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(f"Report written to {args.report}")
     print(f"\n{counts['new']} new, {counts['updated']} updated, {counts['unchanged']} unchanged, "
-          f"{counts['conflicts']} with conflicts to settle." + ("  (Dry run: nothing was written.)" if args.dry_run else ""))
+          f"{counts['conflicts']} with conflicts to settle, {counts['ambiguous']} ambiguous (not written)."
+          + ("  (Dry run: nothing was written.)" if args.dry_run else ""))
 
 
 if __name__ == "__main__":
