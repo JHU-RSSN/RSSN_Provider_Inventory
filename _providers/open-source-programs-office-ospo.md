@@ -81,14 +81,14 @@ availability_details: ""
 # Q14. Who can engage this team. CHOOSE ALL THAT APPLY.
 eligible:
   - "Cross-institution JHU/JHHS projects"
-  # - "JHHS faculty"
-  # - "JHHS staff"
-  # - "JHU faculty"
-  # - "JHU staff"
-  # - "JHU students/trainees working on sponsored research"
-  # - "Johns Hopkins research centers/institutes"
+  - "JHHS faculty"
+  - "JHHS staff"
+  - "JHU faculty"
+  - "JHU staff"
+  - "JHU students/trainees working on sponsored research"
+  - "Johns Hopkins research centers/institutes"
   # - "Other Johns Hopkins-affiliated groups"
-  # - "Projects involving external research collaborators"
+  - "Projects involving external research collaborators"
 # Q14. "Other" write-in answer, if any
 eligible_other: ""
 
@@ -211,25 +211,25 @@ research_areas:
   - "Biomedical research"
   # - "Clinical research"
   # - "Computational science"
-  # - "Data science"
+  - "Data science"
   # - "Education research"
-  # - "Engineering"
+  - "Engineering"
   # - "Genomics/bioinformatics"
-  # - "Humanities"
+  - "Humanities"
   # - "Imaging"
-  # - "Multidisciplinary research"
+  - "Multidisciplinary research"
   # - "Population health"
   # - "Public health"
-  # - "Social sciences"
-  # - "General (not specific to a research area)"
+  - "Social sciences"
+  - "General (not specific to a research area)"
 # Q29. "Other" write-in answer, if any
 research_areas_other: ""
 
 # Q30. Project stages. CHOOSE ALL THAT APPLY.
 stages:
   - "Early consultation / feasibility"
-  # - "Grant proposal development"
-  # - "Grant budgeting / cost estimates"
+  - "Grant proposal development"
+  - "Grant budgeting / cost estimates"
   # - "Technical architecture/design"
   # - "Prototype / proof-of-concept development"
   # - "Software development"
@@ -238,7 +238,7 @@ stages:
   # - "Production deployment"
   # - "Ongoing maintenance/support"
   # - "Project closeout"
-  # - "Data/software archiving"
+  - "Data/software archiving"
 # Q30. "Other" write-in answer, if any
 stages_other: ""
 
@@ -313,7 +313,7 @@ engagement_types:
   # - "Prototype / proof-of-concept development"
   # - "Short-term troubleshooting"
   # - "Staff augmentation"
-  # - "Technical consultation / advisory services"
+  - "Technical consultation / advisory services"
 # Q37. "Other" write-in answer, if any
 engagement_types_other: ""
 
@@ -388,7 +388,7 @@ funding:
   - "Centrally funded"
   # - "Department-funded"
   # - "Fee-for-service"
-  # - "Grant-funded"
+  - "Grant-funded"
   # - "Internal cost recovery"
 # Q46. "Other" write-in answer, if any
 funding_other: ""
@@ -433,7 +433,7 @@ open_source:
   # - "Contribute to existing open source projects"
   # - "Develop new open source software"
   - "Prepare software for public release"
-  # - "Advise on licensing, governance, or community"
+  - "Advise on licensing, governance, or community"
   # - "Maintain software after public release"
   # - "Cannot currently support open source work"
 # Q51. "Other" write-in answer, if any
