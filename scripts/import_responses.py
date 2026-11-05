@@ -120,6 +120,48 @@ def split_answers(cell):
     return [re.sub(r"\s+", " ", p).strip() for p in parts if p.strip()]
 
 
+def split_top(text, sep=","):
+    """Split on `sep`, ignoring separators inside parentheses."""
+    parts, buf, depth = [], "", 0
+    for ch in str(text):
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth = max(0, depth - 1)
+        if ch == sep and depth == 0:
+            parts.append(buf)
+            buf = ""
+        else:
+            buf += ch
+    parts.append(buf)
+    return parts
+
+
+def split_multi(cell, matcher):
+    """Split a multi-select cell into its answers.
+
+    The Qualtrics export joins the selected choices with commas, but some exports use ";",
+    so both are accepted. A choice label can contain a comma itself ("Advise on licensing,
+    governance, or community"), so comma pieces are first joined back together when that
+    gives a known answer, longest match first. Anything else is one answer per comma."""
+    answers = []
+    for piece in split_answers(cell):
+        segs = split_top(piece, ",")
+        i = 0
+        while i < len(segs):
+            j = i + 1
+            for end in range(len(segs), i, -1):
+                cand = ",".join(segs[i:end]).strip()
+                if norm(cand) in matcher.lookup:
+                    j = end
+                    break
+            answer = re.sub(r"\s+", " ", ",".join(segs[i:j])).strip()
+            if answer:
+                answers.append(answer)
+            i = j
+    return answers
+
+
 class Matcher:
     """Maps a questionnaire answer to its canonical listing value."""
 
@@ -372,7 +414,7 @@ def parse_row(row, cols, grid, cfg):
             rec[k] = re.sub(r"\s+", " ", str(raw)).strip() if raw else ""
             continue
         m = Matcher(tax.get(f.get("options")), aliases)
-        answers = split_answers(raw) if f["type"] == "many" else ([str(raw).strip()] if raw not in (None, "") else [])
+        answers = split_multi(raw, m) if f["type"] == "many" else ([str(raw).strip()] if raw not in (None, "") else [])
         vals, other = [], []
         for a in answers:
             if re.match(r"other\b", norm(a)):   # "Other (please specify)": its text is in the write-in column
