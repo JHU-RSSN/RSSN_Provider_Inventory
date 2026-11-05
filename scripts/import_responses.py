@@ -194,7 +194,7 @@ class Matcher:
         return None
 
 
-def read_export(path):
+def read_export(path, include_partial=False):
     """Read a Qualtrics export. Returns (headers, rows) with normalized headers:
       Q25        one column per question; a multi-select's choice columns are joined with ";"
       Q25_TEXT   the "Other (please specify)" write-in for that question
@@ -252,7 +252,7 @@ def read_export(path):
         rid = row[col("ResponseId")] if col("ResponseId") is not None else ""
         if not (str(rid).startswith("R_") or str(rid).isdigit()):
             continue   # the question-text and import-ID rows, or blank lines
-        if col("Finished") is not None and str(row[col("Finished")]).strip().lower() not in ("1", "true"):
+        if not include_partial and col("Finished") is not None and str(row[col("Finished")]).strip().lower() not in ("1", "true"):
             continue
         if col("DistributionChannel") is not None and str(row[col("DistributionChannel")]).strip() == "preview":
             continue
@@ -527,6 +527,8 @@ def main():
                     help="only these listings (file name without .md, or response ID)")
     ap.add_argument("--replace", action="store_true",
                     help="with --only: take every answer from the export, ignoring edits made on GitHub")
+    ap.add_argument("--include-partial", action="store_true",
+                    help="also import responses that aren't finished yet (previews are still skipped)")
     side = ap.add_mutually_exclusive_group()
     side.add_argument("--form-wins", action="store_true", help="settle conflicts with the form's answers")
     side.add_argument("--listing-wins", action="store_true", help="settle conflicts by keeping the listing's answers")
@@ -540,7 +542,7 @@ def main():
 
     cfg = Config()
     log = load_log()
-    heads, rows = read_export(args.xlsx)
+    heads, rows = read_export(args.xlsx, include_partial=args.include_partial)
     cols = find_columns(heads, cfg.stored_fields())
     if "response_id" not in cols:
         sys.exit("No ResponseId column found. Export the responses from Qualtrics (Data & Analysis > Export data, "
