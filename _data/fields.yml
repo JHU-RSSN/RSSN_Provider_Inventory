@@ -32,7 +32,7 @@ sections:
   - id: who
     title: Who you support
     fields:
-      - { key: team_type, label: Team type, q: 12, type: one, options: team_type, other: true, show: header }
+      - { key: team_type, label: Team type, q: 12, type: one, options: team_type, show: header }
       - { key: availability, label: Available to, q: 13, type: one, options: availability, show: header }
       - { key: availability_details, label: Availability details, q: 20, type: text, show: aside }
       - { key: eligible, label: Who can engage this team, q: 14, type: many, options: eligible, other: true, show: aside }
