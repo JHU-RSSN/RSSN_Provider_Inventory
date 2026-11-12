@@ -69,7 +69,7 @@ If the questionnaire adds or renames an answer choice, add it to `_data/taxonomy
 
 ## Adding or updating a listing by hand
 
-New listings are not added through GitHub. Teams add a new listing by completing the RSSN Research IT Provider Questionnaire (https://jh.qualtrics.com/jfe/form/SV_25j88N5th82nDsq), and RSSN imports the responses into a listing file. The site's [Add your service](https://jhu-rssn.github.io/RSSN_Provider_Inventory/add-your-service/) page links to the survey.
+New listings are not added through GitHub. Teams add a new listing by completing the RSSN Service Provider Inventory Questionnaire (https://jh.qualtrics.com/jfe/form/SV_25j88N5th82nDsq), and RSSN imports the responses into a listing file. The site's [Add your service](https://jhu-rssn.github.io/RSSN_Provider_Inventory/add-your-service/) page links to the survey.
 
 Existing listings are changed by request. Every provider profile has a "See all answers & request a change via email" button, which writes the email for you.
 

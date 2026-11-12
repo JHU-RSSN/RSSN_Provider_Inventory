@@ -15,7 +15,7 @@
 #   Allowed values: _data/taxonomy.yml. Reviewers can run scripts/check_listings.py.
 
 # Links this listing to its questionnaire response. Please don't change it.
-form_response_id: "R_7jrpFFn1mwKiZGq"
+form_response_id: "R_1o6z1SmyOZrbFMD"
 
 # Q10. Team or service name, as researchers should see it
 title: "Research IT Solutions"
@@ -56,14 +56,14 @@ contact:
   email: "RITServices@jh.edu"
 
 # Date this listing was last reviewed (YYYY-MM-DD)
-updated: 2026-10-21
+updated: 2026-11-12
 
 # ===== Who you support =====
 
 # Q12. Team type. CHOOSE ONE.
-team_type: "Research support service"
+# team_type: "Research support service"
 # team_type: "Research group sharing expertise"
-# team_type: "IT service with research support"
+team_type: "IT service with research support"
 # Q12. "Other" write-in answer, if any
 team_type_other: ""
 
@@ -112,12 +112,12 @@ services:
   # Computing and Infrastructure
   "Containerization & Cloud Computing":                    strength
   "DevOps & Infrastructure Operations":                    strength
-  "High-performance computing (HPC) / Parallel computing": not offered
+  "High-performance computing (HPC) / Parallel computing": offered
   "IT Security & Compliance":                              strength
   # Consulting, Training, and Sustainability
   "Domain/Subject-Matter Expertise":                       not offered
   "Open Source Licensing & Sustainability":                not offered
-  "Technical Consulting & Solution Architecture":          offered
+  "Technical Consulting & Solution Architecture":          strength
   "Technical Documentation & Training":                    not offered
 
 # Q21. Other services or expertise (free text; Markdown is fine)
@@ -137,7 +137,7 @@ languages:
   # - "Angular"
   # - "C / C++"
   - "C# / .NET"
-  # - "Java"
+  - "Java"
   # - "JavaScript / TypeScript"
   # - "Kotlin / Android"
   - "MATLAB"
@@ -148,9 +148,9 @@ languages:
   - "R"
   # - "React"
   # - "Ruby"
-  # - "SAS"
+  - "SAS"
   - "SQL"
-  # - "Stata"
+  - "Stata"
   # - "Swift / iOS"
   # - "Vue"
   # - "Not applicable"
@@ -175,7 +175,7 @@ databases_other: ""
 devops:
   # - "Amazon Elastic Kubernetes Services (EKS)"
   - "Azure DevOps"
-  # - "Azure Kubernetes Service (AKS)"
+  - "Azure Kubernetes Service (AKS)"
   - "Docker"
   - "GitHub"
   - "GitHub Actions"
@@ -187,7 +187,7 @@ devops:
   # - "Other Infrastructure-as-Code tools"
   # - "Not applicable"
 # Q27. "Other" write-in answer, if any
-devops_other: ""
+devops_other: "Databricks, Azure Container Apps"
 
 # Q28. Computing and hosting environments. CHOOSE ALL THAT APPLY (leave all unselected if Q24 is "No").
 hosting:
@@ -233,8 +233,8 @@ stages:
   - "Technical architecture/design"
   - "Prototype / proof-of-concept development"
   - "Software development"
-  # - "Research data collection"
-  # - "Research data processing/analysis"
+  - "Research data collection"
+  - "Research data processing/analysis"
   - "Production deployment"
   - "Ongoing maintenance/support"
   - "Project closeout"
@@ -256,7 +256,7 @@ pre_award: "Yes"
 # Q33. Initial or pre-award consultation. CHOOSE ONE.
 # consult_scope: "A brief conversation (about an hour or less)"
 # consult_scope: "A few meetings or a short written assessment (up to about 10 hours)"
-# consult_scope: "Scoped case-by-case"
+consult_scope: "Scoped case-by-case"
 # Q33. "Other" write-in answer, if any
 consult_scope_other: ""
 
@@ -264,7 +264,7 @@ consult_scope_other: ""
 
 # Q34. Data types supported. CHOOSE ALL THAT APPLY.
 data_types:
-  # - "Data under NIST 800-171 controls"
+  - "Data under NIST 800-171 controls"
   - "De-identified health information"
   - "Genomic data"
   - "Human-subject research data"
@@ -274,7 +274,7 @@ data_types:
   - "Protected health information (PHI)"
   - "Public data"
   - "Restricted data"
-  - "Depends on the hosting / environment"
+  # - "Depends on the hosting / environment"
   # - "Unsure / requires review"
 # Q34. "Other" write-in answer, if any
 data_types_other: ""
@@ -311,7 +311,7 @@ engagement_types:
   - "Ongoing maintenance/support"
   - "Production operations"
   - "Prototype / proof-of-concept development"
-  # - "Short-term troubleshooting"
+  - "Short-term troubleshooting"
   # - "Staff augmentation"
   - "Technical consultation / advisory services"
 # Q37. "Other" write-in answer, if any
@@ -373,7 +373,7 @@ charges:
   # - "Percent effort / FTE on the project budget"
   - "Software/license costs"
 # Q44. "Other" write-in answer, if any
-charges_other: ""
+charges_other: "Service Center fees"
 
 # Q45. Minimum commitment. CHOOSE ONE.
 minimum: "No minimum"
@@ -389,14 +389,14 @@ funding:
   # - "Department-funded"
   - "Fee-for-service"
   # - "Grant-funded"
-  - "Internal cost recovery"
+  # - "Internal cost recovery"
 # Q46. "Other" write-in answer, if any
 funding_other: ""
 
 # ===== Availability & support =====
 
 # Q47. Accepting new work. CHOOSE ONE.
-# accepting: "Yes"
+accepting: "Yes"
 # accepting: "Yes, with limited capacity"
 # accepting: "Not at this time"
 
@@ -437,7 +437,7 @@ open_source:
   # - "Maintain software after public release"
   # - "Cannot currently support open source work"
 # Q51. "Other" write-in answer, if any
-open_source_other: ""
+open_source_other: "Open to contributing on a case-by-case basis"
 
 # Q52. Hands off code and documentation. CHOOSE ONE.
 # handoff_docs: "Yes"
@@ -455,6 +455,14 @@ maintenance: "Yes, depending on the engagement"
 
 # Q54. Good to know (free text; Markdown is fine)
 notes: |
-  Research IT solutions primarily supports infrastructure. We can give you a platform to work with and in but we don't have bandwidth to assist with software development.
+  Research IT provides investigators with vetted technology platforms and applications for every phase of the research lifecycle. From planning to analysis to sharing and preserving findings, JH IT offers researchers:
+
+  - Modern, appropriately scaled IT infrastructure services (network, storage, computing, data)
+
+  - Tools to integrate and collaborate across various research resources and projects
+
+  - Compliance with complex sponsor privacy and information security requirements (such as NIST and HIPAA/PHI requirements)
+
+  - Support for contribution to open science and knowledge dissemination, as well as regulated research protection
 ---
-We pair well with people that have specialized expertise in their field but want to navigate the complex world of Research IT Infrastructure at Hopkins.
+Research IT provides coordinated IT solutions to support the critical work of the Johns Hopkins research community. Understanding the unique challenges faced by investigators, Research IT offers innovative, secure, and cost-effective IT solutions designed with research in mind. From computing infrastructure to study and data management platforms to solution pattern development and guidance, Research IT empowers investigators with the necessary tools to excel in their field of inquiry.

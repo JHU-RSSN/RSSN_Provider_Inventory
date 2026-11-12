@@ -62,6 +62,16 @@
     if (f.options === "schools") return (taxonomy.schools || []).map(function (s) { return s.name; });
     return (taxonomy[f.options] || []).map(labelOf);
   }
+  /* The list entry's questionnaire wording (its "answer"), or the value itself. */
+  function answerText(list, value) {
+    var hit = (list || []).filter(function (o) { return labelOf(o) === value; })[0];
+    return (hit && hit.answer) ? hit.answer : value;
+  }
+  function listFor(key) {
+    var f = byKey[key];
+    if (!f) return null;
+    return f.options === "schools" ? taxonomy.schools : taxonomy[f.options];
+  }
   function indent(text) { return text.split("\n").map(function (l) { return "    " + l; }).join("\n"); }
 
   /* Every question registers { title, block, changes() -> [lines] } */
@@ -122,7 +132,7 @@
     if (orig && choices.indexOf(orig) === -1) choices.push(orig);
     if (!orig) choices.push("");
     var inputs = choices.map(function (o) {
-      var c = choiceInput("radio", name, o, o === orig, o || "No answer");
+      var c = choiceInput("radio", name, o, o === orig, o ? answerText(listFor(key), o) : "No answer");
       block.appendChild(c.label);
       return c.input;
     });
@@ -147,7 +157,7 @@
     var choices = optionsFor(f);
     orig.forEach(function (v) { if (choices.indexOf(v) === -1) choices.push(v); });
     var inputs = choices.map(function (o) {
-      var c = choiceInput("checkbox", f.key, o, orig.indexOf(o) !== -1, o);
+      var c = choiceInput("checkbox", f.key, o, orig.indexOf(o) !== -1, answerText(listFor(f.key), o));
       block.appendChild(c.label);
       return c.input;
     });
@@ -244,13 +254,14 @@
   holder.appendChild(intro);
 
   section("Provider information", [
-    addText("Q9. Team or service name", "title", team.title, false),
+    addText("Q10. Team or service name", "title", team.title, false),
     addOne("Q" + byKey.institution.q + ". Institution", "institution", team.institution, optionsFor(byKey.institution), null),
-    addOne("Q" + byKey.school.q + ". School, division, or central office", "school", team.school, optionsFor(byKey.school), null, null, true),
-    addText("Department or unit", "unit", team.unit, false),
-    addText("Q10. Website", "website", team.website, false),
-    addText("Q3. Primary contact name (shown on the site)", "contact-name", contact.name, false),
-    addText("Q4. Primary contact email (shown on the site)", "contact-email", contact.email, false)
+    addText("Q9. School, division, department, or organizational unit", "school_unit",
+      [team.school, team.unit].filter(Boolean).join(", "), false,
+      "Begin with your school or highest administrative unit (for example, Whiting School of Engineering or Sheridan Libraries), then add your department or unit."),
+    addText("Q11. Website and public links", "website", team.website, false),
+    addText("Q4. Primary contact name (shown on the site)", "contact-name", contact.name, false),
+    addText("Q5. Primary contact email (shown on the site)", "contact-email", contact.email, false)
   ]);
 
   (fieldConfig.sections || []).forEach(function (sec) {
@@ -259,13 +270,13 @@
       if (f.derived || f.key === "institution" || f.key === "school") return;
       var title = "Q" + f.q + ". " + f.label;
       var hint = null;
-      if (f.key === "hands_on" && team.hands_on === "No") hint = "Your team answered No, so the questionnaire skipped Q23–26. If that's changed, choose Yes and fill them in.";
+      if (f.key === "hands_on" && team.hands_on === "No") hint = "Your team answered No, so the questionnaire skipped Q25–28. If that's changed, choose Yes and fill them in.";
       if (f.type === "grid") blocks.push(addServices("Q" + f.q + ". Services", f));
       else if (f.type === "one") blocks.push(addOne(title, f.key, team[f.key], optionsFor(f), f, hint));
       else if (f.type === "many") blocks.push(addMany(title, f, hint));
       else blocks.push(addText(title, f.key, team[f.key], f.type === "text", hint));
       if (f.key === "examples") {
-        blocks.push(addText("Q21. Paragraph shown beneath your summary", "body", team.body, true,
+        blocks.push(addText("Q23. Paragraph shown beneath your summary", "body", team.body, true,
           "Optional. About 500 characters: your team's size, what sets you apart, or the projects you're best suited for."));
       }
     });
