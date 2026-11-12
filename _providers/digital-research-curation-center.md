@@ -15,7 +15,7 @@
 #   Allowed values: _data/taxonomy.yml. Reviewers can run scripts/check_listings.py.
 
 # Links this listing to its questionnaire response. Please don't change it.
-form_response_id: "R_7jwG9ysTKx1m7a4"
+form_response_id: "R_1VbqriUk1WEQomd"
 
 # Q10. Team or service name, as researchers should see it
 title: "Digital Research & Curation Center"
@@ -56,7 +56,7 @@ contact:
   email: "bbranan@jhu.edu"
 
 # Date this listing was last reviewed (YYYY-MM-DD)
-updated: 2026-11-05
+updated: 2026-11-12
 
 # ===== Who you support =====
 
@@ -250,8 +250,8 @@ grant_estimates: "Yes, on a case-by-case basis"
 
 # Q32. Consults before funding is awarded. CHOOSE ONE.
 # pre_award: "Yes"
-pre_award: "Yes, on a limited basis"
-# pre_award: "Yes, on a case-by-case basis"
+# pre_award: "Yes, on a limited basis"
+pre_award: "Yes, on a case-by-case basis"
 # pre_award: "No"
 
 # Q33. Initial or pre-award consultation. CHOOSE ONE.
@@ -288,7 +288,7 @@ compliance:
   # - "HIPAA"
   # - "IRB / human-subject research"
   # - "Johns Hopkins IT Risk / Security review"
-  - "Projects involving external collaborators"
+  # - "Projects involving external collaborators"
   # - "Restricted-access research data"
   # - "None of the above"
 # Q35. "Other" write-in answer, if any
@@ -314,7 +314,7 @@ engagement_types:
   # - "Prototype / proof-of-concept development"
   # - "Short-term troubleshooting"
   # - "Staff augmentation"
-  # - "Technical consultation / advisory services"
+  - "Technical consultation / advisory services"
 # Q37. "Other" write-in answer, if any
 engagement_types_other: ""
 
@@ -386,7 +386,7 @@ charges_other: ""
 
 # Q46. How the team is funded. CHOOSE ALL THAT APPLY.
 funding:
-  # - "Centrally funded"
+  - "Centrally funded"
   # - "Department-funded"
   # - "Fee-for-service"
   # - "Grant-funded"
@@ -399,7 +399,7 @@ funding_other: ""
 # Q47. Accepting new work. CHOOSE ONE.
 # accepting: "Yes"
 # accepting: "Yes, with limited capacity"
-# accepting: "Not at this time"
+accepting: "Not at this time"
 
 # Q48. Lead time to start. CHOOSE ONE.
 # lead_time: "Less than 1 week"
@@ -431,8 +431,8 @@ support_coverage:
 
 # Q51. Open source support. CHOOSE ALL THAT APPLY.
 open_source:
-  # - "Contribute to existing open source projects"
-  # - "Develop new open source software"
+  - "Contribute to existing open source projects"
+  - "Develop new open source software"
   # - "Prepare software for public release"
   # - "Advise on licensing, governance, or community"
   # - "Maintain software after public release"
@@ -457,3 +457,4 @@ open_source_other: ""
 # Q54. Good to know (free text; Markdown is fine)
 notes: ""
 ---
+The DRCC creates, deploys, and supports software, cloud infrastructure, and data within the Sheridan libraries. The applications and systems managed by the DRCC provide access to a wide variety of data, tools, and resources that are used daily to share, discover, research, and learn.
