@@ -739,8 +739,8 @@ code { font-size: 0.9em; }
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
-/* Red from the Hopkins secondary palette; white on #CF4520 is about 4.6:1. */
-.paused-tag { background: #CF4520; border: 1px solid #CF4520; color: #fff; }
+/* Paused and limited tags share one look, so the "Not at this time" tag does not dominate cards. */
+.paused-tag,
 .limited-tag { background: var(--surface); border: 1px solid #9AA8BF; color: var(--muted); }
 .internal-banner--paused { background: #FBEAE5; border-bottom-color: #F0C4B6; }
 
